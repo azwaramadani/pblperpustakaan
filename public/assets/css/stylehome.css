@@ -19,8 +19,9 @@
 body {
   margin: 0;
   font-family: 'Poppins', Arial, sans-serif;
-  background: linear-gradient(180deg, #f4fbff 0%, #f9feff 25%, #ffffff 60%);
+  background: linear-gradient(180deg, #fdfefe 0%, #f4fbff 8%, #e1faf7 20%, #0eaba6 35%, #16a49f 60%, #16a49f 85%, #0b7c78 100%);
   color: #16213c;
+  min-height: 100vh;
 }
 
 a {
@@ -109,14 +110,11 @@ main {
 }
 
 .hero {
-  background: radial-gradient(120% 140% at 10% 0%, var(--teal-light) 0%, #ffffff 60%);
-  border-radius: 32px;
   padding: 56px 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-  box-shadow: 0 25px 60px rgba(9, 92, 90, 0.18);
+  gap: 40px;  
 }
 
 .hero-text {
@@ -201,13 +199,13 @@ main {
   width: 100%;
 }
 
+
+
 .fitur {
   margin: 80px auto 60px;
-  background: linear-gradient(120deg, #0f9da2 0%, #1bc0b0 100%);
   border-radius: 24px;
-  padding: 36px 60px;
-  box-shadow: 0 20px 45px rgba(6, 78, 84, 0.25);
-  color: #ffffff;
+  padding: 48px 80px;
+  color: #2c2c2c;
 }
 
 .fitur-row {
@@ -218,6 +216,20 @@ main {
 
 .fitur-item {
   text-align: center;
+  position: relative;
+  padding: 0 18px;
+}
+
+.fitur-item:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0%; 
+  width: 4px;
+  height: 110%;
+  background: var(--yellow);
+  border-radius: 999px;
+  opacity: 0.85;
 }
 
 .fitur-item img {
@@ -226,14 +238,14 @@ main {
 }
 
 .fitur-item h3 {
-  font-size: 17px;
+  font-size: 18px;
   margin: 0 0 4px;
 }
 
 .fitur-item p {
   font-size: 13px;
   margin: 0;
-  color: rgba(255, 255, 255, 0.85);
+  color: #1d1d1d;
 }
 
 .section-header {
@@ -242,13 +254,14 @@ main {
 }
 
 .section-header p {
-  color: #585f6c;
+  color: #272626;
+  font-size:20px;
   margin: 0;
 }
 
 .section-header h2 {
   font-size: 30px;
-  margin: 12px 0 0;
+  margin: 12px 0 12px;
   color: #0c2f35;
 }
 
@@ -331,8 +344,8 @@ main {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--teal);
-  color: #ffffff;
+  background: #FF383C;
+  color: #303030;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -344,7 +357,7 @@ main {
 }
 
 .footer {
-  background: #0f1a1f;
+  background: #000000;
   color: #bdc4d2;
   display: flex;
   justify-content: space-between;

@@ -31,7 +31,7 @@
   <section class="hero">
     <div class="hero-text">
       <p class="intro">Selamat Datang di <span>Rudy</span></p>
-      <h1>Ruangan Study untuk Semua Mahasiswa!</h1>
+      <h1>Ruang Study untuk Semua Mahasiswa!</h1>
       <p class="description">
         Atur jadwal belajar dan diskusi dengan mudah melalui Rudy. Temukan ruangan study nyaman,
         praktis, dan siap digunakan kapan pun.
@@ -45,6 +45,7 @@
       <img src="../../../public/assets/image/LogoRudy.png" alt="Ruangan belajar">
     </div>
   </section>
+
 
   <section class="fitur">
     <div class="fitur-row">
@@ -73,13 +74,13 @@
 
   <section class="ruangan-section">
     <div class="section-header">
-      <p>Temukan ruangan study favorit mahasiswa.</p>
       <h2>Ruangan Populer di Rudy</h2>
+      <p>Temukan ruangan study favorit mahasiswa.</p>
     </div>
 
     <div class="ruangan-list">
       <article class="card">
-        <img src="../../../public/assets/image/ruang1.jpg" alt="Lentera Edukasi">
+        <img src="../../../public/assets/image/contohruangan.png" alt="Lentera Edukasi">
         <div class="card-body">
           <h3>Lentera Edukasi</h3>
           <p>Kapasitas : 6 - 12 orang</p>
@@ -89,7 +90,7 @@
       </article>
 
       <article class="card">
-        <img src="../../../public/assets/image/ruang2.jpg" alt="Galeri Literasi">
+        <img src="../../../public/assets/image/contohruangan.png" alt="Galeri Literasi">
         <div class="card-body">
           <h3>Galeri Literasi</h3>
           <p>Kapasitas : 6 - 12 orang</p>
@@ -99,7 +100,7 @@
       </article>
 
       <article class="card">
-        <img src="../../../public/assets/image/ruang3.jpg" alt="Sudut Pustaka">
+        <img src="../../../public/assets/image/contohruangan.png" alt="Sudut Pustaka">
         <div class="card-body">
           <h3>Sudut Pustaka</h3>
           <p>Kapasitas : 6 - 12 orang</p>
@@ -145,8 +146,8 @@
     </div>
     <div>
       <h4>Kontak</h4>
-      <a href="mailto:perpustakaan@pbl.com">perpustakaan@pbl.com</a>
-      <a href="tel:021987654">021-987654</a>
+      <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
+      <a href="tel:0822123456780">0822123456780</a>
       <p>Kampus PNJ, Depok</p>
     </div>
   </div>
