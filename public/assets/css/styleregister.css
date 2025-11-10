@@ -1,0 +1,371 @@
+:root {
+    --teal-dark: #0b8e8a;
+    --teal: #19b4af;
+    --yellow: #ffd633;
+    --text-dark: #1f2a37;
+    --text-muted: #6b7280;
+    --card-shadow: 0 20px 40px rgba(15, 36, 57, 0.12);
+}
+
+body {
+    margin: 0 64px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #ffffff; 
+}
+.right-section h2 {
+    text-align: center;
+}
+
+/* CARD UTAMA */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 35px; /* jarak antar card */
+    padding: 40px;
+    width: 100%;
+}
+
+.card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.logo-box {
+    width: 280px;
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    overflow: hidden;
+    background: url("../pages/Logo 2.png");
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.logo-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.55);
+}
+.logo-box img {
+    position: relative;
+    z-index: 2;
+    width: 200px; /* dikecilkan */
+}
+
+
+.right-section {
+    width: 380px;
+}
+
+h2 {
+    font-family: 'Work Sans';
+    font-size: 24px;
+    color: black;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 10px;
+    background: #ffd633;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+/* Efek hover & klik */
+.btn-login:hover {
+    background: #ffcc00;
+}
+.btn-login:active {
+    background: #e6b800;
+    transform: scale(0.98);
+}
+
+.btn-Tamu {
+    width: 100%;
+    padding: 10px;
+    background-color: #19b4af; /* Hijau */
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-tamu:hover {
+    background-color: #0b8e8a; /* Hijau gelap saat hover */
+}
+.btn-Tamu:hover {
+    background: #0b8e8a;
+}
+.btn-Tamu:active {
+    background: #0b8e8a;
+    transform: scale(0.98);
+}
+
+.register-text {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.register-text a {
+    color: teal;
+    text-decoration: none;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #ffd633; /* Kuning */
+    color: black;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 6px;
+    transition: 0.2s;
+}
+
+.file-label:hover {
+    background: #f4c400;
+}
+
+#file-chosen {
+    font-size: 14px;
+    margin-left: 10px;
+    color: #333;
+}
+
+/* Membentuk dua card */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 35px;
+    padding: 40px;
+    width: 100%;
+}
+
+/* Efek card */
+.card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+/* Ukuran logo lebih kecil */
+.logo-box {
+    width: 260px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form card */
+.right-section {
+    width: 380px;
+}
+
+/* ===============================
+   Login Page Refresh
+   =============================== */
+body.auth-body {
+    margin: 0;
+    padding: 40px 24px;
+    background: #f1f4f8;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', 'Work Sans', sans-serif;
+    color: var(--text-dark);
+}
+
+.auth-wrapper {
+    display: flex;
+    align-items: stretch;
+    gap: 38px;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    width: 100%;
+    justify-content: center;
+}
+
+.auth-card {
+    border-radius: 26px;
+    background: #ffffff;
+    box-shadow: var(--card-shadow);
+}
+
+.image-panel {
+    width: 360px;
+    height: 460px;
+    background: url('../image/contohrakbuku.png') center/cover no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+.image-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 47, 61, 0.75);
+}
+
+.image-overlay {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-logo {
+    width: 220px;
+    filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.45));
+}
+
+.form-panel {
+    width: 360px;
+    padding: 36px 40px 46px;
+    background: #ffffff;
+}
+
+.form-panel h2 {
+    font-size: 24px;
+    margin: 0 0 28px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.login-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-dark);
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1.5px solid #cfd8e3;
+    font-size: 15px;
+    font-family: inherit;
+    background: #fdfdfd;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(25, 180, 175, 0.15);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px;
+    background: var(--yellow);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    font-size: 15px;
+}
+
+.btn-login:hover {
+    background: #ffc400;
+}
+
+.btn-login:active {
+    transform: scale(0.98);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0 18px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.btn-guest {
+    display: inline-flex;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--teal);
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-guest:hover {
+    background: var(--teal-dark);
+}
+
+.btn-guest:active {
+    transform: scale(0.98);
+}
+
+.form-panel .register-text {
+    margin-top: 18px;
+    color: var(--text-dark);
+}
+
+.form-panel .register-text a {
+    color: var(--teal-dark);
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .auth-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-panel,
+    .form-panel {
+        width: 100%;
+        max-width: 400px;
+    }
+}

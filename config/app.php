@@ -32,7 +32,7 @@ return [
         'host'     => 'localhost',
         'username' => 'root',
         'password' => '',
-        'dbname'   => 'rudy_db',
+        'dbname'   => 'pblperpustakaan',
         'charset'  => 'utf8mb4'
     ],
 
@@ -42,11 +42,11 @@ return [
     # Gunakan App Password dari Gmail (bukan password biasa!)
     'mail' => [
         'host'       => 'smtp.gmail.com',
-        'username'   => 'emailkamu@gmail.com',      # Ganti dengan email pengirim
-        'password'   => 'GMAIL_APP_PASSWORD_16',    # Ganti dengan app password
+        'username'   => 'thierry.yudha.diantha.tik24@stu.pnj.ac.id', # Ganti dengan email pengirim
+        'password'   => 'E1QN2E47',    # Ganti dengan app password
         'port'       => 587,
         'encryption' => 'tls',
-        'from_email' => 'emailkamu@gmail.com',      # Ganti dengan email pengirim
+        'from_email' => 'thierry.yudha.diantha.tik24@stu.pnj.ac.id',      # Ganti dengan email pengirim
         'from_name'  => 'RUDY System - Notifikasi',
     ],
 
@@ -55,8 +55,8 @@ return [
     # ============================================
     # Semua path absolut menuju folder upload
     'upload_paths' => [
-        'bukti_aktivasi'   => __DIR__ . '/../storage/uploads/bukti_aktivasi/',
-        'surat_peminjaman' => __DIR__ . '/../storage/uploads/surat_peminjaman/',
+        'bukti_aktivasi'   => __DIR__ . '../storage/uploads/bukti_aktivasi/',
+        'surat_peminjaman' => __DIR__ . '../storage/uploads/surat_peminjaman/',
     ],
 
     # ============================================
@@ -72,7 +72,7 @@ return [
     # KONFIGURASI TAMBAHAN (OPSIONAL)
     # ============================================
     'developer' => [
-        'maintainer' => 'Tim Back-End RUDY',
-        'github_repo' => 'https://github.com/tim-rudy',
+        'maintainer' => 'Tim Pembuat RUDY',
+        'github_repo' => 'https://github.com/azwaramadani/pblperpustakaansemester3',
     ],
 ];
