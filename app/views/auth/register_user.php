@@ -80,7 +80,7 @@ if (isset($_POST["submit"])) {
         </form>
 
         <p class="register-text">
-            Sudah Punya Akun? <a href="login.php">Masuk</a>
+            Sudah Punya Akun? <a href="login_user.php">Masuk</a>
         </p>
     </div>
 

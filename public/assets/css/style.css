@@ -106,7 +106,7 @@ input {
 .btn-Tamu {
     width: 100%;
     padding: 10px;
-    background-color: #0fa958; /* Hijau */
+    background-color: #19b4af; /* Hijau */
     border: none;
     border-radius: 6px;
     font-weight: bold;
@@ -116,13 +116,13 @@ input {
 }
 
 .btn-tamu:hover {
-    background-color: #0c8a49; /* Hijau gelap saat hover */
+    background-color: #0b8e8a; /* Hijau gelap saat hover */
 }
 .btn-Tamu:hover {
-    background: #0c8a50;
+    background: #0b8e8a;
 }
 .btn-Tamu:active {
-    background: #0c8a49;
+    background: #0b8e8a;
     transform: scale(0.98);
 }
 

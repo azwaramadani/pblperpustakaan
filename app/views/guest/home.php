@@ -74,7 +74,7 @@
   <section class="ruangan-section">
     <div class="section-header">
       <h2>Ruangan Populer di Rudy</h2>
-      <p>Temukan ruangan study favorit mahasiswa.</p>
+      <p>Temukan ruang study favorit mahasiswa.</p>
     </div>
 
     <div class="ruangan-list">
