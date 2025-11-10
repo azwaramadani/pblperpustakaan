@@ -21,33 +21,32 @@ if (isset($_POST["submit"])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - RUDY Ruang Study</title>
-    <link rel="stylesheet" href="../../../public/assets/css/style.css">
+    <title>Masuk - Rudy Ruang Study</title>
+    <link rel="stylesheet" href="../../../public/assets/css/styleregister.css">
 </head>
-<body>
+<body class="auth-body">
 
-<div class="container">
+<div class="auth-wrapper">
+    <section class="auth-card image-panel">
+        <div class="image-overlay">
+            <img src="../../../public/assets/image/LogoRudy.png" alt="Logo Rudy" class="panel-logo">
+        </div>
+    </section>
 
-    <!-- CARD LOGO -->
-    <div class="card logo-box">
-        <img src="../../../public/assets/image/LogoRUDY.png" alt="Rudy Logo">
-    </div>
+    <section class="auth-card form-panel">
+        <div class="form-header">
+            <h2>Masuk</h2>
+        </div>
+        <form method="POST" class="login-form">
+            <label for="nim">NIM/NIP</label>
+            <input id="nim" type="text" name="nim" placeholder="Masukkan NIM/NIP" autocomplete="off" required>
 
-    <!-- CARD FORM -->
-    <div class="card right-section">
-        <h2>Masuk</h2>
-
-        <form method="POST">
-
-            <label>NIM/NIP</label>
-            <input type="text" name="nim" placeholder="Masukkan NIM/NIP" autocomplete="off" required>
-
-            <label>Password</label>
-            <input type="password" name="password" placeholder="Masukkan Password" autocomplete="new-password" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Masukkan Password" autocomplete="new-password" required>
 
             <button type="submit" name="submit" class="btn-login">Masuk</button>
         </form>
@@ -55,14 +54,11 @@ if (isset($_POST["submit"])) {
         <p class="register-text">
             Belum Punya Akun? <a href="register_user.php">Daftar</a>
         </p>
-
-        <p class="register-text">Atau</p>
-
-        <a href="../guest/home.php">
-        <button class="btn-Tamu">Masuk Sebagai Tamu</button>
-        </a>
-    </div>
-
+        <div class="divider">
+            <span>Atau</span>
+        </div>
+        <a href="../guest/home.php" class="btn-guest">Masuk sebagai Tamu</a>
+    </section>
 </div>
 
 </body>

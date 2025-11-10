@@ -235,7 +235,7 @@ main {
   left: 0;
   top: 0%; 
   width: 4px;
-  height: 120%;
+  height: 110%;
   background: var(--yellow);
   border-radius: 999px;
   opacity: 0.85;
@@ -489,10 +489,6 @@ main {
 
   .hero-visual img {
     margin: 0 auto;
-  }
-
-  .fitur {
-    padding: 30px;
   }
 
   .footer {
