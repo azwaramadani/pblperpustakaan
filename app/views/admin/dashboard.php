@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rudy Ruang Study</title>
-  <link rel="stylesheet" href="../../../public/assets/css/style2.css">
+  <link rel="stylesheet" href="../../../public/assets/css/styleh2.css">
 </head>
 
 <body>
