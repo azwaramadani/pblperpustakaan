@@ -121,8 +121,8 @@ $riwayat = [
     <div class="footer-nav">
         <div>
             <h4>Navigasi</h4>
-            <a href="#">Beranda</a>
-            <a href="#">Daftar Ruangan</a>
+            <a href="home.php">Beranda</a>
+            <a href="ruangan.php">Daftar Ruangan</a>
             <a href="#">Panduan</a>
             <a href="#">Masuk</a>
         </div>
