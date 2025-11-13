@@ -1,3 +1,11 @@
+<?php
+session_start();
+require_once '../../../config/database.php';
+$user_id = $_SESSION['user_id'] ?? 1;
+$query_user = "SELECT nama, email FROM user WHERE user_id = '$user_id'";
+$result_user = mysqli_query($connection, $query_user);
+$user_data = mysqli_fetch_assoc($result_user);
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,12 +27,11 @@
     <a href="riwayat.php">Riwayat</a>
   </nav>
   <div class="profile">
-    <div class="user-name">
-      <p>User</p>
-      <span>Mahasiswa</span>
+        <img src="../../../public/assets/image/userlogo.png" alt="User">
+        <div class="user-name">
+            <p><?= htmlspecialchars($user_data['nama']) ?></p>
+        </div>
     </div>
-    <img src="../../../public/assets/image/Logo 1.png" alt="user" class="user-icon">
-  </div>
 </header>
 
 <main>
@@ -37,7 +44,7 @@
         praktis, dan siap digunakan kapan pun.
       </p>
       <div class="btn-group">
-        <a href="app/views/guest/ruangan.php" class="btn primary">Lihat daftar Ruangan</a>
+        <a href="ruangan.php" class="btn primary">Lihat daftar Ruangan</a>
         <a href="#" id="lihat-cara-booking"class="btn secondary">Lihat Cara Booking</a>
       </div>
     </div>
@@ -81,12 +88,12 @@
     <div class="ruangan-list">
       <article class="card">
         <img src="../../../public/assets/image/contohruangan.png" alt="Lentera Edukasi">
-        <div class="card-body">
-          <h3>Lentera Edukasi</h3>
-          <p>Kapasitas : 6 - 12 orang</p>
-          <p>Status : <span class="status">Tersedia</span></p>
-          <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
-        </div>
+          <div class="card-body">
+            <h3>Lentera Edukasi</h3>
+            <p>Kapasitas : 6 - 12 orang</p>
+            <p>Status : <span class="status">Tersedia</span></p>
+            <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
+          </div>
       </article>
 
       <article class="card">

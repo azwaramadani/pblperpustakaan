@@ -2,7 +2,7 @@
 session_start();
 require_once '../../../config/database.php';
 
-// Ambil data user (profil kanan atas)
+// Ambil data user untuk profil kanan atas
 $user_id = $_SESSION['user_id'] ?? 1;
 $query_user = "SELECT nama, email FROM user WHERE user_id = '$user_id'";
 $result_user = mysqli_query($connection, $query_user);
@@ -24,7 +24,7 @@ while ($row = mysqli_fetch_assoc($result_room)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Ruangan | Rudy Ruang Study</title>
     <link rel="stylesheet" href="../../../public/assets/css/styleruangan.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -50,35 +50,36 @@ while ($row = mysqli_fetch_assoc($result_room)) {
 </header>
 
 <!-- ===== Judul ===== -->
-<section class="title-section">
-    <h2 class="title">Daftar Ruangan</h2>
-    <p class="subtitle">Lihat ketersediaan ruangan untuk belajar individu, diskusi kelompok, atau kegiatan akademik lainnya.</p>
+<main>
+    <section class="title-section">
+        <h2 class="title">Daftar Ruangan</h2>
+        <p class="subtitle">Lihat ketersediaan ruangan untuk belajar individu, diskusi kelompok, atau kegiatan akademik lainnya.</p>
 
-    <div class="category-buttons">
-        <button class="btn-filter active">Ruang Study</button>
-        <button class="btn-filter">Ruang Rapat</button>
-    </div>
-</section>
+        <div class="category-buttons">
+            <button class="btn-filter active">Ruang Study</button>
+            <button class="btn-filter">Ruang Rapat</button>
+        </div>
+    </section>
 
-<!-- ===== Grid Ruangan ===== -->
-<div class="grid-container">
-    <?php if (empty($ruangan)): ?>
-        <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
-    <?php else: ?>
-        <?php foreach ($ruangan as $r): ?>
-            <div class="room-card">
-                <img src="../../../public/assets/image/<?= htmlspecialchars($r['gambar_ruangan']) ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
-                <div class="room-info">
-                    <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
-                    <p>Kapasitas: <?= htmlspecialchars($r['kapasitas_min']) ?> - <?= htmlspecialchars($r['kapasitas_max']) ?> orang</p>
-                    <p>Status: <span class="status tersedia"><?= htmlspecialchars($r['status']) ?></span></p>
+    <!-- ===== Grid Ruangan ===== -->
+    <div class="room-container">
+        <?php if (empty($ruangan)): ?>
+            <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
+        <?php else: ?>
+            <?php foreach ($ruangan as $r): ?>
+                <div class="room-card">
+                    <img src="../../../public/assets/image/<?= htmlspecialchars($r['gambar_ruangan']) ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">
+                    <div class="room-info">
+                        <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
+                        <p>Kapasitas: <?= htmlspecialchars($r['kapasitas_min']) ?> - <?= htmlspecialchars($r['kapasitas_max']) ?> orang</p>
+                        <p>Status: <span class="status tersedia"><?= htmlspecialchars($r['status']) ?></span></p>
+                    </div>
+                    <a href="booking.php?room_id=<?= urlencode($r['room_id']) ?>" class="btn-book">Booking sekarang</a>
                 </div>
-                <a href="booking.php?room_id=<?= urlencode($r['room_id']) ?>" class="btn-book">Booking sekarang</a>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
-
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</main>
 <!-- ===== Footer ===== -->
 <footer class="footer">
     <div class="footer-brand">

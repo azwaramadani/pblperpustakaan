@@ -38,14 +38,11 @@ img {
 }
 
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 18px 64px;
-  background: #ffffff;
+  background: #fff;
   box-shadow: 0 10px 30px rgba(15, 93, 93, 0.08);
 }
 
@@ -94,6 +91,13 @@ img {
   gap: 12px;
 }
 
+.profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .profile .user-name p {
   margin: 0;
   font-weight: 600;
@@ -113,7 +117,7 @@ img {
 }
 
 main {
-  max-width: 1200px;
+  max-width: 85vw;
   margin: 0 auto;
   padding: 50px 24px 96px;
 }
@@ -304,6 +308,12 @@ main {
 .card-body h3 {
   margin: 0 0 10px;
   font-size: 20px;
+}
+
+.card-body p {
+  margin: 4px 0;
+  color: #5a5f69;
+  font-size: 14px;
 }
 
 .card-body p {

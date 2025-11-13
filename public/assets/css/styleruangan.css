@@ -1,18 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-  --teal: #19b4af;
   --teal-dark: #0b8e8a;
   --yellow: #ffcf33;
   --yellow-dark: #e3a700;
+  --bg-light: #f6fbff;
   --text: #0c0000;
-  --bg: #f6fbff;
 }
 
 /* ===== BASE ===== */
 body {
-  margin: 0;
   font-family: 'Poppins', sans-serif;
+  margin: 0;
   background: linear-gradient(180deg, #fdfefe 0%, #f4fbff 17%, #6ed2c6 70%);
   color: var(--text);
 }
@@ -22,19 +21,24 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 18px 64px;
   background: #fff;
-  box-shadow: 0 10px 30px rgba(15,93,93,0.08);
-  padding: 16px 60px;
+  box-shadow: 0 10px 30px rgba(15, 93, 93, 0.08);
 }
 
 .left-section {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.logo-pnj { height: 40px; }
-.logo-rudy { height: 38px; }
+.logo-pnj {
+  height: 45px;
+}
+
+.logo-rudy {
+  height: 38px;
+}
 
 .nav-links a {
   margin: 0 16px;
@@ -62,15 +66,22 @@ body {
   object-fit: cover;
 }
 
+main {
+  max-width: 85vw;
+  margin: 0 auto;
+  padding: 50px 24px 96px;
+}
+
 /* ===== TITLE ===== */
 .title-section {
   text-align: center;
-  margin: 40px 0 10px;
+  margin-top: 30px;
+  margin-bottom: 40px;
 }
 
 .title {
+  font-size: 28px;
   color: var(--teal-dark);
-  font-size: 26px;
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -78,24 +89,23 @@ body {
 .subtitle {
   font-size: 15px;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .category-buttons {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 30px;
+  gap: 20px;
 }
 
 .btn-filter {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: 2px solid var(--teal-dark);
   background: #e7f8f8;
   color: var(--teal-dark);
-  border: 2px solid var(--teal-dark);
-  border-radius: 10px;
-  padding: 8px 20px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
   transition: 0.3s;
 }
 
@@ -106,23 +116,23 @@ body {
 }
 
 /* ===== GRID ===== */
-.grid-container {
-  width: 90%;
+.room-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  width: 85%;
   max-width: 1200px;
   margin: 0 auto 80px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
   justify-items: center;
 }
 
 .room-card {
   background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   overflow: hidden;
   text-align: center;
-  transition: transform 0.2s ease;
+  transition: 0.3s;
   width: 100%;
   max-width: 320px;
 }
@@ -131,20 +141,26 @@ body {
   transform: translateY(-6px);
 }
 
-.room-card img {
+.room-img {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
 
 .room-info {
-  padding: 15px 20px;
-  font-size: 14px;
+  padding: 16px 20px;
 }
 
 .room-info h3 {
   color: var(--teal-dark);
-  margin: 6px 0 10px;
+  margin: 8px 0 10px;
+  font-weight: 700;
+}
+
+.room-info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
 }
 
 .status {
@@ -154,14 +170,15 @@ body {
 
 /* ===== BUTTON BOOK ===== */
 .btn-book {
-  display: inline-block;
+  display: block;
+  width: 100%;
   background: var(--yellow);
   color: var(--text);
   font-weight: 600;
-  padding: 10px 0;
-  width: 100%;
-  border: none;
+  padding: 12px 0;
   text-decoration: none;
+  border: none;
+  border-radius: 0 0 18px 18px;
   transition: 0.3s;
 }
 
@@ -176,8 +193,8 @@ body {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 60px 80px;
   gap: 60px;
+  padding: 60px 80px;
 }
 
 .footer-brand img {
@@ -197,8 +214,8 @@ body {
 }
 
 .footer-nav a {
-  color: #cdd4df;
   text-decoration: none;
+  color: #cdd4df;
   display: block;
   margin-bottom: 6px;
 }
@@ -209,7 +226,7 @@ body {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .grid-container {
+  .room-container {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
