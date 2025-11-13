@@ -24,57 +24,49 @@ body {
 
 /* ===== NAVBAR ===== */
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 18px 64px;
-  background: #ffffff;
+  background: #fff;
   box-shadow: 0 10px 30px rgba(15, 93, 93, 0.08);
 }
 
-.navbar nav {
-  position: absolute;
-  left: 51%;
-  transform: translateX(-50%);
+.logo {
   display: flex;
+  gap: 16px;
   align-items: center;
 }
 
-.logo {
-  font-weight: 700;
-  color: var(--teal-dark);
-  font-size: 20px;
-}
-.logo span {
-  color: #0c0000;
-}
-
-.navbar nav a {
-  margin: 0 18px;
-  text-decoration: none;
-  color: #0c0000;
-  font-weight: 500;
-  font-size: 16px;
+.nav-menu{
+  display: flex;
   gap: 32px;
-  transition: 0.2s;
+  font-weight: 500;
+  text-decoration: none;
 }
 
-.navbar nav a.active {
-  color: var(--teal-dark);
-  position: relative;
+.nav-menu a {
+  color: #4c4c4c;
+  font-size: 16px;
+  text-decoration: none;
 }
-.navbar nav a.active::after {
+
+.nav-menu a.active {
+  color: #007777;
+  position: relative;
+  text-decoration: none;
+}
+
+.nav-menu a.active::after {
   content: '';
   position: absolute;
   left: 0;
   bottom: -6px;
   width: 100%;
   height: 3px;
-  background: var(--teal-dark);
+  background: #007777;
   border-radius: 999px;
+  text-decoration: none;
 }
 
 .profile {
@@ -84,10 +76,10 @@ body {
 }
 
 .profile img {
-    width: 40px;       
-    height: 40px;
-    object-fit: cover; 
-    border-radius: 50%; 
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .profile .user-name p {
@@ -95,6 +87,18 @@ body {
   font-weight: 600;
 }
 
+.profile .user-name span {
+  font-size: 12px;
+  color: #7a7a7a;
+}
+
+.profile .user-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--teal-light);
+}
 /* ===== TITLE ===== */
 .title {
   text-align: center;

@@ -30,18 +30,16 @@ while ($row = mysqli_fetch_assoc($result_room)) {
 
 <!-- ===== Navbar ===== -->
 <header class="navbar">
-    <div class="left-section">
-        <img src="../../../public/assets/image/LogoPNJ.png" alt="Logo PNJ" class="logo-pnj">
-        <img src="../../../public/assets/image/LogoRudy.png" alt="Logo Rudy" class="logo-rudy">
-    </div>
-
-    <nav class="nav-links">
-        <a href="home.php">Beranda</a>
-        <a href="ruangan.php" class="active">Ruangan</a>
-        <a href="riwayat.php">Riwayat</a>
-    </nav>
-
-    <div class="profile">
+  <div class="logo">
+    <img src="../../../public/assets/image/LogoPNJ.png" alt="Logo PNJ" height="40">
+    <img src="../../../public/assets/image/LogoRudy.png" alt="Logo Rudy" height="40">
+  </div>
+  <nav class="nav-menu">
+    <a href="home.php">Beranda</a>
+    <a href="ruangan.php" class="active">Ruangan</a>
+    <a href="riwayat.php">Riwayat</a>
+  </nav>
+  <div class="profile">
         <img src="../../../public/assets/image/userlogo.png" alt="User">
         <div class="user-name">
             <p><?= htmlspecialchars($user_data['nama']) ?></p>
