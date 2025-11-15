@@ -103,7 +103,7 @@ class Booking extends Model
     public function countCancellationsToday($user_id)
     {
         $sql = "SELECT COUNT(*) AS total FROM {$this->table}
-                WHERE user_id = ? AND status = 'Dibatalkan' AND DATE(created_at) = CURDATE()";
+                WHERE user_id = ? AND status = 'Dibatalkan' AND DATE(waktu_booking) = CURDATE()";
         return $this->query($sql, [$user_id])->fetch()['total'];
     }
 }

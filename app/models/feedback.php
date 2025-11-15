@@ -10,34 +10,36 @@ class Feedback extends Model
     protected $table = 'feedback';
 
     # Ambil semua feedback berdasarkan ruangan
-    public function getByRoom($ruangan_id)
+    public function getByRoom($room_id)
     {
         $sql = "SELECT f.*, u.nama AS nama_user 
                 FROM {$this->table} f
                 JOIN user u ON f.user_id = u.user_id
-                WHERE f.ruangan_id = ?
-                ORDER BY f.created_at DESC";
-        return $this->query($sql, [$ruangan_id])->fetchAll();
+                WHERE f.room_id = ?
+                ORDER BY f.tanggal_feedback DESC";
+        return $this->query($sql, [$room_id])->fetchAll();
     }
 
     # Tambah feedback
     public function create($data)
     {
-        $sql = "INSERT INTO {$this->table} (user_id, ruangan_id, rating, komentar, created_at)
-                VALUES (?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO {$this->table} (booking_id, room_id, user_id, puas, komentar, tanggal_feedback)
+                VALUES (?, ?, ?, ?, ?, NOW())";
         return $this->query($sql, [
+            $data['booking_id'],
+            $data['room_id'],
             $data['user_id'],
-            $data['ruangan_id'],
-            $data['rating'],
-            $data['komentar']
+            $data['puas'],
+            $data['komentar'] ?? NULL,
+            $data['tanggal_feedback']
         ]);
     }
 
     # Hitung rata-rata rating ruangan
-    public function averageRating($ruangan_id)
+    public function averageRating($room_id)
     {
-        $sql = "SELECT AVG(rating) AS avg_rating FROM {$this->table} WHERE ruangan_id = ?";
-        $row = $this->query($sql, [$ruangan_id])->fetch();
-        return $row ? round($row['avg_rating'], 1) : 0;
+        $sql = "SELECT AVG(puas) AS Puas FROM {$this->table} WHERE room_id = ?";
+        $row = $this->query($sql, [$room_id])->fetch();
+        return $row ? round($row['Puas'], 1) : 0;
     }
 }
