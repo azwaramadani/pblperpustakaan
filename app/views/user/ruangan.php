@@ -40,7 +40,9 @@ while ($row = mysqli_fetch_assoc($result_room)) {
     <a href="riwayat.php">Riwayat</a>
   </nav>
   <div class="profile">
-        <img src="../../../public/assets/image/userlogo.png" alt="User">
+        <a href=profile.php>        
+            <img src="../../../public/assets/image/userlogo.png" alt="User">
+        </a>
         <div class="user-name">
             <p><?= htmlspecialchars($user_data['nama']) ?></p>
         </div>

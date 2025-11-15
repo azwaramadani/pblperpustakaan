@@ -1,26 +1,67 @@
 <?php
-class Room {
-    private $db;
+# ===============================================
+# MODEL: ROOM
+# ===============================================
+# Mengatur data ruangan (CRUD, status, rating)
+# ===============================================
 
-    public function __construct($db) {
-        $this->db = $db;
+class Room extends Model
+{
+    protected $table = 'ruangan';
+
+    # Ambil semua ruangan
+    public function getAll()
+    {
+        $sql = "SELECT * FROM {$this->table} ORDER BY nama_ruangan ASC";
+        return $this->query($sql)->fetchAll();
     }
 
-    // Ambil semua data ruangan
-    public function getAllRooms() {
-        $query = "SELECT * FROM room ORDER BY room_id ASC";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    # Ambil ruangan populer (misalnya 3 teratas)
+    public function getPopular()
+    {
+        $sql = "SELECT * FROM {$this->table} ORDER BY rating DESC LIMIT 3";
+        return $this->query($sql)->fetchAll();
     }
 
-    // Ambil ruangan berdasarkan kategori (optional)
-    public function getRoomsByType($type) {
-        $query = "SELECT * FROM room WHERE deskripsi LIKE :type";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':type', "%$type%");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    # Ambil ruangan berdasarkan ID
+    public function findById($id)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE ruangan_id = ?";
+        return $this->query($sql, [$id])->fetch();
+    }
+
+    # Tambah ruangan baru
+    public function create($data)
+    {
+        $sql = "INSERT INTO {$this->table} (nama_ruangan, gambar_ruangan, kapasitas_min, kapasitas_max, deskripsi, status)
+                VALUES (?, ?, ?, ?, ?, 'Tersedia')";
+        return $this->query($sql, [
+            $data['nama_ruangan'],
+            $data['gambar_ruangan'],
+            $data['kapasitas_min'],
+            $data['kapasitas_max'],
+            $data['deskripsi']
+        ]);
+    }
+
+    # Ubah data ruangan
+    public function update($id, $data)
+    {
+        $sql = "UPDATE {$this->table} SET nama_ruangan=?, gambar_ruangan=?, kapasitas_min=?, kapasitas_max=?, deskripsi=? WHERE ruangan_id=?";
+        return $this->query($sql, [
+            $data['nama_ruangan'],
+            $data['gambar_ruangan'],
+            $data['kapasitas_min'],
+            $data['kapasitas_max'],
+            $data['deskripsi'],
+            $id
+        ]);
+    }
+
+    # Ubah status ruangan (Tersedia / Tidak Tersedia)
+    public function updateStatus($id, $status)
+    {
+        $sql = "UPDATE {$this->table} SET status = ? WHERE ruangan_id = ?";
+        return $this->query($sql, [$status, $id]);
     }
 }
-?>
