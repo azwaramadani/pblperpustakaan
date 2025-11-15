@@ -12,33 +12,33 @@ class Booking extends Model
     # Ambil semua booking (admin view)
     public function getAll()
     {
-        $sql = "SELECT b.*, u.nama AS nama_user, r.nama_ruangan 
-                FROM {$this->table} b
-                JOIN user u ON b.user_id = u.user_id
-                JOIN ruangan r ON b.ruangan_id = r.ruangan_id
-                ORDER BY b.created_at DESC";
+        $sql = "SELECT booking.*, u.nama AS nama_user, r.nama_ruangan 
+                FROM {$this->table} booking
+                JOIN user u ON booking.user_id = u.user_id
+                JOIN room r ON booking.room_id = r.room_id
+                ORDER BY booking.waktu_booking DESC";
         return $this->query($sql)->fetchAll();
     }
 
     # Ambil semua booking milik user
     public function getByUser($user_id)
     {
-        $sql = "SELECT b.*, r.nama_ruangan 
-                FROM {$this->table} b
-                JOIN ruangan r ON b.ruangan_id = r.ruangan_id
-                WHERE b.user_id = ?
-                ORDER BY b.created_at DESC";
+        $sql = "SELECT booking.*, r.nama_ruangan 
+                FROM {$this->table} booking
+                JOIN room r ON booking.room_id = r.room_id
+                WHERE booking.user_id = ?
+                ORDER BY booking.waktu_booking DESC";
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
     # Detail booking
     public function detail($booking_id)
     {
-        $sql = "SELECT b.*, u.email AS email_user, u.nama AS nama_user, r.nama_ruangan 
-                FROM {$this->table} b
-                JOIN user u ON b.user_id = u.user_id
-                JOIN ruangan r ON b.ruangan_id = r.ruangan_id
-                WHERE b.booking_id = ?";
+        $sql = "SELECT booking.*, u.email AS email_user, u.nama AS nama_user, r.nama_ruangan 
+                FROM {$this->table} booking
+                JOIN user u ON booking.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id
+                WHERE booking.booking_id = ?";
         return $this->query($sql, [$booking_id])->fetch();
     }
 
@@ -46,16 +46,42 @@ class Booking extends Model
     public function create($data)
     {
         $sql = "INSERT INTO {$this->table} 
-                (user_id, ruangan_id, tanggal, jam_mulai, jam_selesai, kode_booking, surat_peminjaman, status, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'Menunggu', NOW())";
+                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_mahasiswa, nama_penanggung_jawab, nimnip_penanggung_jawab
+                , email_penanggung_jawab, nimnip_peminjam, kode_booking, waktu_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  NOW(), 'Menunggu')";
+        return $this->query($sql, [
+            $data['user_id'],
+            $data['room_id'],
+            $data['tanggal'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['jumlah_mahasiswa'],
+            $data['nama_penanggung_jawab'],
+            $data['nimnim_penanggung_jawab'],
+            $data['email_penanggung_jawab'],
+            $data['nimnip_peminjam'],
+            $data['waktu_booking'],
+            $data['kode_booking'],
+            $data['status_booking']
+        ]);
+    }
+
+    # crete booking buat ruang rapat
+    public function createbookingrapat($data)
+    {
+        $sql = "INSERT INTO {$this->table} 
+                (user_id, room_id, tanggal, jam_mulai, jam_selesai, nama_penanggung_jawab, surat_peminjaman_ruang_rapat,
+                kode_booking, waktu_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Menunggu')";
         return $this->query($sql, [
             $data['user_id'],
             $data['ruangan_id'],
             $data['tanggal'],
             $data['jam_mulai'],
             $data['jam_selesai'],
-            $data['kode_booking'],
-            $data['surat_peminjaman'] ?? null
+            $data['nama_penanggung_jawab'],
+            $data['surat_peminjaman_ruang_rapat'] ?? null,
+            $data['kode_booking']
         ]);
     }
 

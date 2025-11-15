@@ -36,4 +36,9 @@ class Admin extends Model
         $sql = "UPDATE user SET status_akun = 'Ditolak' WHERE user_id = ?";
         return $this->query($sql, [$user_id]);
     }
+
+    public function blockuser($user_id)
+    {
+
+    }
 }
