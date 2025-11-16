@@ -1,3 +1,12 @@
+<?php
+require_once '../config/app.php';
+require_once '../core/Router.php';
+
+$router = new Router();
+$router->run();
+
+
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
