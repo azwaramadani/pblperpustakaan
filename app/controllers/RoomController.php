@@ -1,5 +1,5 @@
-<?php
-//pakai ini buat konekin antar file
+<?php 
+require_once __DIR__ . '/../../core/Session.php';
 
 class RoomController {
     private $db;

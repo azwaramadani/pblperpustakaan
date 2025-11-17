@@ -29,24 +29,29 @@ class UserController
     }
 
     public function ruangan()
-{
-    Session::checkUserLogin();
+    {
+        Session::checkUserLogin();
 
-    # Ambil data user dari session
-    $userModel = new User();
-    $user = $userModel->findById(Session::get('user_id'));
+        # Ambil data user dari session
+        $userModel = new User();
+        $user = $userModel->findById(Session::get('user_id'));
 
-    # Ambil semua ruangan
-    $roomModel = new Room();
-    $rooms = $roomModel->getAll();
+        # Ambil semua ruangan
+        $roomModel = new Room();
+        $rooms = $roomModel->getAll();
 
-    # Data dikirim ke view
-    $data = [
-        'user' => $user,
-        'rooms' => $rooms
-    ];
+        # Data dikirim ke view
+        $data = [
+            'user' => $user,
+            'rooms' => $rooms
+        ];
 
-    require __DIR__ . '/../views/user/ruangan.php';
-}
+        require __DIR__ . '/../views/user/ruangan.php';
+    }
 
+    public function riwayat()
+    {
+
+
+    }
 }

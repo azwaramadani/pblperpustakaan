@@ -56,7 +56,7 @@ if (!function_exists('app_config')) {
             # ============================================
             'upload_paths' => [
                 'bukti_aktivasi'   => __DIR__ . '/../storage/uploads/bukti_aktivasi/',
-                'surat_peminjaman' => __DIR__ . '/../storage/uploads/surat_peminjaman/',
+                'surat_peminjaman' => __DIR__ . '/../storage/uploads/surat_peminjaman_ruangrapat/',
             ],
 
             # ============================================
