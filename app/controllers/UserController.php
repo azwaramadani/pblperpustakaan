@@ -52,11 +52,52 @@ class UserController
 
     public function riwayat()
     {
-        //pastiin user udah login dan dapet session
         Session::checkUserLogin();
 
-        //buat konekin supaya user bisa liat file riwayat.php
-        require __DIR__ . '/../views/user/riwayat.php';
+        $userModel    = new User();
+        $bookingModel = new Booking();
 
+        $userId = Session::get('user_id');
+        $user   = $userModel->findById($userId);
+
+        $riwayatRaw = $bookingModel->getHistoryByUser($userId);
+
+        $riwayat = array_map(function ($row) {
+            $tanggal = !empty($row['tanggal'])
+                ? date('d M Y', strtotime($row['tanggal']))
+                : '-';
+
+            $jamMulai   = !empty($row['jam_mulai']) ? date('H:i', strtotime($row['jam_mulai'])) : '';
+            $jamSelesai = !empty($row['jam_selesai']) ? date('H:i', strtotime($row['jam_selesai'])) : '';
+            $jam        = trim($jamMulai . ($jamMulai && $jamSelesai ? ' - ' : '') . $jamSelesai);
+
+            $gambar    = $row['gambar'] ?: 'public/assets/image/contohruangan.png';
+            $gambarUrl = preg_match('#^https?://#i', $gambar)
+                ? $gambar
+                : rtrim(app_config()['base_url'], '/') . '/' . ltrim($gambar, '/');
+
+            return [
+                'nama_ruangan'  => $row['nama_ruangan'] ?? '-',
+                'kode_booking'  => $row['kode_booking'] ?? '-',
+                'tanggal'       => $tanggal,
+                'jam'           => $jam ?: '-',
+                'penanggung'    => $row['nama_penanggung_jawab'] ?? '-',
+                'nim'           => $row['nimnip_penanggung_jawab'] ?? '-',
+                'email'         => $row['email_penanggung_jawab'] ?? '-',
+                'nim_ruangan'   => $row['nimnip_peminjam'] ?? '-',
+                'status'        => $row['status_booking'] ?? '-',
+                'gambar'        => $gambarUrl,
+                'sudah_feedback'=> !empty($row['sudah_feedback'])
+            ];
+        }, $riwayatRaw);
+
+        $data = [
+            'user'  => $user,
+            'rooms' => [] // placeholder supaya view tidak error
+        ];
+
+        $user_data = $user;
+
+        require __DIR__ . '/../views/user/riwayat.php';
     }
 }

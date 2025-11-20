@@ -9,7 +9,7 @@ $ruangan = $data['rooms'];
     <meta charset="UTF-8">
     <title>Daftar Ruangan | Rudy Ruang Study</title>
 
-    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/assets/css/styleruangan.css">
+    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleruangan.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -17,8 +17,8 @@ $ruangan = $data['rooms'];
 
 <header class="navbar">
   <div class="logo">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoPNJ.png" height="40">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
   </div>
 
   <nav class="nav-menu">
@@ -28,7 +28,7 @@ $ruangan = $data['rooms'];
   </nav>
 
   <div class="profile">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/userlogo.png" alt="User">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
         <div class="user-name">
             <p><?= htmlspecialchars($user['nama']) ?></p>
         </div>
@@ -50,7 +50,7 @@ $ruangan = $data['rooms'];
             <?php foreach ($ruangan as $r): ?>
                 <div class="room-card">
 
-                    <img src="<?= app_config()['base_url'] ?>/assets/image/contohruangan.png"
+                    <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png"
                          alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">
 
                     <div class="room-info">
@@ -71,7 +71,7 @@ $ruangan = $data['rooms'];
 <footer class="footer">
 
   <div class="footer-brand">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Rudy">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     <p>Rudy Ruang Study - platform peminjaman ruangan study yang praktis, transparan, dan terintegrasi.</p>
   </div>
 

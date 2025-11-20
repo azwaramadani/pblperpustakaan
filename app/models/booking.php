@@ -20,16 +20,31 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    # Ambil semua booking milik user
-    public function getByUser($user_id)
+    # Ambil riwayat booking user lengkap dengan info ruangan & feedback
+    public function getHistoryByUser($user_id)
     {
-        $sql = "SELECT booking.*, r.nama_ruangan 
-                FROM {$this->table} booking
-                JOIN room r ON booking.room_id = r.room_id
-                WHERE booking.user_id = ?
-                ORDER BY booking.waktu_booking DESC";
+        $sql = "SELECT
+                    b.booking_id,
+                    b.kode_booking,
+                    b.tanggal,
+                    b.jam_mulai,
+                    b.jam_selesai,
+                    b.nama_penanggung_jawab,
+                    b.nimnip_penanggung_jawab,
+                    b.email_penanggung_jawab,
+                    b.nimnip_peminjam,
+                    b.status_booking,
+                    r.nama_ruangan,
+                    r.gambar_ruangan AS gambar,
+                    CASE WHEN f.booking_id IS NULL THEN 0 ELSE 1 END AS sudah_feedback
+                FROM {$this->table} b
+                JOIN room r ON b.room_id = r.room_id
+                LEFT JOIN feedback f ON f.booking_id = b.booking_id
+                WHERE b.user_id = ?
+                ORDER BY b.jam_mulai DESC";
         return $this->query($sql, [$user_id])->fetchAll();
     }
+
 
     # Detail booking
     public function detail($booking_id)

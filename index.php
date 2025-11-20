@@ -4,21 +4,21 @@
 # ================================================
 spl_autoload_register(function ($class) {
     # Prioritas: core
-    $corePath = __DIR__ . '/../core/' . $class . '.php';
+    $corePath = __DIR__ . '/core/' . $class . '.php';
     if (file_exists($corePath)) {
         require_once $corePath;
         return;
     }
 
     # Model
-    $modelPath = __DIR__ . '/../app/models/' . strtolower($class) . '.php';
+    $modelPath = __DIR__ . '/app/models/' . strtolower($class) . '.php';
     if (file_exists($modelPath)) {
         require_once $modelPath;
         return;
     }
 
     # Controller
-    $controllerPath = __DIR__ . '/../app/controllers/' . $class . '.php';
+    $controllerPath = __DIR__ . '/app/controllers/' . $class . '.php';
     if (file_exists($controllerPath)) {
         require_once $controllerPath;
         return;
@@ -28,7 +28,7 @@ spl_autoload_register(function ($class) {
 # ================================================
 # MUAT KONFIGURASI
 # ================================================
-require_once __DIR__ . '/../config/app.php';
+require_once __DIR__ . '/config/app.php';
 
 # ================================================
 # JALANKAN ROUTER

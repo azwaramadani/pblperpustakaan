@@ -12,7 +12,7 @@ unset($_SESSION['flash_error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Rudy Ruang Study</title>
 
-    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/assets/css/styleregister.css">
+    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css">
 </head>
 
 <body class="auth-body">
@@ -21,7 +21,7 @@ unset($_SESSION['flash_error']);
 
     <section class="auth-card image-panel">
         <div class="image-overlay">
-            <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Logo Rudy" class="panel-logo">
+            <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy" class="panel-logo">
         </div>
     </section>
 

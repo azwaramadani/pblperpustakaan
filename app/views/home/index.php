@@ -6,15 +6,15 @@
   <title>Rudy Ruang Study</title>
 
   <!-- FIXED: Path asset harus via base_url -->
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/assets/css/stylehome.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css">
 </head>
 
 <body>
 
 <header class="navbar">
   <div class="logo">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoPNJ.png" alt="Logo PNJ" height="40">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Logo Rudy" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy" height="40">
   </div>
 
   <nav class="nav-menuguest">
@@ -50,7 +50,7 @@
     </div>
 
     <div class="hero-visual">
-      <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Logo Rudy">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
     </div>
   </section>
 
@@ -58,25 +58,25 @@
   <section class="fitur">
     <div class="fitur-row">
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/cepat.png" alt="Cepat">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/cepat.png" alt="Cepat">
         <h3>Cepat & Praktis</h3>
         <p>Pemesanan ruangan hanya beberapa klik.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/terintegrasi.png" alt="Terintegrasi">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/terintegrasi.png" alt="Terintegrasi">
         <h3>Terintegrasi Perpustakaan</h3>
         <p>Data ruangan langsung dari perpustakaan.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/transparan.png" alt="Fleksibel">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/transparan.png" alt="Fleksibel">
         <h3>Fleksibel & Transparan</h3>
         <p>Atur jadwal sesuai kebutuhanmu.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/mudahdigunakan.png" alt="Mudah">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/mudahdigunakan.png" alt="Mudah">
         <h3>Mudah Digunakan</h3>
         <p>Antarmuka ramah mahasiswa.</p>
       </div>
@@ -103,7 +103,7 @@
 
       <?php for ($i=0; $i<3; $i++): ?>
       <article class="card">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/contohruangan.png" alt="Ruangan Populer">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
         <div class="card-body">
           <h3>Ruangan Populer <?= $i+1 ?></h3>
           <p>Kapasitas : 6 - 12 orang</p>
@@ -135,7 +135,7 @@
 <footer class="footer">
 
   <div class="footer-brand">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Rudy">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     <p>Rudy Ruang Study - platform peminjaman ruangan study yang praktis, transparan, dan terintegrasi.</p>
   </div>
 

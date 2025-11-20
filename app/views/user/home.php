@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rudy Ruang Study</title>
 
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/assets/css/stylehome.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css">
 </head>
 
 <body>
 
 <header class="navbar">
   <div class="logo">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoPNJ.png" height="40">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
   </div>
 
   <nav class="nav-menu">
@@ -23,7 +23,7 @@
   </nav>
 
   <div class="profile">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/userlogo.png" alt="User">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
     <div class="user-name">
         <p><?= htmlspecialchars($data['user']['nama']) ?></p>
     </div>
@@ -47,7 +47,7 @@
     </div>
 
     <div class="hero-visual">
-      <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png">
     </div>
   </section>
 
@@ -57,25 +57,25 @@
   <section class="fitur">
     <div class="fitur-row">
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/cepat.png" alt="Cepat">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/cepat.png" alt="Cepat">
         <h3>Cepat & Praktis</h3>
         <p>Pemesanan ruangan hanya beberapa klik.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/terintegrasi.png" alt="Terintegrasi">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/terintegrasi.png" alt="Terintegrasi">
         <h3>Terintegrasi Perpustakaan</h3>
         <p>Data ruangan langsung dari perpustakaan.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/transparan.png" alt="Fleksibel">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/transparan.png" alt="Fleksibel">
         <h3>Fleksibel & Transparan</h3>
         <p>Atur jadwal sesuai kebutuhanmu.</p>
       </div>
 
       <div class="fitur-item">
-        <img src="<?= app_config()['base_url'] ?>/assets/image/mudahdigunakan.png" alt="Mudah">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/mudahdigunakan.png" alt="Mudah">
         <h3>Mudah Digunakan</h3>
         <p>Antarmuka ramah mahasiswa.</p>
       </div>
@@ -97,7 +97,7 @@
 <footer class="footer">
 
   <div class="footer-brand">
-    <img src="<?= app_config()['base_url'] ?>/assets/image/LogoRudy.png" alt="Rudy">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     <p>Rudy Ruang Study - platform peminjaman ruangan study yang praktis, transparan, dan terintegrasi.</p>
   </div>
 

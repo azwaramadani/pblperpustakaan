@@ -24,7 +24,7 @@ if (!function_exists('app_config')) {
             # ============================================
             # GLOBAL SETTINGS
             # ============================================
-            'base_url'     => 'http://localhost/pblperpustakaan/public',
+            'base_url'     => 'http://localhost/pblperpustakaan',
             'timezone'     => 'Asia/Jakarta',
 
             # ============================================
