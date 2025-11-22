@@ -69,10 +69,11 @@ $ruangan = $data['rooms'];
                         <a href="?route=Booking/editForm/<?= urlencode($r['booking_id']) ?>" class="btn ubah">Ubah</a>
                         <a href="?route=Booking/cancel/<?= urlencode($r['booking_id']) ?>" class="btn batal btn-cancel">Batalkan</a>
                     <?php elseif ($r['status'] == 'Selesai' && !$r['sudah_feedback']): ?>
-                        <a href="feedback.php?kode=<?= urlencode($r['kode_booking']) ?>" class="btn feedback">Beri Feedback</a>
+                        <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Beri Feedback</a>
                     <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
-                        <a href="feedback.php?kode=<?= urlencode($r['kode_booking']) ?>&lihat=true" class="btn feedback">Lihat Feedback Saya</a>
+                        <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Lihat Feedback Saya</a>
                     <?php endif; ?>
+
                 </div>
             </div>
         </div>

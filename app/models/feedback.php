@@ -20,18 +20,25 @@ class Feedback extends Model
         return $this->query($sql, [$room_id])->fetchAll();
     }
 
-    # Tambah/bikin feedback
+    // Ambil feedback berdasarkan booking (untuk form edit/cek sudah ada)
+    public function findByBooking($bookingId, $userId)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE booking_id = ? AND user_id = ? LIMIT 1";
+        return $this->query($sql, [$bookingId, $userId])->fetch();
+    }
+
+    // Simpan feedback baru
     public function create($data)
     {
-        $sql = "INSERT INTO {$this->table} (booking_id, room_id, user_id, puas, komentar, tanggal_feedback)
+        $sql = "INSERT INTO {$this->table}
+                (booking_id, user_id, room_id, puas, komentar, tanggal_feedback)
                 VALUES (?, ?, ?, ?, ?, NOW())";
         return $this->query($sql, [
             $data['booking_id'],
-            $data['room_id'],
             $data['user_id'],
+            $data['room_id'],
             $data['puas'],
-            $data['komentar'] ?? NULL,
-            $data['tanggal_feedback']
+            $data['komentar']
         ]);
     }
 
