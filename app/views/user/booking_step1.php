@@ -1,7 +1,12 @@
 <?php
-$user = $data['user'];
-$room = $data['room'];
-$err = Session::get('flash_error');
+$user = $data['user'] ?? [
+  'nama'   => Session::get('nama') ?? '',
+  'nim_nip'=> Session::get('nim_nip') ?? '',
+  'no_hp'  => Session::get('no_hp') ?? '',
+  'email'  => Session::get('email') ?? '',
+];
+$room = $data['room'] ?? [];
+$err  = Session::get('flash_error');
 Session::set('flash_error', null);
 ?>
 

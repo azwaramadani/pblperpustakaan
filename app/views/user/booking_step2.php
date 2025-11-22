@@ -1,13 +1,16 @@
 <?php
-$user    = [
-  'nama'    => Session::get('nama'),
-  'nim_nip' => Session::get('nim_nip'),
+$user    = $data['user'] ?? [
+  'nama'   => Session::get('nama') ?? '',
+  'nim_nip'=> Session::get('nim_nip') ?? '',
+  'no_hp'  => Session::get('no_hp') ?? '',
+  'email'  => Session::get('email') ?? '',
 ];
 $room    = $data['room'];
-$payload = $data['payload']; // tanggal & jam dari step1
+$payload = $data['payload'];
 $err     = Session::get('flash_error');
 Session::set('flash_error', null);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -57,7 +60,7 @@ Session::set('flash_error', null);
         <input type="hidden" name="jam_selesai" value="<?= htmlspecialchars($payload['jam_selesai']) ?>">
 
         <label>Jumlah Mahasiswa
-          <input type="number" name="jumlah_mahasiswa" min="1" value="1" required>
+          <input type="number" name="jumlah_peminjam" min="1" value="1" required>
         </label>
 
         <label>Nama penanggung jawab

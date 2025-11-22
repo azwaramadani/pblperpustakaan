@@ -4,21 +4,13 @@
 # ===============================================================
 # Berisi fungsi umum yang digunakan oleh banyak bagian aplikasi.
 # ===============================================================
+# Pastikan fungsi app_config dari config/app.php dipakai, bukan dideklarasikan ulang
+require_once __DIR__ . '/../config/app.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-# Akses konfigurasi global
-function app_config(): array
-{
-    static $cfg = null;
-
-    if ($cfg === null) {
-        $cfg = require __DIR__ . '/../config/app.php';
-        date_default_timezone_set($cfg['timezone'] ?? 'Asia/Jakarta');
-    }
-
-    return $cfg;
-}
+// ...lanjutkan isi helper lainnya (sendMail, generateBookingCode, dst)
 
 # buat mailpit
 function sendMail($to, $subject, $body) {
@@ -51,7 +43,7 @@ function sendMail($to, $subject, $body) {
 function generateBookingCode(): string
 {
     $date = date('Ymd');
-    $rand = rand(1000, 9999);
+    $rand = random_int(1000, 9999);
     return "BK-{$date}-{$rand}";
 }
 

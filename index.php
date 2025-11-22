@@ -2,6 +2,7 @@
 # ================================================
 # AUTOLOAD untuk semua class (Controller, Model, Core)
 # ================================================
+
 spl_autoload_register(function ($class) {
     # Prioritas: core
     $corePath = __DIR__ . '/core/' . $class . '.php';
@@ -29,7 +30,10 @@ spl_autoload_register(function ($class) {
 # MUAT KONFIGURASI
 # ================================================
 require_once __DIR__ . '/config/app.php';
-
+# ================================================
+# MUAT HELPER GLOBAL
+# ================================================
+require_once __DIR__ . '/core/helper.php';
 # ================================================
 # JALANKAN ROUTER
 # ================================================

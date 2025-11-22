@@ -16,7 +16,7 @@ class Booking extends Model
                 FROM {$this->table} booking
                 JOIN user u ON booking.user_id = u.user_id
                 JOIN room r ON booking.room_id = r.room_id
-                ORDER BY booking.waktu_booking DESC";
+                ORDER BY booking.jam_mulai DESC";
         return $this->query($sql)->fetchAll();
     }
 
@@ -83,26 +83,26 @@ class Booking extends Model
 
 
     # Tambah booking baru
-        public function createUserBooking($data)
+    public function createUserBooking($data)
     {
         $sql = "INSERT INTO {$this->table}
-                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_mahasiswa,
+                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
                  nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
-                 nimnip_peminjam, kode_booking, waktu_booking, status_booking)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu')";
+                 nimnip_peminjam, kode_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return $this->query($sql, [
             $data['user_id'],
             $data['room_id'],
             $data['tanggal'],
             $data['jam_mulai'],
             $data['jam_selesai'],
-            $data['jumlah_mahasiswa'],
+            $data['jumlah_peminjam'],
             $data['nama_penanggung_jawab'],
             $data['nimnip_penanggung_jawab'],
             $data['email_penanggung_jawab'],
             $data['nimnip_peminjam'],
             $data['kode_booking'],
-            $data['waktu_booking'],
+            $data['status_booking']
         ]);
     }
 
@@ -113,7 +113,7 @@ class Booking extends Model
         $sql = "SELECT COUNT(*) AS cnt
                 FROM {$this->table}
                 WHERE room_id = ?
-                  AND status_booking IN ('Menunggu','Disetujui')
+                  AND status_booking IN ('Disetujui')
                   AND tanggal = ?
                   AND NOT (jam_selesai <= ? OR jam_mulai >= ?)";
         $params = [$room_id, $tanggal, $jam_mulai, $jam_selesai];
@@ -135,7 +135,7 @@ class Booking extends Model
         $sql = "INSERT INTO {$this->table} 
                 (user_id, room_id, tanggal, jam_mulai, jam_selesai, nama_penanggung_jawab, surat_peminjaman_ruang_rapat,
                 kode_booking, waktu_booking, status_booking)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Menunggu')";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Disetujui')";
         return $this->query($sql, [
             $data['user_id'],
             $data['ruangan_id'],
