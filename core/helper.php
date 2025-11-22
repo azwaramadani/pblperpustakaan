@@ -4,6 +4,8 @@
 # ===============================================================
 # Berisi fungsi umum yang digunakan oleh banyak bagian aplikasi.
 # ===============================================================
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 # Akses konfigurasi global
 function app_config(): array
@@ -17,6 +19,33 @@ function app_config(): array
 
     return $cfg;
 }
+
+# buat mailpit
+function sendMail($to, $subject, $body) {
+    $mailConfig = require __DIR__ . '/../config/mail.php';
+
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host = $mailConfig['host'];
+        $mail->Port = $mailConfig['port'];
+        $mail->SMTPAuth = false;
+
+        $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
+        $mail->addAddress($to);
+
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+
+        return $mail->send();
+
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
 # Generate kode booking unik
 function generateBookingCode(): string

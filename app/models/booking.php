@@ -45,6 +45,30 @@ class Booking extends Model
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
+    #gethistorybyuser tapi buat cancel booking
+    public function cancelgetHistoryByUser($user_id)
+    {
+        $sql = "SELECT
+                    b.booking_id,
+                    b.kode_booking,
+                    b.tanggal,
+                    b.jam_mulai,
+                    b.jam_selesai,
+                    b.nama_penanggung_jawab,
+                    b.nimnip_penanggung_jawab,
+                    b.email_penanggung_jawab,
+                    b.nimnip_peminjam,
+                    b.status_booking,
+                    r.nama_ruangan,
+                    r.gambar_ruangan AS gambar,
+                    CASE WHEN f.booking_id IS NULL THEN 0 ELSE 1 END AS sudah_feedback
+                FROM {$this->table} b
+                JOIN room r ON b.room_id = r.room_id
+                LEFT JOIN feedback f ON f.booking_id = b.booking_id
+                WHERE b.user_id = ?
+                ORDER BY b.jam_mulai DESC";
+        return $this->query($sql, [$user_id])->fetchAll();
+    }
 
     # Detail booking
     public function detail($booking_id)
@@ -57,13 +81,15 @@ class Booking extends Model
         return $this->query($sql, [$booking_id])->fetch();
     }
 
+
     # Tambah booking baru
-    public function create($data)
+        public function createUserBooking($data)
     {
-        $sql = "INSERT INTO {$this->table} 
-                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_mahasiswa, nama_penanggung_jawab, nimnip_penanggung_jawab
-                , email_penanggung_jawab, nimnip_peminjam, kode_booking, waktu_booking, status_booking)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  NOW(), 'Menunggu')";
+        $sql = "INSERT INTO {$this->table}
+                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_mahasiswa,
+                 nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
+                 nimnip_peminjam, kode_booking, waktu_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu')";
         return $this->query($sql, [
             $data['user_id'],
             $data['room_id'],
@@ -72,14 +98,36 @@ class Booking extends Model
             $data['jam_selesai'],
             $data['jumlah_mahasiswa'],
             $data['nama_penanggung_jawab'],
-            $data['nimnim_penanggung_jawab'],
+            $data['nimnip_penanggung_jawab'],
             $data['email_penanggung_jawab'],
             $data['nimnip_peminjam'],
-            $data['waktu_booking'],
             $data['kode_booking'],
-            $data['status_booking']
+            $data['waktu_booking'],
         ]);
     }
+
+
+        // Cek bentrok booking lain di ruangan dan tanggal yang sama
+    public function hasOverlap($room_id, $tanggal, $jam_mulai, $jam_selesai, $exclude_booking_id = null)
+    {
+        $sql = "SELECT COUNT(*) AS cnt
+                FROM {$this->table}
+                WHERE room_id = ?
+                  AND status_booking IN ('Menunggu','Disetujui')
+                  AND tanggal = ?
+                  AND NOT (jam_selesai <= ? OR jam_mulai >= ?)";
+        $params = [$room_id, $tanggal, $jam_mulai, $jam_selesai];
+
+        if ($exclude_booking_id) {
+            $sql .= " AND booking_id <> ?";
+            $params[] = $exclude_booking_id;
+        }
+
+        $row = $this->query($sql, $params)->fetch();
+        return ($row['cnt'] ?? 0) > 0;
+    }
+
+
 
     # crete booking buat ruang rapat
     public function createbookingrapat($data)
@@ -112,7 +160,7 @@ class Booking extends Model
     {
         $sql = "UPDATE {$this->table}
                 SET status_booking = 'Dibatalkan'
-                WHERE booking_id = ? AND user_id = ? AND status_booking = 'Menunggu'";
+                WHERE booking_id = ? AND user_id = ? AND status_booking = 'Disetujui'";
         return $this->query($sql, [$booking_id, $user_id]);
     }
 

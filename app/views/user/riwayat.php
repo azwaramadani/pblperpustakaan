@@ -62,7 +62,7 @@ $ruangan = $data['rooms'];
                 <div class="btn-group">
                     <?php if ($r['status'] == 'Disetujui'): ?>
                         <a href="?route=Booking/editForm/<?= urlencode($r['booking_id']) ?>" class="btn ubah">Ubah</a>
-                        <a href="?route=Booking/batalbooking/" class="btn batal">Batalkan</a>
+                        <a href="?route=Booking/cancel/<?= urlencode($r['booking_id']) ?>" class="btn batal btn-cancel">Batalkan</a>
                     <?php elseif ($r['status'] == 'Selesai' && !$r['sudah_feedback']): ?>
                         <a href="feedback.php?kode=<?= urlencode($r['kode_booking']) ?>" class="btn feedback">Beri Feedback</a>
                     <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
