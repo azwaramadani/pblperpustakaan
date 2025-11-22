@@ -45,29 +45,11 @@ class Booking extends Model
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
-    #gethistorybyuser tapi buat cancel booking
-    public function cancelgetHistoryByUser($user_id)
+    #buat cancel booking
+    public function findByIdAndUser($bookingId, $userId)
     {
-        $sql = "SELECT
-                    b.booking_id,
-                    b.kode_booking,
-                    b.tanggal,
-                    b.jam_mulai,
-                    b.jam_selesai,
-                    b.nama_penanggung_jawab,
-                    b.nimnip_penanggung_jawab,
-                    b.email_penanggung_jawab,
-                    b.nimnip_peminjam,
-                    b.status_booking,
-                    r.nama_ruangan,
-                    r.gambar_ruangan AS gambar,
-                    CASE WHEN f.booking_id IS NULL THEN 0 ELSE 1 END AS sudah_feedback
-                FROM {$this->table} b
-                JOIN room r ON b.room_id = r.room_id
-                LEFT JOIN feedback f ON f.booking_id = b.booking_id
-                WHERE b.user_id = ?
-                ORDER BY b.jam_mulai DESC";
-        return $this->query($sql, [$user_id])->fetchAll();
+        $sql = "SELECT * FROM {$this->table} WHERE booking_id = ? AND user_id = ? LIMIT 1";
+        return $this->query($sql, [$bookingId, $userId])->fetch();
     }
 
     # Detail booking
@@ -148,7 +130,20 @@ class Booking extends Model
         ]);
     }
 
-    # Ubah status booking (Menunggu, Disetujui, Ditolak, Selesai)
+    #auto update status selesai
+    public function markFinishedBookings()
+    {
+        $sql = "UPDATE {$this->table}
+                SET status_booking = 'Selesai'
+                WHERE status_booking = 'Disetujui'
+                AND (
+                        tanggal < CURDATE()
+                        OR (tanggal = CURDATE() AND jam_selesai <= CURTIME())
+                    )";
+        return $this->query($sql);
+    }
+
+    # Ubah status booking (Disetujui, Ditolak, Selesai)
     public function updateStatus($booking_id, $status)
     {
         $sql = "UPDATE {$this->table} SET status = ? WHERE booking_id = ?";

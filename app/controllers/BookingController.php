@@ -114,22 +114,28 @@ Class bookingController{
     }
 
     public function cancel($bookingId)
-        {
-            Session::checkUserLogin();
-            Session::preventCache();
-            $userId = Session::get('user_id');
-            $bookingModel = new Booking();
-            
-            $booking = $bookingModel->cancelgetHistoryByUser($bookingId, $userId);
-            if (!$booking) {
-                http_response_code(404);
-                exit('Booking tidak ditemukan.');
-            }
-            if ($booking['status_booking'] == 'Disetujui') {
+    {
+        Session::checkUserLogin();
+        Session::preventCache();
+        $userId = Session::get('user_id');
+
+        $bookingModel = new Booking();
+        $booking = $bookingModel->findByIdAndUser($bookingId, $userId);
+
+        if (!$booking) {
+            http_response_code(404);
+            exit('Booking tidak ditemukan.');
+        }
+
+        if ($booking['status_booking'] === 'Disetujui') {
             $bookingModel->cancelByUser($bookingId, $userId);
             Session::set('flash_success', 'Booking berhasil dibatalkan.');
-            header('Location: ?route=User/riwayat');
-            exit;
+        } else {
+            Session::set('flash_error', 'Booking tidak bisa dibatalkan untuk status ini.');
         }
+
+        header('Location: ?route=User/riwayat');
+        exit;
     }
+
 }

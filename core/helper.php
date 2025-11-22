@@ -4,7 +4,6 @@
 # ===============================================================
 # Berisi fungsi umum yang digunakan oleh banyak bagian aplikasi.
 # ===============================================================
-# Pastikan fungsi app_config dari config/app.php dipakai, bukan dideklarasikan ulang
 require_once __DIR__ . '/../config/app.php';
 
 use PHPMailer\PHPMailer\PHPMailer;

@@ -59,6 +59,7 @@ class UserController {
 
         $userModel    = new User();
         $bookingModel = new Booking();
+        $bookingModel->markFinishedBookings();
 
         $userId = Session::get('user_id');
         $user   = $userModel->findById($userId);

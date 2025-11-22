@@ -66,10 +66,10 @@ if (!function_exists('app_config')) {
             'cancel_limit_per_day' => 2,
 
             # ============================================
-            # OPTIONAL (INFO DEVELOPER)
+            # INFO DEVELOPER
             # ============================================
             'developer' => [
-                'maintainer'  => 'Tim Pembuat RUDY',
+                'maintainer'  => 'Kelompok 4, RUDY Developers',
                 'github_repo' => 'https://github.com/azwaramadani/pblperpustakaansemester3',
             ],
         ];
