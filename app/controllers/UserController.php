@@ -6,6 +6,9 @@ class UserController {
     {
         #ini buat mastiin user harus login dulu sebelum punya hak akses user/home.php, 
         #jadi, kalo user !session, maka otomatis akan di route-kan ke Auth/login
+        #preventCache mastiin user gabisa akses lagi setelah logout
+        Session::checkUserLogin();
+        Session::preventCache();
         if (!Session::get('user_id')) {
             header("Location: ?route=Auth/login");
             exit;
@@ -31,7 +34,7 @@ class UserController {
     public function ruangan()
     {
         Session::checkUserLogin();
-
+        Session::preventCache();
         # Ambil data user dari session
         $userModel = new User();
         $user = $userModel->findById(Session::get('user_id'));
@@ -52,6 +55,7 @@ class UserController {
     public function riwayat()
     {
         Session::checkUserLogin();
+        Session::preventCache();
 
         $userModel    = new User();
         $bookingModel = new Booking();

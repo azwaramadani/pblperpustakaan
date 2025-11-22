@@ -6,6 +6,7 @@ Class bookingController{
      public function step1($roomId)
     {
         Session::checkUserLogin();
+        Session::preventCache();
 
         $roomModel = new Room();
         $room = $roomModel->findById($roomId);
@@ -22,6 +23,7 @@ Class bookingController{
     public function step2()
     {
         Session::checkUserLogin();
+        Session::preventCache();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?route=User/ruangan');
             exit;
@@ -64,6 +66,7 @@ Class bookingController{
     public function store()
     {
         Session::checkUserLogin();
+        Session::preventCache();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ?route=User/ruangan');
             exit;
@@ -118,6 +121,7 @@ Class bookingController{
     public function cancel($bookingId)
         {
             Session::checkUserLogin();
+            Session::preventCache();
             $userId = Session::get('user_id');
             $bookingModel = new Booking();
             
