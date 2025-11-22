@@ -5,7 +5,6 @@
 # Parent class untuk semua model.
 # Menyediakan koneksi PDO dan fungsi query yang siap digunakan.
 # ===============================================================
-
 class Model
 {
     protected $db;

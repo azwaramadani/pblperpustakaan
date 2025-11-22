@@ -33,6 +33,7 @@ $ruangan = $data['rooms'];
       </div>
       <div class="profile-card">
         <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+        <p><?= htmlspecialchars($data['user']['role']) ?></p>
         <p><?= htmlspecialchars($user['nim_nip']) ?></p>
         <p><?= htmlspecialchars($user['no_hp']) ?></p>
         <p><?= htmlspecialchars($user['email']) ?></p>

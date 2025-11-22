@@ -110,7 +110,6 @@ class Booking extends Model
     }
 
 
-
     # crete booking buat ruang rapat
     public function createbookingrapat($data)
     {

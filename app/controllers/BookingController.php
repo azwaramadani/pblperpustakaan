@@ -11,12 +11,23 @@ Class bookingController{
 
         $roomModel = new Room();
         $room = $roomModel->findById($roomId);
-        if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
+        if (!$room) {
+            http_response_code(404);
+            exit('Ruangan tidak ditemukan.');
+        }
 
-        $userModel = new User();
-        $user = $userModel->findById(Session::get('user_id'));
+        $userModel     = new User();
+        $feedbackModel = new Feedback();
 
-        $data = ['room' => $room, 'user' => $user];
+        $user         = $userModel->findById(Session::get('user_id'));
+        $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
+
+        $data = [
+            'room'         => $room,
+            'user'         => $user,
+            'puas_percent' => $puasPercent
+        ];
+
         require __DIR__ . '/../views/user/booking_step1.php';
     }
 
@@ -45,7 +56,7 @@ Class bookingController{
         if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
 
         $bookingModel = new Booking();
-        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
+        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])){
             Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']); exit;
         }

@@ -6,6 +6,8 @@ $user = $data['user'] ?? [
   'email'  => Session::get('email') ?? '',
 ];
 $room = $data['room'] ?? [];
+$puasPercent = $data['puas_percent'] ?? 0;
+$badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err  = Session::get('flash_error');
 Session::set('flash_error', null);
 ?>
@@ -34,7 +36,8 @@ Session::set('flash_error', null);
         <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
       </div>
       <div class="profile-card">
-        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>        
+        <p><?= htmlspecialchars($data['user']['role']) ?></p>
         <p><?= htmlspecialchars($user['nim_nip']) ?></p>
         <p><?= htmlspecialchars($user['no_hp']) ?></p>
         <p><?= htmlspecialchars($user['email']) ?></p>
@@ -50,6 +53,9 @@ Session::set('flash_error', null);
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
         <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan study') ?></p>
         <p>Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+      </div>
+      <div style="margin:12px 0;">
+        <span class="puas-badge"><?= htmlspecialchars($badgeText) ?></span>
       </div>
     </div>
 

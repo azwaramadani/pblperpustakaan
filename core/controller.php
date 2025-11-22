@@ -8,7 +8,6 @@
 # - view()      → memuat file view
 # - redirect()  → mengarahkan halaman
 # ===============================================================
-
 class Controller
 {
     # Memuat model (otomatis mencari di app/models)

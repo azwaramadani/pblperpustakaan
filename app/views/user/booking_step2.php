@@ -7,6 +7,8 @@ $user    = $data['user'] ?? [
 ];
 $room    = $data['room'];
 $payload = $data['payload'];
+$puasPercent = $data['puas_percent'] ?? 0;
+$badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err     = Session::get('flash_error');
 Session::set('flash_error', null);
 ?>
@@ -29,9 +31,19 @@ Session::set('flash_error', null);
       <a href="?route=User/ruangan" class="active">Ruangan</a>
       <a href="?route=User/riwayat">Riwayat</a>
     </nav>
-    <div class="profile">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
-      <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
+    <div class="profile-dropdown">
+      <div class="profile-trigger">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
+        <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
+      </div>
+      <div class="profile-card">
+        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>        
+        <p><?= htmlspecialchars($data['user']['role']) ?></p>
+        <p><?= htmlspecialchars($user['nim_nip']) ?></p>
+        <p><?= htmlspecialchars($user['no_hp']) ?></p>
+        <p><?= htmlspecialchars($user['email']) ?></p>
+        <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
+      </div>
     </div>
   </header>
 

@@ -43,10 +43,11 @@ class Feedback extends Model
     }
 
     # Hitung rata-rata rating ruangan
-    public function averageRating($room_id)
+    public function puasPercent($roomId): int
     {
-        $sql = "SELECT AVG(puas) AS Puas FROM {$this->table} WHERE room_id = ?";
-        $row = $this->query($sql, [$room_id])->fetch();
-        return $row ? round($row['Puas'], 1) : 0;
+        $sql = "SELECT AVG(puas) AS avg_puas FROM {$this->table} WHERE room_id = ?";
+        $row = $this->query($sql, [$roomId])->fetch();
+        $avg = ($row && $row['avg_puas'] !== null) ? (float)$row['avg_puas'] : 0;
+        return (int)round($avg * 100); // hasil 0..100
     }
 }

@@ -29,6 +29,7 @@
       </div>
       <div class="profile-card">
         <p><strong><?= htmlspecialchars($data['user']['nama']) ?></strong></p>
+        <p><?= htmlspecialchars($data['user']['role']) ?></p>
         <p><?= htmlspecialchars($data['user']['nim_nip']) ?></p>
         <p><?= htmlspecialchars($data['user']['no_hp']) ?></p>
         <p><?= htmlspecialchars($data['user']['email']) ?></p>

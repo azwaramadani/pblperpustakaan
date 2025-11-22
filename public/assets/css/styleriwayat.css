@@ -388,6 +388,16 @@ body {
     color: #0a8a42;
 }
 
+.puas-badge {
+  display: inline-block;
+  background: #e0f7f4;
+  color: #0b8e8a;
+  padding: 8px 14px;
+  border-radius: 16px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .card {
