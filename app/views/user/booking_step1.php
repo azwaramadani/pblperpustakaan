@@ -65,6 +65,7 @@ Session::set('flash_error', null);
 
     <div style="margin-top:24px;padding:24px;border:1px solid #ddd;border-radius:12px;background:#fff;">
       <h3>Pilih tanggal dan jam peminjaman</h3>
+      <p>Batas Maksimal Waktu Peminjaman adalah 15:00 WIB.</p>
       <form action="?route=Booking/step2" method="POST" style="display:grid;gap:16px;max-width:420px;">
         <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
         <label>Tanggal

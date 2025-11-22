@@ -64,6 +64,7 @@ Session::set('flash_error', null);
 
     <div style="margin-top:24px;padding:24px;border:1px solid #ddd;border-radius:12px;background:#fff;">
       <h3>Lengkapi Data Peminjaman</h3>
+      <p>Mohon Mengisi Peminjam Sesuai dengan Kapasitas Ruangan.</p>
       <form action="?route=Booking/store" method="POST" style="display:grid;gap:16px;max-width:480px;">
         <!-- Hidden bawaan step1 -->
         <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>">

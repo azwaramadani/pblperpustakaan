@@ -109,6 +109,19 @@ class Booking extends Model
         return ($row['cnt'] ?? 0) > 0;
     }
 
+    # Cek apakah NIM/NIP peminjam sudah pernah booking ruangan ini pada tanggal yang sama
+    public function memberAlreadyBooked($nimnip, $room_id, $tanggal)
+    {
+        $sql = "SELECT COUNT(*) AS cnt
+                FROM {$this->table}
+                WHERE nimnip_peminjam = ?
+                AND room_id = ?
+                AND tanggal = ?
+                AND status_booking IN ('Disetujui', 'Menunggu')";
+
+        $row = $this->query($sql, [$nimnip, $room_id, $tanggal])->fetch();
+        return ($row['cnt'] ?? 0) > 0;
+    }
 
     # crete booking buat ruang rapat
     public function createbookingrapat($data)
