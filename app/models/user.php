@@ -44,6 +44,19 @@ class User extends Model
         return $this->query($sql, [$email])->fetch();
     }
 
+    public function isNIMExists($nim_nip): bool
+    {
+        $sql = "SELECT user_id FROM {$this->table} WHERE nim_nip = ? LIMIT 1";
+        return (bool)$this->query($sql, [$nim_nip])->fetch();
+    }
+
+    public function isEmailExists($email): bool
+    {
+        $sql = "SELECT user_id FROM {$this->table} WHERE email = ? LIMIT 1";
+        return (bool)$this->query($sql, [$email])->fetch();
+    }
+
+
     # ==========================================================
     # Registrasi user mahasiswa
     #
@@ -54,15 +67,17 @@ class User extends Model
     public function registerMahasiswa($data)
     {
         $sql = "INSERT INTO {$this->table}
-                (nim_nip, nama, no_hp, email, password, bukti_aktivasi, status_akun, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, 'Menunggu', NOW())";
+                (nim_nip, jurusan, nama, no_hp, email, password, role, bukti_aktivasi, status_akun, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
 
         return $this->query($sql, [
             $data['nim_nip'],
+            $data['jurusan'],
             $data['nama'],
             $data['no_hp'],
             $data['email'],
             password_hash($data['password'], PASSWORD_DEFAULT),
+            $data['role'] ?? 'Mahasiswa',
             $data['bukti_aktivasi']
         ]);
     }
@@ -74,15 +89,17 @@ class User extends Model
     public function registerDosenOrTendik($data)
     {
         $sql = "INSERT INTO {$this->table}
-                (nim_nip, nama, no_hp, email, password, status_akun, created_at)
-                VALUES (?, ?, ?, ?, ?, 'Disetujui', NOW())";
+                (nim_nip, jurusan, nama, no_hp, email, password, role, status_akun, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
 
         return $this->query($sql, [
             $data['nim_nip'],
+            $data['jurusan'],
             $data['nama'],
             $data['no_hp'],
             $data['email'],
-            password_hash($data['password'], PASSWORD_DEFAULT)
+            password_hash($data['password'], PASSWORD_DEFAULT),
+            $data['role'] ?? 'Dosen/Tendik'
         ]);
     }
 

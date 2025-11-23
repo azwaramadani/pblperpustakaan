@@ -62,7 +62,7 @@ unset($_SESSION['flash_error']);
 
         <p class="register-text">Belum punya akun?</p>
 
-        <a href="<?= app_config()['base_url'] ?>/app/views/auth/register_user.php" class="btn-guest">Daftar</a>
+        <a href="?route=Auth/registerRole" class="btn-guest">Daftar</a>
     </section>
 </div>
 

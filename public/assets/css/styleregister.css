@@ -108,28 +108,124 @@ input {
     transform: scale(0.98);
 }
 
-.btn-Tamu {
+.select-input, select {
     width: 100%;
-    padding: 10px;
-    background-color: #19b4af; /* Hijau */
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: .2s;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1.5px solid #cfd8e3;
+    font-size: 15px;
+    font-family: inherit;
+    background: #fdfdfd;
 }
 
-.btn-tamu:hover {
-    background-color: #0b8e8a; /* Hijau gelap saat hover */
+.auth-error {
+    background: #fdecec;
+    color: #b91c1c;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 14px;
 }
-.btn-Tamu:hover {
-    background: #0b8e8a;
-}
-.btn-Tamu:active {
-    background: #0b8e8a;
-    transform: scale(0.98);
-}
+
+.select-input, select {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1.5px solid #cfd8e3;
+            font-size: 15px;
+            font-family: inherit;
+            background: #fdfdfd;
+        }
+        .auth-error {
+            background: #fdecec;
+            color: #b91c1c;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+        .auth-success {
+            background: #ecfdf3;
+            color: #15803d;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+        }
+        .modal-card {
+            background: #fff;
+            padding: 26px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-card h3 { margin: 0 0 10px; }
+        .modal-card p { margin: 0 0 16px; }
+        .modal-card .btn-login {
+            display: block;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 6px;
+        }
+
+.select-input, select {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1.5px solid #cfd8e3;
+            font-size: 15px;
+            font-family: inherit;
+            background: #fdfdfd;
+        }
+        .auth-error {
+            background: #fdecec;
+            color: #b91c1c;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+        .auth-success {
+            background: #ecfdf3;
+            color: #15803d;
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+        }
+        .modal-card {
+            background: #fff;
+            padding: 26px;
+            border-radius: 16px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .modal-card h3 { margin: 0 0 10px; }
+        .modal-card p { margin: 0 0 16px; }
+        .modal-card .btn-login {
+            display: block;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 6px;
+        }
 
 .register-text {
     text-align: center;
