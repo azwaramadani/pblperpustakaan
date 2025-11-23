@@ -228,6 +228,11 @@ class AuthController
 
         # VALIDASI LOGIN ADMIN
         if ($admin) {
+        if (!password_verify($password, $admin['password'])) {
+            Session::set("flash_error", "Password salah.");
+            header("Location: ?route=Auth/login");
+            exit;
+        }
             Session::set("admin_id", $admin['admin_id']);
             Session::set("username", $admin['username']);
             header("Location: ?route=Admin/dashboard");
@@ -248,16 +253,16 @@ class AuthController
             exit;
         }
 
-        # VALIDASI 3: Password salah
-        if (!password_verify($password, $user['password'])) {
-            Session::set("flash_error", "Password salah.");
+        # VALIDASI 4: Status belum disetujui admin
+        if ($user['status_akun'] !== 'Disetujui') {
+            Session::set("flash_error", "Akun anda diblokir karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
             exit;
         }
 
-        # VALIDASI 4: Status belum disetujui admin
-        if ($user['status_akun'] !== 'Disetujui') {
-            Session::set("flash_error", "Akun anda diblokir karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
+        # VALIDASI Password user salah
+        if (!password_verify($password, $user['password'])) {
+            Session::set("flash_error", "Password salah.");
             header("Location: ?route=Auth/login");
             exit;
         }

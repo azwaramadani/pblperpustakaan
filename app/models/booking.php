@@ -12,15 +12,34 @@ class Booking extends Model
     # Ambil semua booking (admin view)
     public function getAll()
     {
-        $sql = "SELECT booking.*, u.nama AS nama_user, r.nama_ruangan 
-                FROM {$this->table} booking
-                JOIN user u ON booking.user_id = u.user_id
-                JOIN room r ON booking.room_id = r.room_id
-                ORDER BY booking.jam_mulai DESC";
+        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
+                FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id
+                ORDER BY b.tanggal DESC, b.jam_mulai DESC";
         return $this->query($sql)->fetchAll();
     }
 
-    # Ambil riwayat booking user lengkap dengan info ruangan & feedback
+    # Urutan ruangan terbanyak dibooking
+    public function getTopRoomsByBooking(int $limit = 5)
+    {
+        $limit = (int) $limit;
+        $sql = "SELECT
+                    r.room_id,
+                    r.nama_ruangan,
+                    r.kapasitas_min,
+                    r.kapasitas_max,
+                    r.status,
+                    COUNT(b.booking_id) AS total_booking
+                FROM room r
+                LEFT JOIN {$this->table} b ON b.room_id = r.room_id
+                GROUP BY r.room_id, r.nama_ruangan, r.kapasitas_min, r.kapasitas_max, r.status
+                ORDER BY total_booking DESC, r.nama_ruangan ASC
+                LIMIT {$limit}";
+        return $this->query($sql)->fetchAll();
+    }
+
+    # Ambil riwayat booking per user
     public function getHistoryByUser($user_id)
     {
         $sql = "SELECT

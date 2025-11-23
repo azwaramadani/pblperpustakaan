@@ -297,6 +297,98 @@ body {
   box-shadow: 0 12px 20px rgba(0,0,0,0.1);
 }
 
+.panel {
+    background: #fff;
+    border: 1px solid #e2e6ee;
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 26px;
+    box-shadow: var(--shadow);
+}
+
+.panel h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.panel .subtitle {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    margin-top: 12px;
+}
+
+table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border: 1px solid #dfe3ea;
+}
+
+table.data-table th,
+table.data-table td {
+    padding: 12px 10px;
+    border: 1px solid #dfe3ea;
+    text-align: left;
+    vertical-align: top;
+}
+
+table.data-table th {
+    background: #f9fbfc;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+table.data-table tbody tr:hover {
+    background: #f5fbfa;
+}
+
+.status-chip {
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.status-disetujui {
+    color: #0d8f8c;
+    background: #e1f8f6;
+}
+
+.status-ditolak {
+    color: #c0392b;
+    background: #ffe4e1;
+}
+
+.status-selesai {
+    color: #2d6a4f;
+    background: #e6f4ea;
+}
+
+.status-dibatalkan {
+    color: #a66b00;
+    background: #fff3cd;
+}
+
+.empty-row {
+    text-align: center;
+    color: #7b8190;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
 @media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;

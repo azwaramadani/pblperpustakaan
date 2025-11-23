@@ -20,6 +20,29 @@ class Feedback extends Model
         return $this->query($sql, [$room_id])->fetchAll();
     }
 
+    # Feedback join ruangan + user + booking
+    public function getAllWithRelations()
+    {
+        $sql = "SELECT
+                    f.feedback_id,
+                    f.booking_id,
+                    f.user_id,
+                    f.room_id,
+                    f.puas,
+                    f.komentar,
+                    f.tanggal_feedback,
+                    u.nama AS nama_user,
+                    u.nim_nip,
+                    r.nama_ruangan,
+                    b.kode_booking
+                FROM {$this->table} f
+                JOIN user u ON f.user_id = u.user_id
+                JOIN room r ON f.room_id = r.room_id
+                LEFT JOIN booking b ON b.booking_id = f.booking_id
+                ORDER BY f.tanggal_feedback DESC";
+        return $this->query($sql)->fetchAll();
+    }
+
     // Ambil feedback berdasarkan booking (untuk form edit/cek sudah ada)
     public function findByBooking($bookingId, $userId)
     {

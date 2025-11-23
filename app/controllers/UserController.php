@@ -4,9 +4,6 @@ require_once __DIR__ . '/../../core/Session.php';
 class UserController {
     public function home()
     {
-        #ini buat mastiin user harus login dulu sebelum punya hak akses user/home.php, 
-        #jadi, kalo user !session, maka otomatis akan di route-kan ke Auth/login
-        #preventCache mastiin user gabisa akses lagi setelah logout
         Session::checkUserLogin();
         Session::preventCache();
         if (!Session::get('user_id')) {

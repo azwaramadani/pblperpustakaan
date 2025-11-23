@@ -46,4 +46,11 @@ class Session
             exit;
         }
     }
+
+    public static function checkAdminLogin(){
+        if (!self::get('admin_id')) {
+            header('Location: /login');
+            exit;
+        }
+    }
 }

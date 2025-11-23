@@ -16,6 +16,12 @@ class Admin extends Model
         return $this->query($sql, [$username])->fetch();
     }
 
+    public function findById($id)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE admin_id = ?";
+        return $this->query($sql, [$id])->fetch();
+    }
+
     # Ambil semua user yang belum divalidasi
     public function getPendingUsers()
     {
