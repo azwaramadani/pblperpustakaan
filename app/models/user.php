@@ -34,10 +34,8 @@ class User extends Model
         return $this->query($sql, [$nim_nip])->fetch();
     }
 
-    # ==========================================================
     # Cari user by email (opsional)
     # Bisa dipakai untuk validasi duplikasi email
-    # ==========================================================
     public function findByEmail($email)
     {
         $sql = "SELECT * FROM {$this->table} WHERE email = ? LIMIT 1";
@@ -56,14 +54,9 @@ class User extends Model
         return (bool)$this->query($sql, [$email])->fetch();
     }
 
-
-    # ==========================================================
     # Registrasi user mahasiswa
-    #
-    # Catatan:
     # - mahasiswa: wajib upload bukti aktivasi Kubaca
     # - dosen/tendik: tidak wajib → nanti buat method terpisah
-    # ==========================================================
     public function registerMahasiswa($data)
     {
         $sql = "INSERT INTO {$this->table}

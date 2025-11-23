@@ -10,7 +10,7 @@ class Admin extends Model
     protected $table = 'admin';
 
     # Login admin
-    public function login($username)
+    public function loginAdmin($username)
     {
         $sql = "SELECT * FROM {$this->table} WHERE username = ?";
         return $this->query($sql, [$username])->fetch();
