@@ -39,6 +39,18 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    #buat admin data booking di hari sistem
+    public function getBookingsByDate(string $date)
+    {
+        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan, r.gambar_ruangan
+                FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id
+                WHERE b.tanggal = ?
+                ORDER BY b.jam_mulai ASC";
+        return $this->query($sql, [$date])->fetchAll();
+    }
+
     # Ambil riwayat booking per user
     public function getHistoryByUser($user_id)
     {
@@ -177,7 +189,7 @@ class Booking extends Model
     # Ubah status booking (Disetujui, Ditolak, Selesai)
     public function updateStatus($booking_id, $status)
     {
-        $sql = "UPDATE {$this->table} SET status = ? WHERE booking_id = ?";
+        $sql = "UPDATE {$this->table} SET status_booking = ? WHERE booking_id = ?";
         return $this->query($sql, [$status, $booking_id]);
     }
 

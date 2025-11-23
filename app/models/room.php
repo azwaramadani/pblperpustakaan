@@ -14,6 +14,28 @@ class Room extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    #buat admin data ruangan
+    public function getAllWithStats()
+    {
+        $sql = "SELECT
+                    r.room_id,
+                    r.gambar_ruangan,
+                    r.nama_ruangan,
+                    r.kapasitas_min,
+                    r.kapasitas_max,
+                    r.deskripsi,
+                    r.status,
+                    COUNT(DISTINCT b.booking_id) AS total_booking,
+                    COUNT(DISTINCT f.feedback_id) AS total_feedback,
+                    COALESCE(ROUND(AVG(f.puas) * 100), 0) AS puas_percent
+                FROM room r
+                LEFT JOIN booking b ON b.room_id = r.room_id
+                LEFT JOIN feedback f ON f.room_id = r.room_id
+                GROUP BY r.room_id, r.gambar_ruangan, r.nama_ruangan, r.kapasitas_min, r.kapasitas_max, r.deskripsi, r.status
+                ORDER BY r.nama_ruangan ASC";
+        return $this->query($sql)->fetchAll();
+    }
+
     # Ambil ruangan populer (opsional kalau punya rating)
     public function getPopular()
     {

@@ -19,10 +19,11 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
-      <p>Panel Admin</p>
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
+      <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
+      <a href="?route=Admin/dataRuangan">Data Ruangan</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>
   </aside>
@@ -144,7 +145,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <th>Kode Booking</th>
                 <th>Ruangan</th>
                 <th>Nama User</th>
-                <th>Puas?</th>
+                <th>Feedback</th>
                 <th>Komentar</th>
                 <th>Tanggal Feedback</th>
               </tr>
