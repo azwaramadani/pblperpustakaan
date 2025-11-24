@@ -31,7 +31,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <div class="main-area">
     <header class="top-nav">
       <div class="nav-brand">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
         <div>
           <h2 style="margin:0;">Dashboard Admin</h2>
           <p style="margin:4px 0 0;">Ringkasan peminjaman ruangan dan feedback</p>
