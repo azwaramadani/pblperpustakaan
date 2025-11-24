@@ -61,18 +61,6 @@ Class bookingController{
             header('Location: ?route=Booking/step1/'.$payload['room_id']); exit;
         }
 
-        // VALIDASI: nimnip_peminjam tidak boleh meminjam ruangan yang sama di tanggal yang sama
-        if ($bookingModel->memberAlreadyBooked(
-                $payload['nimnip_peminjam'],
-                $payload['room_id'],
-                $payload['tanggal']
-            )) {
-
-            Session::set('flash_error', 'NIM/NIP ini sudah pernah terdaftar sebagai peminjam ruangan ini pada tanggal tersebut.');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']); 
-            exit;
-        }
-
         $userModel = new User();
         $user = $userModel->findById(Session::get('user_id'));
 
@@ -124,6 +112,18 @@ Class bookingController{
             exit;
         }
 
+        // validasi nimnip_peminjam gaboleh minjem ruangan yang sama di tanggal yang sama
+        if ($bookingModel->memberAlreadyBooked(
+                $payload['nimnip_peminjam'],
+                $payload['room_id'],
+                $payload['tanggal']
+            )) {
+
+            Session::set('flash_error', 'NIM/NIP ini sudah pernah terdaftar sebagai peminjam ruangan ini pada tanggal tersebut.');
+            header('Location: ?route=Booking/step1/'.$payload['room_id']); 
+            exit;
+        }
+        
         $payload['user_id']        = Session::get('user_id');
         $payload['status_booking'] = 'Disetujui';
         $payload['waktu_booking']  = date('Y-m-d H:i:s');

@@ -20,7 +20,7 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    # Urutan ruangan terbanyak dibooking
+    # Urutan ruangan terbanyak dibooking buat admin dashboard
     public function getTopRoomsByBooking(int $limit = 5)
     {
         $limit = (int) $limit;
@@ -148,7 +148,7 @@ class Booking extends Model
                 WHERE nimnip_peminjam = ?
                 AND room_id = ?
                 AND tanggal = ?
-                AND status_booking IN ('Disetujui', 'Menunggu')";
+                AND status_booking IN ('Disetujui', 'Selesai')";
 
         $row = $this->query($sql, [$nimnip, $room_id, $tanggal])->fetch();
         return ($row['cnt'] ?? 0) > 0;
