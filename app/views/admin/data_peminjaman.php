@@ -103,7 +103,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <input type="hidden" name="booking_id" id="bookingIdInput">
       <div class="radio-row">
         <?php
-          $options = ['Disetujui','Ditolak','Dibatalkan','Selesai'];
+          $options = ['Dibatalkan','Selesai'];
           foreach ($options as $opt):
         ?>
           <label>

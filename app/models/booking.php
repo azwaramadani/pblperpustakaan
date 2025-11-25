@@ -39,7 +39,7 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    #buat admin data booking di hari sistem
+    #buat admin data booking di hari ini atau hari sistem
     public function getBookingsByDate(string $date)
     {
         $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan, r.gambar_ruangan
