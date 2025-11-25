@@ -72,7 +72,7 @@ class Booking extends Model
                 JOIN room r ON b.room_id = r.room_id
                 LEFT JOIN feedback f ON f.booking_id = b.booking_id
                 WHERE b.user_id = ?
-                ORDER BY b.jam_mulai DESC";
+                ORDER BY b.created_at DESC";
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
