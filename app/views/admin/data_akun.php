@@ -59,67 +59,68 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           </div>
         </div>  
         <div class="table-wrap">
-            <table class="data-table">
-                    <thead>
-                        <tr>
-                        <th>Role</th>
-                        <th>Jurusan</th>
-                        <th>NIM/NIP</th>
-                        <th>Nama</th>
-                        <th>No HP</th>
-                        <th>Email</th>
-                        <th>Bukti Aktivasi</th>
-                        <th>Waktu Dibuat</th>
-                        <th>Status Akun</th>
-                        <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($users)): ?>
-                        <tr><td colspan="10" style="text-align:center;">Belum ada data user.</td></tr>
-                        <?php else: ?>
-                        <?php foreach ($users as $u): ?>
-                            <?php
-                            $img = $u['bukti_aktivasi'] ?: '';
-                            $imgUrl = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
-                            $statusKey = strtolower($u['status_akun']);
-                            ?>
-                            <tr>
-                            <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($u['no_hp'] ?? '-') ?></td>
-                            <td><?= htmlspecialchars($u['email'] ?? '-') ?></td>
-                            <td>
-                                <?php if ($imgUrl): ?>
-                                <img src="<?= $imgUrl ?>" alt="Bukti" class="img-thumb">
-                                <?php else: ?>
-                                -
-                                <?php endif; ?>
-                            </td>
-                            <td><?= $u['created_at'] ? date('d M Y H:i', strtotime($u['created_at'])) : '-' ?></td>
-                            <td>
-                                <span class="status-chip status-<?= $statusKey ?>"><?= htmlspecialchars($u['status_akun']) ?></span>
-                            </td>
-                            <td>
-                                <button class="aksi-btn js-open-modal"
-                                        data-id="<?= $u['user_id'] ?>"
-                                        data-status="<?= htmlspecialchars($u['status_akun']) ?>">
-                                Ubah Status
-                                </button>
-                                <form method="POST" action="?route=Admin/deleteUser" style="display:inline;" onsubmit="return confirm('Hapus akun ini?');">
-                                <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
-                                <button type="submit" class="aksi-btn danger">Hapus Akun</button>
-                                </form>
-                            </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                        </tbody>
-                </table>
-            </div>
-        </section>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Jurusan</th>
+              <th>NIM/NIP</th>
+              <th>Nama</th>
+              <th>No HP</th>
+              <th>Email</th>
+              <th>Bukti Aktivasi</th>
+              <th>Waktu Dibuat</th>
+              <th>Status Akun</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (empty($users)): ?>
+              <tr><td colspan="10" style="text-align:center;">Belum ada data user.</td></tr>
+            <?php else: ?>
+              <?php foreach ($users as $u): ?>
+                <?php
+                  $img = $u['bukti_aktivasi'] ?: '';
+                  $imgUrl = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
+                  $statusKey = strtolower($u['status_akun']);
+                ?>
+                <tr>
+                  <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['no_hp'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['email'] ?? '-') ?></td>
+                  <td>
+                    <?php if ($imgUrl): ?>
+                      <a href="<?= $imgUrl ?>" target="_blank" rel="noopener">
+                        <img src="<?= $imgUrl ?>" alt="Bukti" class="img-thumb">
+                      </a>
+                    <?php else: ?>
+                      -
+                    <?php endif; ?>
+                  </td>
+                  <td><?= $u['created_at'] ? date('d M Y H:i', strtotime($u['created_at'])) : '-' ?></td>
+                  <td>
+                    <span class="status-chip status-<?= $statusKey ?>"><?= htmlspecialchars($u['status_akun']) ?></span>
+                  </td>
+                  <td>
+                    <button class="aksi-btn js-open-modal"
+                            data-id="<?= $u['user_id'] ?>"
+                            data-status="<?= htmlspecialchars($u['status_akun']) ?>">
+                      Ubah Status
+                    </button>
+                    <form method="POST" action="?route=Admin/deleteUser" style="display:inline;" onsubmit="return confirm('Hapus akun ini?');">
+                      <input type="hidden" name="user_id" value="<?= $u['user_id'] ?>">
+                      <button type="submit" class="aksi-btn danger">Hapus Akun</button>
+                    </form>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
     </main>
   </div>
 </div>
