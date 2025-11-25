@@ -305,6 +305,31 @@ table.data-table tbody tr:hover {
     background: #fff3cd;
 }
 
+.aksi-btn {
+    display: inline-block;
+    margin-right: 6px;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #f7c825;
+    color: #000;
+}
+
+.aksi-btn.danger {
+    background: #ef4444;
+    color: #fff;
+}
+
+.img-thumb {
+    width: 90px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
 .empty-row {
     text-align: center;
     color: #7b8190;
@@ -445,7 +470,7 @@ table.data-table tbody tr:hover {
     background: rgba(0,0,0,0.35);
     display: none;
     align-items: center;
-    justify-content: center;
+    justify-content: center;  
     z-index: 2000;
 }
 

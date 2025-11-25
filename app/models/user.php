@@ -16,6 +16,20 @@ class User extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    // buat admin data akun user dengan urutan akun dibuat terbaru
+    public function getAllOrdered()
+    {
+        $sql = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        return $this->query($sql)->fetchAll();
+    }
+
+    //method hapus akun user di page admin data akun
+    public function deleteById($id)
+    {
+        $sql = "DELETE FROM {$this->table} WHERE user_id = ?";
+        return $this->query($sql, [$id]);
+    }
+
     # ==========================================================
     # Cari user berdasarkan ID
     # ==========================================================

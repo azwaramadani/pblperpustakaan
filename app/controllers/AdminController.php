@@ -89,4 +89,78 @@ class AdminController {
 
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
+
+    // === NEW: kelola akun user ===
+    public function dataAkun()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $adminModel = new Admin();
+        $userModel  = new User();
+
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
+        $users   = $userModel->getAllOrdered();
+
+        $success = Session::get('flash_success');
+        $error   = Session::get('flash_error');
+        Session::set('flash_success', null);
+        Session::set('flash_error', null);
+
+        require __DIR__ . '/../views/admin/data_akun.php';
+    }
+
+    public function updateUserStatus()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userId = (int)($_POST['user_id'] ?? 0);
+        $status = trim($_POST['status_akun'] ?? '');
+
+        $allowed = ['Disetujui','Ditolak'];
+        if (!$userId || !in_array($status, $allowed, true)) {
+            Session::set('flash_error', 'Data tidak valid.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userModel = new User();
+        $userModel->updateStatus($userId, $status);
+
+        Session::set('flash_success', 'Status akun berhasil diperbarui.');
+        header('Location: ?route=Admin/dataAkun');
+        exit;
+    }
+
+    public function deleteUser()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userId = (int)($_POST['user_id'] ?? 0);
+        if (!$userId) {
+            Session::set('flash_error', 'User tidak valid.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userModel = new User();
+        $userModel->deleteById($userId);
+
+        Session::set('flash_success', 'Akun berhasil dihapus.');
+        header('Location: ?route=Admin/dataAkun');
+        exit;
+    }
 }

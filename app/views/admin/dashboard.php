@@ -24,6 +24,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
       <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
       <a href="?route=Admin/dataRuangan">Data Ruangan</a>
+      <a href="?route=Admin/dataAkun">Data Akun</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>
   </aside>
