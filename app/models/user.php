@@ -7,15 +7,6 @@ class User extends Model
 {
     protected $table = 'user';
 
-    # ==========================================================
-    # Ambil semua user (untuk admin)
-    # ==========================================================
-    public function getAll()
-    {
-        $sql = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
-        return $this->query($sql)->fetchAll();
-    }
-
     // buat admin data akun user dengan urutan akun dibuat terbaru
     public function getAllOrdered()
     {
@@ -30,26 +21,21 @@ class User extends Model
         return $this->query($sql, [$id]);
     }
 
-    # ==========================================================
     # Cari user berdasarkan ID
-    # ==========================================================
     public function findById($id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE user_id = ?";
         return $this->query($sql, [$id])->fetch();
     }
 
-    # ==========================================================
-    # Cari user by NIM/NIP → untuk login
-    # ==========================================================
+    # Cari user by NIM/NIP buat login
     public function findByNIMNIP($nim_nip)
     {
         $sql = "SELECT * FROM {$this->table} WHERE nim_nip = ? LIMIT 1";
         return $this->query($sql, [$nim_nip])->fetch();
     }
-
-    # Cari user by email (opsional)
-    # Bisa dipakai untuk validasi duplikasi email
+    
+    # cari user by email Bisa dipake buat validasi duplikasi email
     public function findByEmail($email)
     {
         $sql = "SELECT * FROM {$this->table} WHERE email = ? LIMIT 1";
@@ -69,8 +55,6 @@ class User extends Model
     }
 
     # Registrasi user mahasiswa
-    # - mahasiswa: wajib upload bukti aktivasi Kubaca
-    # - dosen/tendik: tidak wajib → nanti buat method terpisah
     public function registerMahasiswa($data)
     {
         $sql = "INSERT INTO {$this->table}
@@ -89,10 +73,7 @@ class User extends Model
         ]);
     }
 
-    # ==========================================================
-    # Registrasi user Dosen / Tendik
-    # (tanpa upload bukti aktivasi)
-    # ==========================================================
+    # Registrasi user Dosen / Tendik (tanpa upload bukti aktivasi)
     public function registerDosenOrTendik($data)
     {
         $sql = "INSERT INTO {$this->table}
@@ -110,18 +91,15 @@ class User extends Model
         ]);
     }
 
-    # ==========================================================
     # Update status akun
-    # ==========================================================
     public function updateStatus($id, $status)
     {
         $sql = "UPDATE {$this->table} SET status_akun = ? WHERE user_id = ?";
         return $this->query($sql, [$status, $id]);
     }
 
-    # ==========================================================
+
     # Blokir user otomatis jika batalkan booking 2x
-    # ==========================================================
     public function blockUser($id)
     {
         $sql = "UPDATE {$this->table} SET status_akun = 'Diblokir' WHERE user_id = ?";
