@@ -123,6 +123,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           </tbody>
         </table>
       </div>
+      </section>
     </main>
   </div>
 </div>

@@ -47,7 +47,7 @@ class Booking extends Model
                 JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id
                 WHERE b.tanggal = ?
-                ORDER BY b.jam_mulai ASC";
+                ORDER BY b.created_at ASC";
         return $this->query($sql, [$date])->fetchAll();
     }
 
