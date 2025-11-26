@@ -90,7 +90,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
 
-    // === NEW: kelola akun user ===
+    // admin panel kelola akun user 
     public function dataAkun()
     {
         Session::checkAdminLogin();

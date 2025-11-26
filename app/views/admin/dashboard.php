@@ -72,7 +72,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   <tr>
                     <td><?= $i + 1 ?></td>
                     <td><?= htmlspecialchars($room['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> org</td>
+                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</td>
                     <td><?= (int) ($room['total_booking'] ?? 0) ?></td>
                   </tr>
                 <?php endforeach; ?>
