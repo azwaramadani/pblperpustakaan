@@ -1,3 +1,7 @@
+<?php
+$toprooms = $toprooms ?? [];
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,7 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rudy Ruang Study</title>
 
-  <!-- FIXED: Path asset harus via base_url -->
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css">
 </head>
 
@@ -25,7 +28,7 @@
 
   <div class="guest-login-button">
     <div class="btn-group">
-      <!-- FIX: Login via Router -->
+  
       <a href="?route=Auth/login" class="btn primary">Login</a>
     </div>
   </div>
@@ -33,8 +36,6 @@
 
 
 <main>
-
-  <!-- HERO SECTION (tidak diubah) -->
   <section class="hero">
     <div class="hero-text">
       <p class="intro">Selamat Datang di <span>Rudy</span></p>
@@ -54,7 +55,7 @@
     </div>
   </section>
 
-  <!-- FITUR SECTION -->
+  
   <section class="fitur">
     <div class="fitur-row">
       <div class="fitur-item">
@@ -92,26 +93,23 @@
         <a href="?route=Auth/login" class="btn primary modal-login">Masuk sekarang</a>
       </div>
   </div>
-  <!-- RUANG POPULER (hardcoded sementara) -->
   <section class="ruangan-section">
     <div class="section-header">
       <h2>Ruangan Populer di Rudy</h2>
       <p>Temukan ruang study favorit mahasiswa.</p>
     </div>
-
     <div class="ruangan-list">
-
-      <?php for ($i=0; $i<3; $i++): ?>
       <article class="card">
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
         <div class="card-body">
-          <h3>Ruangan Populer <?= $i+1 ?></h3>
-          <p>Kapasitas : 6 - 12 orang</p>
-          <p>Status : <span class="status">Tersedia</span></p>
+          <?php foreach ($toprooms as $rooms): ?>
+          <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
+          <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
+          <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
+          <?php endforeach; ?>
           <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
         </div>
       </article>
-      <?php endfor; ?>
 
     </div>
   </section>

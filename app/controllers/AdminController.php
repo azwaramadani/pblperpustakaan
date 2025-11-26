@@ -13,7 +13,7 @@ class AdminController {
 
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
-        $topRooms  = $bookingModel->getTopRoomsByBooking(5);
+        $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         $bookings  = $bookingModel->getAll();
         $feedbacks = $feedbackModel->getAllWithRelations();
 

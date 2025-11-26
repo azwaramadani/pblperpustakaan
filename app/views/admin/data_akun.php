@@ -64,6 +64,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <tr>
               <th>Role</th>
               <th>Jurusan</th>
+              <th>Program Studi</th>
               <th>NIM/NIP</th>
               <th>Nama</th>
               <th>No HP</th>
@@ -87,6 +88,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <tr>
                   <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['program_studi']) ?? '-'?></td>
                   <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['no_hp'] ?? '-') ?></td>
