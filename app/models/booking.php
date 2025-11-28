@@ -55,6 +55,7 @@ class Booking extends Model
     public function getHistoryByUser($user_id)
     {
         $sql = "SELECT
+                    u.nama,
                     b.booking_id,
                     b.kode_booking,
                     b.tanggal,
@@ -69,6 +70,7 @@ class Booking extends Model
                     r.gambar_ruangan AS gambar,
                     CASE WHEN f.booking_id IS NULL THEN 0 ELSE 1 END AS sudah_feedback
                 FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id
                 LEFT JOIN feedback f ON f.booking_id = b.booking_id
                 WHERE b.user_id = ?

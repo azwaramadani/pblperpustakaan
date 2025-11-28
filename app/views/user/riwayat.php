@@ -40,16 +40,14 @@ $ruangan = $data['rooms'];
   </div>
 </header>
 
-<!-- ===== Judul ===== -->
 <h2 class="title">Riwayat Peminjaman Saya</h2>
-
-<!-- ===== Konten Riwayat ===== -->
 <div class="container">
     <?php foreach ($riwayat as $r): ?>
         <div class="card">
             <div class="info">
                 <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
                 <p><strong>Kode Booking:</strong> <?= htmlspecialchars($r['kode_booking']) ?></p>
+                <p><strong>Pembuat Booking:</strong> <?= htmlspecialchars($user['nama']) ?></p>
                 <p><strong>Waktu Peminjaman:</strong> <?= htmlspecialchars($r['tanggal']) ?></p>
                 <p><strong>Jam Peminjaman:</strong> <?= htmlspecialchars($r['jam']) ?></p>
                 <p><strong>Nama Penanggung Jawab:</strong> <?= htmlspecialchars($r['penanggung']) ?></p>

@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 $error = $_SESSION['flash_error'] ?? null;
 unset($_SESSION['flash_error']);
 ?>
@@ -41,7 +40,7 @@ unset($_SESSION['flash_error']);
         <!-- FORM LOGIN -->
         <form method="POST" class="login-form" action="?route=Auth/loginProcess">
 
-            <label for="nim">NIM/NIP</label>
+            <label for="nim">Username (NIM/NIP atau Username)</label>
             <input id="nim"
                    type="text"
                    name="nim_nip"

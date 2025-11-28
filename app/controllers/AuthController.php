@@ -2,13 +2,10 @@
 require_once __DIR__ . '/../../core/Model.php';
 require_once __DIR__ . '/../../core/Session.php';
 
-
+# HALAMAN LOGIN & REGISTER USER
 class AuthController
 {
-    # =========================================================
-    # HALAMAN LOGIN & REGISTER USER
-    # URL: ?route=Auth/login
-    # =========================================================
+    #method buat redirect ke page register pilih role
     public function registerRole()
     {
         $error = Session::get('flash_error');
@@ -16,6 +13,7 @@ class AuthController
         require __DIR__ . '/../views/auth/register_pilihrole.php';
     }
 
+    #redirect ke masing-masing halaman yang dipilih (sesuai role)
     public function chooseRole()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -193,6 +191,7 @@ class AuthController
         ];
     }
 
+    #method buat redirect ke halaman login
     public function login()
     {
         require __DIR__ . '/../views/auth/login_user.php';
@@ -207,7 +206,6 @@ class AuthController
     }
 
     # PROSES LOGIN USER
-    # URL: ?route=Auth/loginProcess
     public function loginProcess()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -215,7 +213,7 @@ class AuthController
             exit;
         }
 
-        # Sanitasi input
+        #sanitasi input
         $nim_nip  = trim($_POST['nim_nip'] ?? '');
         $username = trim($_POST['nim_nip'] ?? '');
         $password = trim($_POST['password'] ?? '');
@@ -248,14 +246,14 @@ class AuthController
 
         # VALIDASI 2: Akun diblokir
         if ($user['status_akun'] === 'Diblokir') {
-            Session::set("flash_error", "Akun anda diblokir oleh sistem.");
+            Session::set("flash_error", "Akun anda diblokir, karena telah membatalkan booking 3x dalam 1 hari.");
             header("Location: ?route=Auth/login");
             exit;
         }
 
         # VALIDASI 4: Status belum disetujui admin
-        if ($user['status_akun'] !== 'Disetujui') {
-            Session::set("flash_error", "Akun anda diblokir karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
+        if ($user['status_akun'] == 'Ditolak') {
+            Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
             exit;
         }
