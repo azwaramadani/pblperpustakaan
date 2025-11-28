@@ -94,6 +94,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <thead>
               <tr>
                 <th>Kode Booking</th>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
                 <th>Nama User</th>
                 <th>NIM/NIP</th>
                 <th>Ruangan</th>
@@ -114,6 +117,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   ?>
                   <tr>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
+                    <td><?= htmlspecialchars($b['role']) ?></td>
+                    <td><?= htmlspecialchars($b['jurusan']) ?></td>
+                    <td><?= htmlspecialchars($b['program_studi']) ?></td>
                     <td><?= htmlspecialchars($b['nama_user']) ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']) ?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
@@ -143,6 +149,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <thead>
               <tr>
                 <th>Kode Booking</th>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
                 <th>Ruangan</th>
                 <th>Nama User</th>
                 <th>Feedback</th>
@@ -158,6 +167,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   <tr>
                     <td><?= htmlspecialchars($f['kode_booking'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($f['nama_ruangan']) ?></td>
+                    <td><?= htmlspecialchars($f['role']) ?></td>
+                    <td><?= htmlspecialchars($f['jurusan']) ?></td>
+                    <td><?= htmlspecialchars($f['program_studi']) ?></td>
                     <td><?= htmlspecialchars($f['nama_user']) ?> (<?= htmlspecialchars($f['nim_nip']) ?>)</td>
                     <td><?= !empty($f['puas']) ? 'Puas' : 'Tidak Puas' ?></td>
                     <td><?= nl2br(htmlspecialchars($f['komentar'] ?? '-')) ?></td>

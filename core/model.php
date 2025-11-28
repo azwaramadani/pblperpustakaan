@@ -1,9 +1,7 @@
 <?php
-# ===============================================================
 # CORE: MODEL
-# ===============================================================
-# Parent class untuk semua model.
-# Menyediakan koneksi PDO dan fungsi query yang siap digunakan.
+# Parent class buat semua file di folder models
+# koneksi PDO dan fungsi query
 # ===============================================================
 class Model
 {
@@ -20,7 +18,7 @@ class Model
         ]);
     }
 
-    # Eksekusi query (SELECT, INSERT, UPDATE, DELETE)
+    #function utama query buat semua file di folder models
     protected function query(string $sql, array $params = [])
     {
         $stmt = $this->db->prepare($sql);

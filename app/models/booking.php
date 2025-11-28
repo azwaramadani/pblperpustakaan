@@ -12,7 +12,7 @@ class Booking extends Model
     # Ambil semua booking (admin view)
     public function getAll()
     {
-        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
+        $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id
