@@ -1,9 +1,7 @@
 <?php
-# ===============================================
 # MODEL: BOOKING
-# ===============================================
-# Mengelola proses peminjaman ruangan (user & admin)
-# ===============================================
+# class inheritance dari class core/Model
+#===============================================================
 
 class Booking extends Model
 {
@@ -20,7 +18,7 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    # Urutan ruangan terbanyak dibooking buat admin dashboard
+    # Query buat nampilin urutan ruangan terbanyak yang dibooking sama user/admin buat admin dashboard atau bisa juga home/index
     public function getTopRoomsByBooking(int $limit = 9)
     {
         $limit = (int) $limit;

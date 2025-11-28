@@ -68,7 +68,7 @@ Class bookingController{
         require __DIR__ . '/../views/user/booking_step2.php';
     }
 
-    // Simpan booking
+    // Method handler buat nyimpen semua form booking dari admin ato user 
     public function store()
     {
         Session::checkUserLogin();

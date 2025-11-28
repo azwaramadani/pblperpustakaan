@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../core/Session.php';
 
 class AdminController {
+    #method handler buat dashboard admin
     public function dashboard()
     {
         Session::checkAdminLogin();
@@ -20,7 +21,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/dashboard.php';
     }
 
-    
+    #method handler buat admin kelola data bookingan user
     public function dataPeminjaman()
     {
         Session::checkAdminLogin();
@@ -42,6 +43,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_peminjaman.php';
     }
 
+    #method handler buat admin update status bookingan user
     public function updateStatus()
     {
         Session::checkAdminLogin();
@@ -70,7 +72,8 @@ class AdminController {
         exit;
     }
 
-     public function dataRuangan()
+    #method handler buat admin kelola data ruangan
+    public function dataRuangan()
     {
         Session::checkAdminLogin();
         Session::preventCache();
@@ -90,7 +93,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
 
-    // admin panel kelola akun user 
+    //method handler buat admin kelola data akun user 
     public function dataAkun()
     {
         Session::checkAdminLogin();
@@ -111,6 +114,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_akun.php';
     }
 
+    #method handler buat admin update status akun user
     public function updateUserStatus()
     {
         Session::checkAdminLogin();
@@ -139,6 +143,7 @@ class AdminController {
         exit;
     }
 
+    #method handler buat admin hapus user
     public function deleteUser()
     {
         Session::checkAdminLogin();

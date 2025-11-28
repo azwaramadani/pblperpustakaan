@@ -2,10 +2,10 @@
 require_once __DIR__ . '/../../core/Model.php';
 require_once __DIR__ . '/../../core/Session.php';
 
-# HALAMAN LOGIN & REGISTER USER
+
 class AuthController
 {
-    #method buat redirect ke page register pilih role
+    #method handler buat redirect ke page register pilih role
     public function registerRole()
     {
         $error = Session::get('flash_error');
@@ -13,7 +13,7 @@ class AuthController
         require __DIR__ . '/../views/auth/register_pilihrole.php';
     }
 
-    #redirect ke masing-masing halaman yang dipilih (sesuai role)
+    #method handler buat user di redirect ke masing-masing halaman yang dipilih (sesuai role)
     public function chooseRole()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -96,21 +96,20 @@ $toprooms = $toprooms ?? [];
   <section class="ruangan-section">
     <div class="section-header">
       <h2>Ruangan Populer di Rudy</h2>
-      <p>Temukan ruang study favorit mahasiswa.</p>
+      <p>Ruang study favorit mahasiswa!</p>
     </div>
     <div class="ruangan-list">
-      <article class="card">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
-        <div class="card-body">
-          <?php foreach ($toprooms as $rooms): ?>
-          <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
-          <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
-          <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
-          <?php endforeach; ?>
-          <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
-        </div>
-      </article>
-
+      <?php foreach ($toprooms as $rooms): ?>
+        <article class="card">
+          <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
+          <div class="card-body">
+            <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
+            <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
+            <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
+            <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
+          </div>
+        </article>
+      <?php endforeach; ?>  
     </div>
   </section>
 
