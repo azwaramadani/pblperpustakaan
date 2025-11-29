@@ -40,11 +40,11 @@ unset($_SESSION['flash_error']);
         <!-- FORM LOGIN -->
         <form method="POST" class="login-form" action="?route=Auth/loginProcess">
 
-            <label for="nim">Username (NIM/NIP atau Username)</label>
+            <label for="nim">Username (NIM/NIP atau username)</label>
             <input id="nim"
                    type="text"
                    name="nim_nip"
-                   placeholder="Masukkan NIM/NIP"
+                   placeholder="Masukkan NIM/NIP atau username"
                    autocomplete="off"
                    required>
 
