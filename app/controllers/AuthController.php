@@ -44,10 +44,12 @@ class AuthController
         $success = Session::get('flash_success');
         Session::set('flash_success', null);
         $jurusanList = $this->jurusanOptions();
+        $prodiList = $this->prodiOptions();
 
         $old = [
             'nim_nip' => '',
             'jurusan' => '',
+            'program_studi' => '',
             'nama'    => '',
             'no_hp'   => '',
             'email'   => ''
@@ -56,13 +58,14 @@ class AuthController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $old['nim_nip'] = trim($_POST['nim_nip'] ?? '');
             $old['jurusan'] = trim($_POST['jurusan'] ?? '');
+            $old['program_studi'] = trim($_POST['program_studi'] ?? '');
             $old['nama']    = trim($_POST['nama'] ?? '');
             $old['no_hp']   = trim($_POST['no_hp'] ?? '');
             $old['email']   = trim($_POST['email'] ?? '');
             $password       = $_POST['password'] ?? '';
             $confirmPassword= $_POST['confirm_password'] ?? '';
 
-            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
+            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
                 $errors[] = 'Semua kolom wajib diisi.';
             }
 
@@ -93,6 +96,7 @@ class AuthController
                     $userModel->registerMahasiswa([
                         'nim_nip'         => $old['nim_nip'],
                         'jurusan'         => $old['jurusan'],
+                        'program_studi'   => $old['program_studi'],
                         'nama'            => $old['nama'],
                         'no_hp'           => $old['no_hp'],
                         'email'           => $old['email'],
@@ -191,6 +195,53 @@ class AuthController
         ];
     }
 
+    private function prodiOptions(): array
+    {
+        return [
+                'Konstruksi Sipil',
+                'Konstruksi Gedung',
+                'Teknik Perancangan Jalan dan Jembatan',
+                'Teknik Konstruksi Gedung',
+                'Teknik Mesin',
+                'Teknik Konversi Energi',
+                'Alat Berat',
+                'Manufaktur',
+                'Teknologi Rekayasa Manufaktur (d.h. Manufaktur)',
+                'Pembangkit Tenaga Listrik',
+                'Teknologi Rekayasa Pembangkit Energi (d.h. Pembangkit Tenaga Listrik)',
+                'Teknologi Rekayasa Konversi Energi',
+                'Teknologi Rekayasa Pemeliharaan Alat Berat',
+                'Elektronika Industri',
+                'Teknik Listrik',
+                'Telekomunikasi',
+                'Instrumentasi Kontrol Industri',
+                'Teknik Otomasi Listrik Industri',
+                'Broadband Multimedia',
+                'Akuntansi',
+                'Keuangan dan Perbankan',
+                'Akuntansi Keuangan',
+                'Keuangan dan Perbankan Syariah',
+                'Manajemen Keuangan',
+                'Manajemen Pemasaran (WNBK)',
+                'Administrasi Bisnis',
+                'Administrasi Bisnis Terapan',
+                'Usaha Jasa Konvensi, Perjalanan Insentif dan Pameran /MICE',
+                'Bahasa Inggris untuk Komunikasi Bisnis dan Profesional',
+                'Penerbitan',
+                'Teknik Grafika',
+                'Desain Grafis',
+                'Teknologi Industri Cetak Kemasan',
+                'Teknologi Rekayasa Cetak Dan Grafis 3 Dimensi',
+                'Teknik Informatika',
+                'Teknik Multimedia Digital',
+                'Teknik Multimedia dan Jaringan',
+                'Teknik Komputer dan Jaringan',
+                'Magister Rekayasa Teknologi Manufaktur',
+                'Magister Teknik Elektro'
+        ];
+    }
+    
+
     #method buat redirect ke halaman login
     public function login()
     {
@@ -273,6 +324,7 @@ class AuthController
         Session::set("no_hp", $user['no_hp'] ?? '');
         Session::set("email", $user['email'] ?? '');
         Session::set("jurusan", $user['jurusan'] ?? '');
+        Session::set("program_studi", $user['program_studi'] ?? '');
         
         # Redirect user ke halaman home
         header("Location: ?route=User/home");

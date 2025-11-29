@@ -1,8 +1,9 @@
 <?php
 $errors = $errors ?? [];
 $success = $success ?? null;
-$old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
+$old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'program_studi' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
 $jurusanList = $jurusanList ?? [];
+$prodiList = $prodiList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -53,6 +54,17 @@ $jurusanList = $jurusanList ?? [];
                 <?php foreach ($jurusanList as $jurusan): ?>
                     <option value="<?= htmlspecialchars($jurusan) ?>" <?= $old['jurusan'] === $jurusan ? 'selected' : '' ?>>
                         <?= htmlspecialchars($jurusan) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <!-- buat list prodi -->
+            <label for="jurusan">Program Studi</label>
+            <select id="program_studi" name="program_studi" class="select-input" required>
+                <option value="">Pilih Program Studi</option>
+                <?php foreach ($prodiList as $prodi): ?>
+                    <option value="<?= htmlspecialchars($prodi) ?>" <?= $old['program_studi'] === $prodi ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($prodi) ?>
                     </option>
                 <?php endforeach; ?>
             </select>

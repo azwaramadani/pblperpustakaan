@@ -76,12 +76,13 @@ class User extends Model
     public function registerMahasiswa($data)
     {
         $sql = "INSERT INTO {$this->table}
-                (nim_nip, jurusan, nama, no_hp, email, password, role, bukti_aktivasi, status_akun, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
+                (nim_nip, jurusan, program_studi, nama, no_hp, email, password, role, bukti_aktivasi, status_akun, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
 
         return $this->query($sql, [
             $data['nim_nip'],
             $data['jurusan'],
+            $data['program_studi'],
             $data['nama'],
             $data['no_hp'],
             $data['email'],
