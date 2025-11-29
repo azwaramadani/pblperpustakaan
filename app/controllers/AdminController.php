@@ -17,9 +17,20 @@ class AdminController {
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
 
+        $sortDate = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate = $_GET['from_date'] ?? '';
+        $toDate = $_GET['to_date'] ?? '';
+
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         $bookings  = $bookingModel->getAll();
+        $bookings  = $bookingModel->getAllSorted($sortDate, $fromDate ?: null, $toDate ?: null);
         $feedbacks = $feedbackModel->getAllWithRelations();
+
+        $filters = [
+            'sort_date'  => $sortDate,
+            'from_date'  => $fromDate,
+            'to_date'    => $toDate,
+        ];
 
         $today = date('Y-m-d');
         $stats = [

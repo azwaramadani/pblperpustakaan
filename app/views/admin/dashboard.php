@@ -20,7 +20,6 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
-      <p>Panel Admin</p>
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
@@ -70,7 +69,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
         </div>
       </div>
 
-      <!-- Panel-panel lama tetap -->
+      <!-- Panel Ruangan -->
       <section class="panel">
         <div class="section-head">
           <div>
@@ -97,7 +96,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
                   <tr>
                     <td><?= $i + 1 ?></td>
                     <td><?= htmlspecialchars($room['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</td>
+                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> org</td>
                     <td><?= htmlspecialchars($room['status']) ?></td>
                     <td><?= (int) ($room['total_booking'] ?? 0) ?></td>
                   </tr>
@@ -108,6 +107,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
         </div>
       </section>
 
+      <!-- Panel Data Booking -->
       <section class="panel">
         <div class="section-head">
           <div>
@@ -115,6 +115,27 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
             <p class="subtitle">Semua peminjaman ruangan oleh user</p>
           </div>
         </div>
+
+        <!-- Filter/sort by date -->
+        <form class="filter-bar" method="GET" action="">
+          <!-- Pastikan route tetap ke Admin/dashboard -->
+          <input type="hidden" name="route" value="Admin/dashboard">
+          <label>Urut tanggal</label>
+          <select name="sort_date">
+            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
+
+          <label>Dari</label>
+          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
+
+          <label>Sampai</label>
+          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
+
+          <button type="submit" class="btn-filter">Terapkan</button>
+          <a class="btn-reset" href="?route=Admin/dashboard">Reset</a>
+        </form>
+
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -133,10 +154,10 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
               <?php else: ?>
                 <?php foreach ($bookings as $b): ?>
                   <?php
-                    $tanggal = $b['tanggal'] ? date('d M Y', strtotime($b['tanggal'])) : '-';
-                    $jamMulai = $b['jam_mulai'] ? date('H:i', strtotime($b['jam_mulai'])) : '-';
+                    $tanggal    = $b['tanggal'] ? date('d M Y', strtotime($b['tanggal'])) : '-';
+                    $jamMulai   = $b['jam_mulai'] ? date('H:i', strtotime($b['jam_mulai'])) : '-';
                     $jamSelesai = $b['jam_selesai'] ? date('H:i', strtotime($b['jam_selesai'])) : '-';
-                    $statusKey = strtolower($b['status_booking']);
+                    $statusKey  = strtolower($b['status_booking']);
                   ?>
                   <tr>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
@@ -157,6 +178,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
         </div>
       </section>
 
+      <!-- Panel Feedback -->
       <section class="panel">
         <div class="section-head">
           <div>

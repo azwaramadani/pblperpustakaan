@@ -18,6 +18,44 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
+
+    #function/method buat admin filtering booking berdasarkan date
+    public function getAllSorted(string $sortOrder = 'desc', ?string $fromDate = null, ?string $toDate = null)
+    {
+        // Amankan nilai sort (hanya ASC atau DESC)
+        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+
+        $where  = [];
+        $params = [];
+
+        // Filter tanggal mulai (optional)
+        if (!empty($fromDate)) {
+            $where[]  = "b.tanggal >= ?";
+            $params[] = $fromDate;
+        }
+
+        // Filter tanggal selesai (optional)
+        if (!empty($toDate)) {
+            $where[]  = "b.tanggal <= ?";
+            $params[] = $toDate;
+        }
+
+        // Build query
+        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
+                FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id";
+
+        if ($where) {
+            $sql .= " WHERE " . implode(' AND ', $where);
+        }
+
+        // Urutkan berdasarkan tanggal (ASC/DESC), lalu jam mulai
+        $sql .= " ORDER BY b.tanggal {$order}, b.jam_mulai {$order}";
+
+        return $this->query($sql, $params)->fetchAll();
+    }
+
     #buat admin dashboard hitung semua bookingan hari ini
     public function countBookingToday()
     {
