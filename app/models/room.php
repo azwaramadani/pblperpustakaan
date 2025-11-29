@@ -14,6 +14,16 @@ class Room extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    #buat admin dashboard hitung semua ruangan yang tersedia (gaada maintenance misalnya)
+    public function countActiveRooms()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM {$this->table} WHERE STATUS = 'Tersedia'";
+        $row = $this->query($sql)->fetch();
+        return (int)($row['total'] ?? 0);
+    }
+
+
+
     #buat admin data ruangan
     public function getAllWithStats()
     {

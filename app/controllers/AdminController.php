@@ -11,12 +11,23 @@ class AdminController {
         $adminModel   = new Admin();
         $bookingModel = new Booking();
         $feedbackModel= new Feedback();
+        $userModel = new User();
+        $roomModel = new Room();
 
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
+
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         $bookings  = $bookingModel->getAll();
         $feedbacks = $feedbackModel->getAllWithRelations();
+
+        $today = date('Y-m-d');
+        $stats = [
+            'user_today'        => $userModel->countRegisteredToday($today),
+            'booking_today'     => $bookingModel->countBookingToday($today),
+            'room_active'       => $roomModel->countActiverooms(),
+            'user_total'        => $userModel->countAllusers(), 
+        ];
 
         require __DIR__ . '/../views/admin/dashboard.php';
     }

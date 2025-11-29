@@ -7,6 +7,24 @@ class User extends Model
 {
     protected $table = 'user';
 
+    // buat dashboard admin hitung semua user bikin akun baru hari ini
+    public function countRegisteredToday()
+    {
+        $date = $date ?? date('Y-m-d');
+        $sql = "SELECT COUNT(*) AS Total FROM {$this->table} WHERE DATE(CREATED_AT) = ?";
+        $row = $this->query($sql, [$date])->fetch();
+        return (int)($row['total'] ?? 0);
+    }
+
+    // buat dashboard admin hitung semua akun user yang aktif
+    public function countAllusers()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM {$this->table}";
+        $row = $this->query($sql)->fetch();
+        return (int)($row['total']) ?? 0;
+    }
+
+    
     // buat admin data akun user dengan urutan akun dibuat terbaru
     public function getAllOrdered()
     {

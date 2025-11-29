@@ -3,6 +3,7 @@ $topRooms  = $topRooms ?? [];
 $bookings  = $bookings ?? [];
 $feedbacks = $feedbacks ?? [];
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +20,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
+      <p>Panel Admin</p>
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
@@ -32,6 +34,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <div class="main-area">
     <header class="top-nav">
       <div class="nav-brand">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
         <div>
           <h2 style="margin:0;">Dashboard Admin</h2>
           <p style="margin:4px 0 0;">Ringkasan peminjaman ruangan dan feedback</p>
@@ -47,6 +50,27 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     </header>
 
     <main class="content">
+      <!-- Kartu ringkasan -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
+          <p class="stat-label">User register hari ini</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-number"><?= (int)$stats['booking_today'] ?></p>
+          <p class="stat-label">Booking hari ini</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-number"><?= (int)$stats['room_active'] ?></p>
+          <p class="stat-label">Ruangan aktif hari ini</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
+          <p class="stat-label">Total user</p>
+        </div>
+      </div>
+
+      <!-- Panel-panel lama tetap -->
       <section class="panel">
         <div class="section-head">
           <div>
@@ -61,6 +85,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <th>No</th>
                 <th>Nama Ruangan</th>
                 <th>Kapasitas</th>
+                <th>Status</th>
                 <th>Total Booking</th>
               </tr>
             </thead>
@@ -72,7 +97,8 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   <tr>
                     <td><?= $i + 1 ?></td>
                     <td><?= htmlspecialchars($room['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</td>
+                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> org</td>
+                    <td><?= htmlspecialchars($room['status']) ?></td>
                     <td><?= (int) ($room['total_booking'] ?? 0) ?></td>
                   </tr>
                 <?php endforeach; ?>
@@ -94,9 +120,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <thead>
               <tr>
                 <th>Kode Booking</th>
-                <th>Role</th>
-                <th>Jurusan</th>
-                <th>Program Studi</th>
                 <th>Nama User</th>
                 <th>NIM/NIP</th>
                 <th>Ruangan</th>
@@ -117,9 +140,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   ?>
                   <tr>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
-                    <td><?= htmlspecialchars($b['role']) ?></td>
-                    <td><?= htmlspecialchars($b['jurusan']) ?></td>
-                    <td><?= htmlspecialchars($b['program_studi']) ?></td>
                     <td><?= htmlspecialchars($b['nama_user']) ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']) ?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
@@ -149,12 +169,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <thead>
               <tr>
                 <th>Kode Booking</th>
-                <th>Role</th>
-                <th>Jurusan</th>
-                <th>Program Studi</th>
                 <th>Ruangan</th>
                 <th>Nama User</th>
-                <th>Feedback</th>
+                <th>Puas?</th>
                 <th>Komentar</th>
                 <th>Tanggal Feedback</th>
               </tr>
@@ -167,9 +184,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   <tr>
                     <td><?= htmlspecialchars($f['kode_booking'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($f['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($f['role']) ?></td>
-                    <td><?= htmlspecialchars($f['jurusan']) ?></td>
-                    <td><?= htmlspecialchars($f['program_studi']) ?></td>
                     <td><?= htmlspecialchars($f['nama_user']) ?> (<?= htmlspecialchars($f['nim_nip']) ?>)</td>
                     <td><?= !empty($f['puas']) ? 'Puas' : 'Tidak Puas' ?></td>
                     <td><?= nl2br(htmlspecialchars($f['komentar'] ?? '-')) ?></td>

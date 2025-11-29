@@ -18,6 +18,17 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    #buat admin dashboard hitung semua bookingan hari ini
+    public function countBookingToday()
+    {
+        $date = $date ?? date('Y-m-d');
+        $sql = "SELECT COUNT(*) AS total FROM {$this->table} WHERE tanggal = ?";
+        $row = $this->query($sql, [$date])->fetch();
+        return (int)($row['total'] ?? 0);
+    }
+
+
+
     # Query buat nampilin urutan ruangan terbanyak yang dibooking sama user/admin buat admin dashboard atau bisa juga home/index
     public function getTopRoomsByBooking(int $limit = 9)
     {
