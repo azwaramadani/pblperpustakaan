@@ -11,7 +11,7 @@ class User extends Model
     public function countRegisteredToday()
     {
         $date = $date ?? date('Y-m-d');
-        $sql = "SELECT COUNT(*) AS Total FROM {$this->table} WHERE DATE(CREATED_AT) = ?";
+        $sql = "SELECT COUNT(*) AS total FROM {$this->table} WHERE DATE (CREATED_AT) = ?";
         $row = $this->query($sql, [$date])->fetch();
         return (int)($row['total'] ?? 0);
     }

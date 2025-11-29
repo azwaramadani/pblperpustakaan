@@ -97,7 +97,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
                   <tr>
                     <td><?= $i + 1 ?></td>
                     <td><?= htmlspecialchars($room['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> org</td>
+                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</td>
                     <td><?= htmlspecialchars($room['status']) ?></td>
                     <td><?= (int) ($room['total_booking'] ?? 0) ?></td>
                   </tr>
