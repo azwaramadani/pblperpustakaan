@@ -1,6 +1,9 @@
 <?php
-$bookings = $todayBookings ?? [];
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
+$bookings    = $bookings ?? [];
+$jurusanList = $jurusanList ?? [];
+$prodiList = $prodiList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -31,8 +34,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     <header class="top-nav">
       <div class="nav-brand">
         <div>
-          <h2 style="margin:0;">Data Peminjaman (Hari Ini)</h2>
-          <p style="margin:4px 0 0;">Peminjaman tanggal <?= date('d M Y') ?></p>
+          <h2 style="margin:0;">Data Peminjaman</h2>
         </div>
       </div>
       <div class="profile-summary top">
@@ -44,105 +46,97 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       </div>
     </header>
 
-    <main class="content">
-      <?php if (!empty($success)): ?>
-        <div class="flash success"><?= htmlspecialchars($success) ?></div>
-      <?php endif; ?>
-      <?php if (!empty($error)): ?>
-        <div class="flash error"><?= htmlspecialchars($error) ?></div>
-      <?php endif; ?>
-
-      <?php if (empty($bookings)): ?>
-        <div class="panel">
-          <p class="subtitle">Belum ada peminjaman untuk hari ini.</p>
-        </div>
-      <?php else: ?>
-        <?php foreach ($bookings as $b): ?>
-          <?php
-            $tanggal = $b['tanggal'] ? date('d M Y', strtotime($b['tanggal'])) : '-';
-            $jamMulai = $b['jam_mulai'] ? date('H:i', strtotime($b['jam_mulai'])) : '-';
-            $jamSelesai = $b['jam_selesai'] ? date('H:i', strtotime($b['jam_selesai'])) : '-';
-            $statusKey = strtolower($b['status_booking']);
-            $img = $b['gambar_ruangan'] ?: 'public/assets/image/contohruangan.png';
-            $imgUrl = preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/');
-          ?>
-          <div class="booking-card">
-            <div class="booking-info">
-              <h3><?= htmlspecialchars($b['nama_ruangan']) ?></h3>
-              <p><strong>Kode Booking:</strong> <?= htmlspecialchars($b['kode_booking']) ?></p>
-              <p><strong>Waktu Peminjaman:</strong> <?= $tanggal ?></p>
-              <p><strong>Jam Peminjaman:</strong> <?= $jamMulai ?> - <?= $jamSelesai ?></p>
-              <p><strong>Nama Penanggung Jawab:</strong> <?= htmlspecialchars($b['nama_penanggung_jawab']) ?></p>
-              <p><strong>NIM Penanggung Jawab:</strong> <?= htmlspecialchars($b['nimnip_penanggung_jawab']) ?></p>
-              <p><strong>Email Penanggung Jawab:</strong> <?= htmlspecialchars($b['email_penanggung_jawab']) ?></p>
-              <p><strong>NIM Peminjam Ruangan:</strong> <?= htmlspecialchars($b['nimnip_peminjam']) ?></p>
-              <p><strong>Status:</strong>
-                <span class="status-chip status-<?= $statusKey ?>"><?= htmlspecialchars($b['status_booking']) ?></span>
-              </p>
-            </div>
-            <div class="booking-actions">
-              <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="<?= htmlspecialchars($b['nama_ruangan']) ?>">
-              <button class="btn-round btn-ubah js-open-modal"
-                      data-id="<?= $b['booking_id'] ?>"
-                      data-status="<?= htmlspecialchars($b['status_booking']) ?>">
-                Ubah Status
-              </button>
-            </div>
+    <!-- Panel Data Booking -->
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h3>Data Booking</h3>
+            <p class="subtitle">Semua peminjaman ruangan oleh user</p>
           </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    </main>
-  </div>
-</div>
+        </div>
 
-<!-- Modal -->
-<div class="modal-backdrop" id="modalStatus">
-  <div class="modal-card">
-    <h4>Ubah Status Peminjaman</h4>
-    <form method="POST" action="?route=Admin/updateStatus" id="statusForm">
-      <input type="hidden" name="booking_id" id="bookingIdInput">
-      <div class="radio-row">
-        <?php
-          $options = ['Dibatalkan','Selesai'];
-          foreach ($options as $opt):
-        ?>
-          <label>
-            <input type="radio" name="status_booking" value="<?= $opt ?>"> <?= $opt ?>
-          </label>
-        <?php endforeach; ?>
-      </div>
-      <div class="modal-actions">
-        <button type="submit" class="btn-pill btn-save">Simpan</button>
-        <button type="button" class="btn-pill btn-cancel js-close-modal">Batal</button>
-      </div>
-    </form>
-  </div>
-</div>
+        <!-- Filter/sort by date + jurusan + prodi -->
+        <form class="filter-bar" method="GET" action="">
+          <input type="hidden" name="route" value="Admin/datapeminjaman">
 
-<script>
-  const modal = document.getElementById('modalStatus');
-  const idInput = document.getElementById('bookingIdInput');
-  const radioBtns = document.querySelectorAll('input[name="status_booking"]');
+          <label>Urut tanggal</label>
+          <select name="sort_date">
+            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
 
-  document.querySelectorAll('.js-open-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.id;
-      const status = btn.dataset.status || '';
-      idInput.value = id;
-      radioBtns.forEach(r => { r.checked = (r.value === status); });
-      modal.style.display = 'flex';
-    });
-  });
+          <label>Dari</label>
+          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
 
-  document.querySelectorAll('.js-close-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-      modal.style.display = 'none';
-    });
-  });
+          <label>Sampai</label>
+          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
 
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
-  });
-</script>
+          <label>Jurusan</label>
+          <select name="jurusan">
+            <option value="">Semua</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Program Studi</label>
+          <select name="program_studi">
+            <option value="">Semua</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <button type="submit" class="btn-filter">Terapkan</button>
+          <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
+        </form>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Kode Booking</th>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
+                <th>Nama User</th>
+                <th>NIM/NIP</th>
+                <th>Ruangan</th>
+                <th>Tanggal & Jam</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (empty($bookings)): ?>
+                <tr><td colspan="6" class="empty-row">Belum ada data booking.</td></tr>
+              <?php else: ?>
+                <?php foreach ($bookings as $b): ?>
+                  <?php
+                    $tanggal    = $b['tanggal'] ? date('d M Y', strtotime($b['tanggal'])) : '-';
+                    $jamMulai   = $b['jam_mulai'] ? date('H:i', strtotime($b['jam_mulai'])) : '-';
+                    $jamSelesai = $b['jam_selesai'] ? date('H:i', strtotime($b['jam_selesai'])) : '-';
+                    $statusKey  = strtolower($b['status_booking']);
+                  ?>
+                  <tr>
+                    <td><?= htmlspecialchars($b['kode_booking']) ?></td>
+                    <td><?= htmlspecialchars($b['role']) ?></td>
+                    <td><?= htmlspecialchars($b['jurusan']) ?></td>
+                    <td><?= htmlspecialchars($b['program_studi']) ?></td>
+                    <td><?= htmlspecialchars($b['nama_user']) ?></td>
+                    <td><?= htmlspecialchars($b['nim_nip']) ?></td>
+                    <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
+                    <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
+                    <td>
+                      <span class="status-chip status-<?= $statusKey ?>">
+                        <?= htmlspecialchars($b['status_booking']) ?>
+                      </span>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+      </section>
 </body>
 </html>

@@ -17,17 +17,6 @@ class AdminController {
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
 
-        #filter dashboard data booking
-        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
-        $fromDate   = $_GET['from_date'] ?? '';
-        $toDate     = $_GET['to_date'] ?? '';
-        $jurusanSel = $_GET['jurusan'] ?? '';
-        $prodiSel   = $_GET['program_studi'] ?? '';
-
-        #filter data feedback
-        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
-        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
-
         #ini buat card paling atas
         $today = date('Y-m-d');
         $stats = [
@@ -37,36 +26,32 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
-        #data tabel dashboard admin
+        #tabel data booking hari ini di dashboard admin, buat di acc sama admin
+        $today   = date('Y-m-d');
+        $todayBookings = $bookingModel->getBookingsByDate($today);
+
+        #filter data feedback
+        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
+        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
+        
+        #data tabel dashboard admin ruangan populer dan feedback user
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
-        $bookings  = $bookingModel->getAllSorted(
-            $sortDate, 
-            $fromDate ?: null, 
-            $toDate ?: null,
-            $jurusanSel ?: null,
-            $prodiSel ?: null);
         $feedbacks = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
         
-        $jurusanList = $this->jurusanOptions();
-        $prodiList = $this->prodiOptions();
-        
-        $filters = [
-            'sort_date'  => $sortDate,
-            'from_date'  => $fromDate,
-            'to_date'    => $toDate,
-            'jurusan'       => '',
-            'program_studi' => '',
-        ];
-
         $fbFilters = [
             'fb_sort_date'      => $fbSortDate,
             'fb_sort_feedback'  => $fbSortFeedback,
         ];
 
+        $success = Session::get('flash_success');
+        $error   = Session::get('flash_error');
+        Session::set('flash_success', null);
+        Session::set('flash_error', null);
+
         require __DIR__ . '/../views/admin/dashboard.php';
     }
 
-    #method handler buat admin kelola data bookingan user
+
     public function dataPeminjaman()
     {
         Session::checkAdminLogin();
@@ -77,8 +62,31 @@ class AdminController {
 
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
-        $today   = date('Y-m-d');
-        $todayBookings = $bookingModel->getBookingsByDate($today);
+        
+        #filter dashboard data booking
+        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate   = $_GET['from_date'] ?? '';
+        $toDate     = $_GET['to_date'] ?? '';
+        $jurusanSel = $_GET['jurusan'] ?? '';
+        $prodiSel   = $_GET['program_studi'] ?? '';
+
+        $bookings  = $bookingModel->getAllSorted(
+                     $sortDate, 
+                     $fromDate ?: null, 
+                     $toDate ?: null,
+                     $jurusanSel ?: null,
+                     $prodiSel ?: null);
+        
+        $jurusanList = $this->jurusanOptions();
+        $prodiList = $this->prodiOptions();
+
+        $filters = [
+            'sort_date'  => $sortDate,
+            'from_date'  => $fromDate,
+            'to_date'    => $toDate,
+            'jurusan'       => '',
+            'program_studi' => '',
+        ];
 
         $success = Session::get('flash_success');
         $error   = Session::get('flash_error');
