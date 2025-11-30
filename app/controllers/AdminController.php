@@ -27,17 +27,41 @@ class AdminController {
         ];
 
         #tabel data booking hari ini di dashboard admin, buat di acc sama admin
-        $today   = date('Y-m-d');
         $todayBookings = $bookingModel->getBookingsByDate($today);
 
-        #filter data feedback
-        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
-        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
+        #filter data bookingnya
+        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate   = $_GET['from_date'] ?? '';
+        $toDate     = $_GET['to_date'] ?? '';
+        $jurusanSel = $_GET['jurusan'] ?? '';
+        $prodiSel   = $_GET['program_studi'] ?? '';
+
+        $bookings  = $bookingModel->getAllSorted(
+                    $sortDate,
+                    $fromDate ?: null,
+                    $toDate ?: null,
+                    $jurusanSel ?: null,
+                    $prodiSel ?: null);
+        
+        $jurusanList = $this->jurusanOptions();
+        $prodiList = $this->prodiOptions();
+
+        #buat admin ngefilter jurusan/prodi bookingan di hari today
+        $filters = [
+            'sort_date'     => $sortDate,
+            'from_date'     => $fromDate,
+            'to_date'       => $toDate,
+            'jurusan'       => $jurusanSel,
+            'program_studi' => $prodiSel,
+        ];
         
         #data tabel dashboard admin ruangan populer dan feedback user
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
+        #filter data feedback
+        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
+        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
         $feedbacks = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
-        
+
         $fbFilters = [
             'fb_sort_date'      => $fbSortDate,
             'fb_sort_feedback'  => $fbSortFeedback,
@@ -102,9 +126,10 @@ class AdminController {
         Session::checkAdminLogin();
         Session::preventCache();
 
+        $redirect = trim($_POST['redirect'] ?? '');
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=Admin/dataPeminjaman');
-            exit;
+            $this->redirectAfterBookingUpdate($redirect);
         }
 
         $bookingId = (int)($_POST['booking_id'] ?? 0);
@@ -113,16 +138,14 @@ class AdminController {
         $allowed = ['Disetujui','Ditolak','Dibatalkan','Selesai'];
         if (!$bookingId || !in_array($status, $allowed, true)) {
             Session::set('flash_error', 'Data tidak valid.');
-            header('Location: ?route=Admin/dataPeminjaman');
-            exit;
+            $this->redirectAfterBookingUpdate($redirect);
         }
 
         $bookingModel = new Booking();
         $bookingModel->updateStatus($bookingId, $status);
 
         Session::set('flash_success', 'Status booking berhasil diperbarui.');
-        header('Location: ?route=Admin/dataPeminjaman');
-        exit;
+        $this->redirectAfterBookingUpdate($redirect);
     }
 
     #method handler buat admin kelola data ruangan
@@ -222,6 +245,15 @@ class AdminController {
         exit;
     }
 
+    #redirect helper setelah update status booking (bisa kembali ke dashboard)
+    private function redirectAfterBookingUpdate(string $redirect = ''): void
+    {
+        $allowed = ['Admin/dataPeminjaman','Admin/dashboard'];
+        $target  = in_array($redirect, $allowed, true) ? $redirect : 'Admin/dataPeminjaman';
+        header('Location: ?route=' . $target);
+        exit;
+    }
+    
     private function jurusanOptions(): array
     {
         return [

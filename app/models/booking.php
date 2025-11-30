@@ -112,13 +112,51 @@ class Booking extends Model
     #buat admin data booking di hari ini atau hari sistem
     public function getBookingsByDate(string $date)
     {
-        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan, r.gambar_ruangan
+        $sql = "SELECT
+                    b.booking_id,
+                    b.kode_booking,
+                    b.tanggal,
+                    b.jam_mulai,
+                    b.jam_selesai,
+                    b.created_at,
+                    b.status_booking,
+                    b.jumlah_peminjam,
+                    COUNT(b.nimnip_peminjam) AS total_peminjam,
+                    u.role,
+                    u.jurusan,
+                    u.program_studi,
+                    u.nama AS nama_penanggung_jawab,
+                    u.nim_nip AS nim_nip_penanggung_jawab
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
-                JOIN room r ON b.room_id = r.room_id
                 WHERE b.tanggal = ?
-                ORDER BY b.created_at ASC";
-        return $this->query($sql, [$date])->fetchAll();
+                GROUP BY
+                    b.booking_id,
+                    b.kode_booking,
+                    b.tanggal,
+                    b.jam_mulai,
+                    b.jam_selesai,
+                    b.created_at,
+                    b.status_booking,
+                    b.jumlah_peminjam,
+                    u.role,
+                    u.jurusan,
+                    u.program_studi,
+                    u.nama,
+                    u.nim_nip
+                ORDER BY b.created_at DESC";
+
+        $rows = $this->query($sql, [$date])->fetchAll();
+
+        // Jika jumlah_peminjam sudah diisi, pakai itu; kalau belum, pakai hasil COUNT()
+        foreach ($rows as &$row) {
+            $row['total_peminjam'] = $row['jumlah_peminjam'] !== null
+                ? (int)$row['jumlah_peminjam']
+                : (int)$row['total_peminjam'];
+        }
+        unset($row);
+
+        return $rows;
     }
 
     # Ambil riwayat booking per user
@@ -165,7 +203,6 @@ class Booking extends Model
                 WHERE booking.booking_id = ?";
         return $this->query($sql, [$booking_id])->fetch();
     }
-
 
     # Tambah booking baru
     public function createUserBooking($data)

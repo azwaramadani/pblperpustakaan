@@ -1,14 +1,18 @@
 <?php
-$topRooms    = $topRooms ?? [];
-$bookings    = $bookings ?? [];
-$feedbacks   = $feedbacks ?? [];
-$users       = $users ?? [];
-$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$stats       = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
-$fbFilters   = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
-$jurusanList = $jurusanList ?? [];
-$prodiList = $prodiList ?? [];
+$topRooms      = $topRooms ?? [];
+$bookings      = $bookings ?? [];
+$todayBookings = $todayBookings ?? [];
+$todayDate     = $todayDate ?? date('Y-m-d');
+$feedbacks     = $feedbacks ?? [];
+$users         = $users ?? [];
+$adminName     = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$stats         = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+$filters       = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
+$fbFilters     = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
+$jurusanList   = $jurusanList ?? [];
+$prodiList     = $prodiList ?? [];
+$success       = $success ?? null;
+$error         = $error ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +59,13 @@ $prodiList = $prodiList ?? [];
     </header>
 
     <main class="content">
+      <?php if (!empty($success)): ?>
+        <div class="flash success"><?= htmlspecialchars($success) ?></div>
+      <?php endif; ?>
+      <?php if (!empty($error)): ?>
+        <div class="flash error"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
+
       <!-- Kartu ringkasan -->
       <div class="stats-grid">
         <div class="stat-card">
@@ -74,6 +85,65 @@ $prodiList = $prodiList ?? [];
           <p class="stat-label">Total user</p>
         </div>
       </div>
+
+      <!-- Data booking khusus hari ini -->
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h3>Data Booking Hari Ini</h3>
+            <p class="subtitle">Booking yang dibuat pada <?= date('d M Y', strtotime($todayDate)) ?></p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Kode Booking</th>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
+                <th>Nama Penanggung Jawab</th>
+                <th>NIM/NIP Penanggung Jawab</th>
+                <th>Total Peminjam</th>
+                <th>Dibuat</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (empty($todayBookings)): ?>
+                <tr><td colspan="10" class="empty-row">Belum ada booking hari ini.</td></tr>
+              <?php else: ?>
+                <?php foreach ($todayBookings as $tb): ?>
+                  <?php $statusKey = strtolower($tb['status_booking']); ?>
+                  <tr>
+                    <td><?= htmlspecialchars($tb['kode_booking']) ?></td>
+                    <td><?= htmlspecialchars($tb['role']) ?></td>
+                    <td><?= htmlspecialchars($tb['jurusan']) ?></td>
+                    <td><?= htmlspecialchars($tb['program_studi']) ?></td>
+                    <td><?= htmlspecialchars($tb['nama_penanggung_jawab']) ?></td>
+                    <td><?= htmlspecialchars($tb['nim_nip_penanggung_jawab']) ?></td>
+                    <td><?= (int)$tb['total_peminjam'] ?></td>
+                    <td><?= $tb['created_at'] ? date('d M Y H:i', strtotime($tb['created_at'])) : '-' ?></td>
+                    <td>
+                      <span class="status-chip status-<?= $statusKey ?>">
+                        <?= htmlspecialchars($tb['status_booking']) ?>
+                      </span>
+                    </td>
+                    <td>
+                      <button class="aksi-btn js-open-status"
+                              data-id="<?= $tb['booking_id'] ?>"
+                              data-status="<?= htmlspecialchars($tb['status_booking']) ?>">
+                        Ubah Status
+                      </button>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <!-- Panel Ruangan -->
       <section class="panel">
@@ -112,30 +182,6 @@ $prodiList = $prodiList ?? [];
           </table>
         </div>
       </section>
-
-      
-                  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       <!-- Panel Feedback Ruangan -->
       <section class="panel">
@@ -200,5 +246,51 @@ $prodiList = $prodiList ?? [];
     </main>
   </div>
 </div>
+
+<!-- Modal ubah status booking -->
+<div class="modal-backdrop" id="modalBookingStatus">
+  <div class="modal-card">
+    <h4>Ubah Status Peminjaman</h4>
+    <form method="POST" action="?route=Admin/updateStatus" id="bookingStatusForm">
+      <input type="hidden" name="booking_id" id="bookingIdInput">
+      <input type="hidden" name="redirect" value="Admin/dashboard">
+      <div class="radio-row">
+        <label><input type="radio" name="status_booking" value="Dibatalkan"> Dibatalkan</label>
+        <label><input type="radio" name="status_booking" value="Selesai"> Selesai</label>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-pill btn-save">Simpan</button>
+        <button type="button" class="btn-pill btn-cancel js-close-status">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // JS sederhana untuk buka/tutup modal ubah status booking
+  (function() {
+    const modal = document.getElementById('modalBookingStatus');
+    const idInput = document.getElementById('bookingIdInput');
+    const radios = modal.querySelectorAll('input[name="status_booking"]');
+
+    document.querySelectorAll('.js-open-status').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const status = btn.dataset.status || '';
+        idInput.value = id;
+        radios.forEach(r => { r.checked = (r.value === status); });
+        modal.style.display = 'flex';
+      });
+    });
+
+    document.querySelectorAll('.js-close-status').forEach(btn => {
+      btn.addEventListener('click', () => modal.style.display = 'none');
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  })();
+</script>
 </body>
 </html>
