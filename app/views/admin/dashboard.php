@@ -2,8 +2,11 @@
 $topRooms  = $topRooms ?? [];
 $bookings  = $bookings ?? [];
 $feedbacks = $feedbacks ?? [];
+$users     = $users ?? [];
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+$stats     = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+$filters   = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>''];
+$fbFilters = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +23,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
+      <p>Panel Admin</p>
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
@@ -116,9 +120,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
           </div>
         </div>
 
-        <!-- Filter/sort by date -->
         <form class="filter-bar" method="GET" action="">
-          <!-- Pastikan route tetap ke Admin/dashboard -->
           <input type="hidden" name="route" value="Admin/dashboard">
           <label>Urut tanggal</label>
           <select name="sort_date">
@@ -141,6 +143,9 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
             <thead>
               <tr>
                 <th>Kode Booking</th>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
                 <th>Nama User</th>
                 <th>NIM/NIP</th>
                 <th>Ruangan</th>
@@ -161,6 +166,9 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
                   ?>
                   <tr>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
+                    <td><?= htmlspecialchars($b['role']) ?></td>
+                    <td><?= htmlspecialchars($b['jurusan']) ?></td>
+                    <td><?= htmlspecialchars($b['program_studi']) ?></td>
                     <td><?= htmlspecialchars($b['nama_user']) ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']) ?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
@@ -178,7 +186,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
         </div>
       </section>
 
-      <!-- Panel Feedback -->
+      <!-- Panel Feedback Ruangan -->
       <section class="panel">
         <div class="section-head">
           <div>
@@ -186,6 +194,27 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
             <p class="subtitle">Data join ruangan dengan feedback yang diberikan user</p>
           </div>
         </div>
+
+        <!-- Filter feedback -->
+        <form class="filter-bar" method="GET" action="">
+          <input type="hidden" name="route" value="Admin/dashboard">
+          <label>Urut tanggal</label>
+          <select name="fb_sort_date">
+            <option value="desc" <?= ($fbFilters['fb_sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($fbFilters['fb_sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
+
+          <label>Feedback</label>
+          <select name="fb_feedback">
+            <option value="all"   <?= ($fbFilters['fb_sort_feedback'] === 'all')   ? 'selected' : '' ?>>Semua</option>
+            <option value="puas"  <?= ($fbFilters['fb_sort_feedback'] === 'puas')  ? 'selected' : '' ?>>Puas</option>
+            <option value="tidak" <?= ($fbFilters['fb_sort_feedback'] === 'tidak') ? 'selected' : '' ?>>Tidak Puas</option>
+          </select>
+
+          <button type="submit" class="btn-filter">Terapkan</button>
+          <a class="btn-reset" href="?route=Admin/dashboard">Reset</a>
+        </form>
+
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -193,7 +222,7 @@ $stats = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_to
                 <th>Kode Booking</th>
                 <th>Ruangan</th>
                 <th>Nama User</th>
-                <th>Puas?</th>
+                <th>Feedback</th>
                 <th>Komentar</th>
                 <th>Tanggal Feedback</th>
               </tr>

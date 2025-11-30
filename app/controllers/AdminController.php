@@ -17,10 +17,16 @@ class AdminController {
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
 
+        #filter data booking
         $sortDate = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate = $_GET['from_date'] ?? '';
         $toDate = $_GET['to_date'] ?? '';
 
+        #filter data feedback
+        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
+        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
+
+        #ini buat card paling atas
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         $bookings  = $bookingModel->getAll();
         $bookings  = $bookingModel->getAllSorted($sortDate, $fromDate ?: null, $toDate ?: null);
@@ -30,6 +36,11 @@ class AdminController {
             'sort_date'  => $sortDate,
             'from_date'  => $fromDate,
             'to_date'    => $toDate,
+        ];
+
+        $fbFilters = [
+            'fb_sort_date'      => $fbSortDate,
+            'fb_sort_feedback'  => $fbSortFeedback,
         ];
 
         $today = date('Y-m-d');

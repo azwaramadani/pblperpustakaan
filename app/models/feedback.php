@@ -20,9 +20,23 @@ class Feedback extends Model
         return $this->query($sql, [$room_id])->fetchAll();
     }
 
-    # Feedback join ruangan + user + booking
-    public function getAllWithRelations()
+
+    # buat filter feedback dashboard admin
+    public function getAllWithFilters(string $sortDate = 'desc', string $feedbackFilter = 'all')
     {
+        // Amankan nilai sort (ASC/DESC)
+        $order = strtoupper($sortDate) === 'ASC' ? 'ASC' : 'DESC';
+
+        $where  = [];
+        $params = [];
+
+        // Filter puas: 'puas' -> puas=1, 'tidak' -> puas=0
+        if ($feedbackFilter === 'puas') {
+            $where[]  = "f.puas = 1";
+        } elseif ($feedbackFilter === 'tidak') {
+            $where[]  = "f.puas = 0";
+        }
+
         $sql = "SELECT
                     f.feedback_id,
                     f.booking_id,
@@ -31,9 +45,6 @@ class Feedback extends Model
                     f.puas,
                     f.komentar,
                     f.tanggal_feedback,
-                    u.role,
-                    u.jurusan,
-                    u.program_studi,
                     u.nama AS nama_user,
                     u.nim_nip,
                     r.nama_ruangan,
@@ -41,11 +52,25 @@ class Feedback extends Model
                 FROM {$this->table} f
                 JOIN user u ON f.user_id = u.user_id
                 JOIN room r ON f.room_id = r.room_id
-                LEFT JOIN booking b ON b.booking_id = f.booking_id
-                ORDER BY f.tanggal_feedback DESC";
-        return $this->query($sql)->fetchAll();
+                LEFT JOIN booking b ON b.booking_id = f.booking_id";
+
+        if ($where) {
+            $sql .= " WHERE " . implode(' AND ', $where);
+        }
+
+        // Urutkan berdasarkan tanggal_feedback
+        $sql .= " ORDER BY f.tanggal_feedback {$order}";
+
+        return $this->query($sql, $params)->fetchAll();
     }
 
+    // Versi lama (tanpa filter) masih bisa dipakai jika diperlukan
+    public function getAllWithRelations()
+    {
+        return $this->getAllWithFilters('desc', 'all');
+    }
+
+    
     // Ambil feedback berdasarkan booking (untuk form edit/cek sudah ada)
     public function findByBooking($bookingId, $userId)
     {

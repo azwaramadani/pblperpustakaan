@@ -7,10 +7,11 @@ class Booking extends Model
 {
     protected $table = 'booking';
 
-    # Ambil semua booking (admin view)
+    #ini jg method buat data book dashboard admin, tp buat backup ada kalo filtering error
     public function getAll()
     {
-        $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
+        $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, 
+                u.nim_nip, r.nama_ruangan
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id
@@ -19,7 +20,7 @@ class Booking extends Model
     }
 
 
-    #function/method buat admin filtering booking berdasarkan date
+    #function/method buat admin dashboard data booking filtering booking berdasarkan date
     public function getAllSorted(string $sortOrder = 'desc', ?string $fromDate = null, ?string $toDate = null)
     {
         // Amankan nilai sort (hanya ASC atau DESC)
@@ -41,7 +42,7 @@ class Booking extends Model
         }
 
         // Build query
-        $sql = "SELECT b.*, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
+        $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, u.nim_nip, r.nama_ruangan
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id";
