@@ -5,7 +5,7 @@ $feedbacks   = $feedbacks ?? [];
 $users       = $users ?? [];
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 $stats       = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>''];
+$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
 $fbFilters   = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
 $jurusanList = $jurusanList ?? [];
 $prodiList = $prodiList ?? [];

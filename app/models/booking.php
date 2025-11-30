@@ -7,7 +7,7 @@ class Booking extends Model
 {
     protected $table = 'booking';
 
-    #ini jg method buat data book dashboard admin, tp buat backup ada kalo filtering error
+    #ini jg method buat data book dashboard admin, tp buat backup aja kalo filtering/sorting error
     public function getAll()
     {
         $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, 

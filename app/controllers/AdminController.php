@@ -41,7 +41,6 @@ class AdminController {
 
         #data tabel dashboard admin
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
-        $bookings  = $bookingModel->getAll();
         $bookings  = $bookingModel->getAllSorted(
             $sortDate, 
             $fromDate ?: null, 
@@ -54,6 +53,8 @@ class AdminController {
             'sort_date'  => $sortDate,
             'from_date'  => $fromDate,
             'to_date'    => $toDate,
+            'jurusan'       => '',
+            'program_studi' => '',
         ];
 
         $fbFilters = [
