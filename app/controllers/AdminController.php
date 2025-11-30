@@ -7,6 +7,8 @@ class AdminController {
     {
         Session::checkAdminLogin();
         Session::preventCache();
+        $jurusanList = $this->jurusanOptions();
+        $prodiList = $this->prodiOptions();
 
         $adminModel   = new Admin();
         $bookingModel = new Booking();
@@ -17,20 +19,36 @@ class AdminController {
         $adminId   = Session::get('admin_id');
         $admin     = $adminModel->findById($adminId);
 
-        #filter data booking
-        $sortDate = strtolower($_GET['sort_date'] ?? 'desc');
-        $fromDate = $_GET['from_date'] ?? '';
-        $toDate = $_GET['to_date'] ?? '';
+        #filter dashboard data booking
+        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate   = $_GET['from_date'] ?? '';
+        $toDate     = $_GET['to_date'] ?? '';
+        $jurusanSel = $_GET['jurusan'] ?? '';
+        $prodiSel   = $_GET['program_studi'] ?? '';
 
         #filter data feedback
         $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
         $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
 
         #ini buat card paling atas
+        $today = date('Y-m-d');
+        $stats = [
+            'user_today'        => $userModel->countRegisteredToday($today),
+            'booking_today'     => $bookingModel->countBookingToday($today),
+            'room_active'       => $roomModel->countActiverooms(),
+            'user_total'        => $userModel->countAllusers(), 
+        ];
+
+        #data tabel dashboard admin
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         $bookings  = $bookingModel->getAll();
-        $bookings  = $bookingModel->getAllSorted($sortDate, $fromDate ?: null, $toDate ?: null);
-        $feedbacks = $feedbackModel->getAllWithRelations();
+        $bookings  = $bookingModel->getAllSorted(
+            $sortDate, 
+            $fromDate ?: null, 
+            $toDate ?: null,
+            $jurusanSel ?: null,
+            $prodiSel ?: null);
+        $feedbacks = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
 
         $filters = [
             'sort_date'  => $sortDate,
@@ -41,14 +59,6 @@ class AdminController {
         $fbFilters = [
             'fb_sort_date'      => $fbSortDate,
             'fb_sort_feedback'  => $fbSortFeedback,
-        ];
-
-        $today = date('Y-m-d');
-        $stats = [
-            'user_today'        => $userModel->countRegisteredToday($today),
-            'booking_today'     => $bookingModel->countBookingToday($today),
-            'room_active'       => $roomModel->countActiverooms(),
-            'user_total'        => $userModel->countAllusers(), 
         ];
 
         require __DIR__ . '/../views/admin/dashboard.php';
@@ -200,5 +210,64 @@ class AdminController {
         Session::set('flash_success', 'Akun berhasil dihapus.');
         header('Location: ?route=Admin/dataAkun');
         exit;
+    }
+
+    private function jurusanOptions(): array
+    {
+        return [
+            'Teknik Informatika dan Komputer',
+            'Teknik Grafika dan Penerbitan',
+            'Teknik Elektro',
+            'Teknik Mesin',
+            'Teknik Sipil',
+            'Akuntansi',
+            'Administrasi Niaga'
+        ];
+    }
+
+    private function prodiOptions(): array
+    {
+        return [
+                'Konstruksi Sipil',
+                'Konstruksi Gedung',
+                'Teknik Perancangan Jalan dan Jembatan',
+                'Teknik Konstruksi Gedung',
+                'Teknik Mesin',
+                'Teknik Konversi Energi',
+                'Alat Berat',
+                'Manufaktur',
+                'Teknologi Rekayasa Manufaktur (d.h. Manufaktur)',
+                'Pembangkit Tenaga Listrik',
+                'Teknologi Rekayasa Pembangkit Energi (d.h. Pembangkit Tenaga Listrik)',
+                'Teknologi Rekayasa Konversi Energi',
+                'Teknologi Rekayasa Pemeliharaan Alat Berat',
+                'Elektronika Industri',
+                'Teknik Listrik',
+                'Telekomunikasi',
+                'Instrumentasi Kontrol Industri',
+                'Teknik Otomasi Listrik Industri',
+                'Broadband Multimedia',
+                'Akuntansi',
+                'Keuangan dan Perbankan',
+                'Akuntansi Keuangan',
+                'Keuangan dan Perbankan Syariah',
+                'Manajemen Keuangan',
+                'Manajemen Pemasaran (WNBK)',
+                'Administrasi Bisnis',
+                'Administrasi Bisnis Terapan',
+                'Usaha Jasa Konvensi, Perjalanan Insentif dan Pameran /MICE',
+                'Bahasa Inggris untuk Komunikasi Bisnis dan Profesional',
+                'Penerbitan',
+                'Teknik Grafika',
+                'Desain Grafis',
+                'Teknologi Industri Cetak Kemasan',
+                'Teknologi Rekayasa Cetak Dan Grafis 3 Dimensi',
+                'Teknik Informatika',
+                'Teknik Multimedia Digital',
+                'Teknik Multimedia dan Jaringan',
+                'Teknik Komputer dan Jaringan',
+                'Magister Rekayasa Teknologi Manufaktur',
+                'Magister Teknik Elektro'
+        ];
     }
 }

@@ -1,12 +1,14 @@
 <?php
-$topRooms  = $topRooms ?? [];
-$bookings  = $bookings ?? [];
-$feedbacks = $feedbacks ?? [];
-$users     = $users ?? [];
-$adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$stats     = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$filters   = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>''];
-$fbFilters = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
+$topRooms    = $topRooms ?? [];
+$bookings    = $bookings ?? [];
+$feedbacks   = $feedbacks ?? [];
+$users       = $users ?? [];
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$stats       = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>''];
+$fbFilters   = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
+$jurusanList = $jurusanList ?? [];
+$prodiList = $prodiList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -120,8 +122,10 @@ $fbFilters = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
           </div>
         </div>
 
+        <!-- Filter/sort by date + jurusan + prodi -->
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dashboard">
+
           <label>Urut tanggal</label>
           <select name="sort_date">
             <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
@@ -133,6 +137,22 @@ $fbFilters = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
 
           <label>Sampai</label>
           <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
+
+          <label>Jurusan</label>
+          <select name="jurusan">
+            <option value="">Semua</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Program Studi</label>
+          <select name="program_studi">
+            <option value="">Semua</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php endforeach; ?>
+          </select>
 
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/dashboard">Reset</a>
