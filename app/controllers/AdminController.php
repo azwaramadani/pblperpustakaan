@@ -7,8 +7,6 @@ class AdminController {
     {
         Session::checkAdminLogin();
         Session::preventCache();
-        $jurusanList = $this->jurusanOptions();
-        $prodiList = $this->prodiOptions();
 
         $adminModel   = new Admin();
         $bookingModel = new Booking();
@@ -48,7 +46,10 @@ class AdminController {
             $jurusanSel ?: null,
             $prodiSel ?: null);
         $feedbacks = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
-
+        
+        $jurusanList = $this->jurusanOptions();
+        $prodiList = $this->prodiOptions();
+        
         $filters = [
             'sort_date'  => $sortDate,
             'from_date'  => $fromDate,

@@ -54,7 +54,7 @@ class Booking extends Model
         // Filter program studi
         // Catatan: jika belum ada kolom khusus program_studi, kita samakan dengan jurusan.
         if (!empty($programStudi)) {
-            $where[]  = "u.jurusan = ?";
+            $where[]  = "u.program_studi = ?";
             $params[] = $programStudi;
         }
 
@@ -66,8 +66,6 @@ class Booking extends Model
                     u.program_studi,
                     u.nama AS nama_user,
                     u.nim_nip,
-                    u.jurusan AS jurusan_user,
-                    u.jurusan AS program_studi,
                     r.nama_ruangan
                 FROM {$this->table} b
                 JOIN user u ON b.user_id = u.user_id
