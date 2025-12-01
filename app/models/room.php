@@ -22,8 +22,6 @@ class Room extends Model
         return (int)($row['total'] ?? 0);
     }
 
-
-
     #buat admin data ruangan
     public function getAllWithStats()
     {

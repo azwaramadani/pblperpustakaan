@@ -65,6 +65,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             $totalBooking = (int)($r['total_booking'] ?? 0);
             $totalFeedback= (int)($r['total_feedback'] ?? 0);
             $puasPercent  = (int)($r['puas_percent'] ?? 0);
+            $statusRuangan  = $r['status'] ?? 'Tersedia';
           ?>
           <div class="room-card">
             <div class="room-info">
@@ -74,6 +75,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               <p><strong>Jumlah peminjaman:</strong> <?= $totalBooking ?> kali</p>
               <p><strong>Tingkat kepuasan:</strong> <?= $puasPercent ?>%</p>
               <p><strong>Jumlah feedback:</strong> <?= $totalFeedback ?></p>
+              <p><strong>Status:</strong> <?= $statusRuangan ?></p>
             </div>
             <div class="room-actions">
               <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
