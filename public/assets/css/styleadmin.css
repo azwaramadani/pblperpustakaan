@@ -275,6 +275,10 @@ body {
     opacity: 0.9;
 }
 
+.stats-cardlink{
+  text-decoration: none;
+}
+
 .table-wrap {
     overflow-x: auto;
     margin-top: 12px;

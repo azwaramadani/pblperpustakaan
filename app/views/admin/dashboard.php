@@ -67,23 +67,35 @@ $error         = $error ?? null;
       <?php endif; ?>
 
       <!-- Kartu ringkasan -->
+
       <div class="stats-grid">
-        <div class="stat-card">
-          <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
-          <p class="stat-label">User register hari ini</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-number"><?= (int)$stats['booking_today'] ?></p>
-          <p class="stat-label">Booking hari ini</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-number"><?= (int)$stats['room_active'] ?></p>
-          <p class="stat-label">Ruangan aktif hari ini</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
-          <p class="stat-label">Total user</p>
-        </div>
+        <a href="?route=Admin/dataAkun" class="stats-cardlink">
+          <div class="stat-card">
+            <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
+            <p class="stat-label">User register hari ini</p>
+          </div>
+        </a>
+        
+        <a href="?route=Admin/dashboard" class="stats-cardlink">
+          <div class="stat-card">
+            <p class="stat-number"><?= (int)$stats['booking_today'] ?></p>
+            <p class="stat-label">Booking hari ini</p>
+          </div>
+        </a>
+
+        <a href="?route=Admin/dataruangan" class="stats-cardlink">
+          <div class="stat-card">
+            <p class="stat-number"><?= (int)$stats['room_active'] ?></p>
+            <p class="stat-label">Ruangan aktif hari ini</p>
+          </div>
+        </a>
+
+        <a href="?route=Admin/dataAkun" class="stats-cardlink">
+          <div class="stat-card">
+            <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
+            <p class="stat-label">Total user</p>
+          </div>
+        </a>  
       </div>
 
       <!-- Data booking khusus hari ini -->
