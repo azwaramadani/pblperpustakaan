@@ -77,7 +77,7 @@ class User extends Model
     {
         $sql = "INSERT INTO {$this->table}
                 (nim_nip, jurusan, program_studi, nama, no_hp, email, password, role, bukti_aktivasi, status_akun, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu', NOW())";
 
         return $this->query($sql, [
             $data['nim_nip'],
@@ -92,7 +92,7 @@ class User extends Model
         ]);
     }
 
-    # Registrasi user Dosen / Tendik (tanpa upload bukti aktivasi)
+    # Registrasi user Dosen / Tendik, status akunnya langsung disetujui
     public function registerDosenOrTendik($data)
     {
         $sql = "INSERT INTO {$this->table}

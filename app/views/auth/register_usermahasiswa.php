@@ -102,7 +102,7 @@ $prodiList = $prodiList ?? [];
 <div class="modal-backdrop" id="successModal">
     <div class="modal-card">
         <h3>Berhasil Membuat Akun!</h3>
-        <p>Silakan login dengan akun yang baru kamu buat.</p>
+        <p>Mohon menunggu validasi admin, agar bisa login.</p>
         <a href="?route=Auth/login" class="btn-login">Login</a>
     </div>
 </div>

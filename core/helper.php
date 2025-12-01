@@ -37,8 +37,7 @@ function sendMail($to, $subject, $body) {
     }
 }
 
-
-# Generate kode booking unik
+# method/function Generate kode booking 
 function generateBookingCode(): string
 {
     $date = date('Ymd');

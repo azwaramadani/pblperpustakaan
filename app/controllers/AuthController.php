@@ -105,7 +105,7 @@ class AuthController
                         'bukti_aktivasi'  => 'storage/uploads/bukti_aktivasi/' . $uploadName
                     ]);
 
-                    Session::set('flash_success', 'Berhasil Membuat Akun!');
+                    Session::set('flash_success', 'Berhasil Membuat Akun!, Mohon Menunggu Validasi Admin.');
                     header("Location: ?route=Auth/registerMahasiswa");
                     exit;
                 }
@@ -302,7 +302,14 @@ class AuthController
             exit;
         }
 
-        # VALIDASI 4: Status belum disetujui admin
+        # VALIDASI 4: Status masih menunggu belum divalidasi admin
+        if ($user['status_akun'] == 'Menunggu') {
+            Session::set("flash_error", " Mohon menunggu, akun anda sedang divalidasi oleh admin. Status: " . $user['status_akun']);
+            header("Location: ?route=Auth/login");
+            exit;
+        }
+
+        # VALIDASI 4: Status belum ditolak admin
         if ($user['status_akun'] == 'Ditolak') {
             Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
