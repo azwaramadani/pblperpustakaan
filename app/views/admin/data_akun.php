@@ -1,6 +1,7 @@
 <?php
-$users = $users ?? [];
-$adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$users       = $users ?? [];
+$userregist  = $userregist ?? [];
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -54,10 +55,84 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     <section class="panel">
         <div class="section-head">
           <div>
-            <h3>Data Akun User</h3>
-            <p class="subtitle">Urut dari pembuatan akun terbaru.</p>
+            <h3>Data Akun User Validasi</h3>
+            <p class="subtitle">Data Akun User yang Harus Divalidasi.</p>
           </div>
-        </div>  
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Jurusan</th>
+                <th>Program Studi</th>
+                <th>NIM/NIP</th>
+                <th>Nama</th>
+                <th>No HP</th>
+                <th>Email</th>
+                <th>Bukti Aktivasi</th>
+                <th>Waktu Dibuat</th>
+                <th>Status Akun</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php if (empty($userregist)): ?>
+                <tr><td colspan="10" style="text-align:center;">user sudah divalidasi semua.</td></tr>
+              <?php else: ?>
+                <?php foreach ($userregist as $ur): ?>
+                  <?php
+                    $img = $ur['bukti_aktivasi'] ?: '';
+                    $imgUrl = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
+                    $statusKey = strtolower($ur['status_akun']);
+                  ?>
+                  <tr>
+                    <td><?= htmlspecialchars($ur['role'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($ur['jurusan'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($ur['program_studi']) ?? '-'?></td>
+                    <td><?= htmlspecialchars($ur['nim_nip'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($ur['nama'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($ur['no_hp'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($ur['email'] ?? '-') ?></td>
+                    <td>
+                      <?php if ($imgUrl): ?>
+                        <a href="<?= $imgUrl ?>" target="_blank" rel="noopener">
+                          <img src="<?= $imgUrl ?>" alt="Bukti" class="img-thumb">
+                        </a>
+                      <?php else: ?>
+                        -
+                      <?php endif; ?>
+                    </td>
+                    <td><?= $ur['created_at'] ? date('d M Y H:i', strtotime($ur['created_at'])) : '-' ?></td>
+                    <td>
+                      <span class="status-chip status-<?= $statusKey ?>"><?= htmlspecialchars($ur['status_akun']) ?></span>
+                    </td>
+                    <td>
+                      <button class="aksi-btn js-open-modal"
+                              data-id="<?= $ur['user_id'] ?>"
+                              data-status="<?= htmlspecialchars($ur['status_akun']) ?>">
+                        Ubah Status
+                      </button>
+                      <form method="POST" action="?route=Admin/deleteUser" style="display:inline;" onsubmit="return confirm('Hapus akun ini?');">
+                        <input type="hidden" name="user_id" value="<?= $ur['user_id'] ?>">
+                        <button type="submit" class="aksi-btn danger">Hapus Akun</button>
+                      </form>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
+    </section>
+  
+    <section class="panel">
+        <div class="section-head">
+          <div>
+            <h3>Data Semua Akun User</h3>
+            <p class="subtitle">Data Semua Akun User.</p>
+          </div>
+        </div>
         <div class="table-wrap">
         <table class="data-table">
           <thead>

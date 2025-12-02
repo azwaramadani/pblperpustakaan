@@ -178,9 +178,11 @@ class AdminController {
         $adminModel = new Admin();
         $userModel  = new User();
 
-        $adminId = Session::get('admin_id');
-        $admin   = $adminModel->findById($adminId);
-        $users   = $userModel->getAllOrdered();
+        $adminId    = Session::get('admin_id');
+        $admin      = $adminModel->findById($adminId);
+        $userregist = $userModel->userMenungguandDitolak();
+        $users      = $userModel->usergetAllOrdered();
+        
 
         $success = Session::get('flash_success');
         $error   = Session::get('flash_error');

@@ -24,11 +24,15 @@ class User extends Model
         return (int)($row['total']) ?? 0;
     }
 
-    
-    // buat admin data akun user dengan urutan akun dibuat terbaru
-    public function getAllOrdered()
+    public function userMenungguandDitolak()
     {
-        $sql = "SELECT * FROM {$this->table} ORDER BY created_at DESC";
+        $sql = "SELECT * FROM {$this->table} WHERE status_akun IN('Ditolak', 'Menunggu') ORDER BY created_at DESC";
+    }
+
+    // buat admin data akun user dengan urutan akun dibuat terbaru
+    public function usergetAllOrdered()
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE status_akun = 'Disetujui' ORDER BY created_at DESC";
         return $this->query($sql)->fetchAll();
     }
 
