@@ -27,7 +27,7 @@ class Booking extends Model
         ?string $role   = null,
         ?string $jurusan = null,
         ?string $programStudi = null,
-        int $limit = 15,
+        int $limit = 10,
         int $page = 1
     ): array {
         $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';

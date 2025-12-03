@@ -97,7 +97,7 @@ class User extends Model
     }
 
     # Registrasi user Dosen / Tendik, status akunnya langsung disetujui
-    public function registerDosenOrTendik($data)
+    public function registerDosen($data)
     {
         $sql = "INSERT INTO {$this->table}
                 (nim_nip, jurusan, nama, no_hp, email, password, role, status_akun, created_at)
@@ -110,7 +110,7 @@ class User extends Model
             $data['no_hp'],
             $data['email'],
             password_hash($data['password'], PASSWORD_DEFAULT),
-            $data['role'] ?? 'Dosen/Tendik'
+            $data['role'] ?? 'Dosen'
         ]);
     }
 

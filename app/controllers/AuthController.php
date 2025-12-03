@@ -162,14 +162,14 @@ class AuthController
             }
 
             if (empty($errors)) {
-                $userModel->registerDosenOrTendik([
+                $userModel->registerDosen([
                     'nim_nip'  => $old['nim_nip'],
                     'jurusan'  => $old['jurusan'],
                     'nama'     => $old['nama'],
                     'no_hp'    => $old['no_hp'],
                     'email'    => $old['email'],
                     'password' => $password,
-                    'role'     => 'Dosen/Tendik'
+                    'role'     => 'Dosen'
                 ]);
 
                 Session::set('flash_success', 'Berhasil Membuat Akun!');

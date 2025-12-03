@@ -136,9 +136,10 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <p class="subtitle">Booking hari ini, <?= date('d M Y', strtotime($todayDate)) ?></p>
           </div>
         </div>
+
         <!-- Filter/sort by date + jurusan + prodi -->
         <form class="filter-bar" method="GET" action="">
-          <input type="hidden" name="route" value="Admin/datapeminjaman">
+          <input type="hidden" name="route" value="Admin/dashboard">
 
           <label>Urut tanggal</label>
           <select name="sort_date">
@@ -169,7 +170,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </select>
 
           <button type="submit" class="btn-filter">Terapkan</button>
-          <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
+          <a class="btn-reset" href="?route=Admin/dashboard">Reset</a>
         </form>
 
         <div class="table-wrap">

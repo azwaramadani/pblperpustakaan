@@ -1,7 +1,8 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
+$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'jurusan'=>'', 'program_studi'=>''];
 $bookings    = $bookings ?? [];
+$roleList    = $roleList ?? [];
 $jurusanList = $jurusanList ?? [];
 $prodiList   = $prodiList ?? [];
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
@@ -101,6 +102,14 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <label>Sampai</label>
           <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
 
+          <label>Role</label>
+          <select name="role">
+            <option value="">Semua</option>
+            <?php foreach ($roleList as $rl): ?>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
           <label>Jurusan</label>
           <select name="jurusan">
             <option value="">Semua</option>
@@ -170,7 +179,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </tbody>
           </table>
         </div>
-        
+
         <!-- Kontrol pagination -->
         <div class="pagination-bar">
           <div class="pagination-info">
