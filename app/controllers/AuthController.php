@@ -178,9 +178,74 @@ class AuthController
             }
         }
 
-        require __DIR__ . '/../views/auth/register_userdosentendik.php';
+        require __DIR__ . '/../views/auth/register_userdosen.php';
     }
 
+    public function registerTendik()
+    {
+        $errors = [];
+        $success = Session::get('flash_success');
+        Session::set('flash_success', null);
+        $unitList = $this->unitOptions();
+
+        $old = [
+            'nim_nip' => '',
+            'unit' => '',
+            'nama'    => '',
+            'no_hp'   => '',
+            'email'   => ''
+        ];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $old['nim_nip'] = trim($_POST['nim_nip'] ?? '');
+            $old['unit']    = trim($_POST['unit'] ?? '');
+            $old['nama']    = trim($_POST['nama'] ?? '');
+            $old['no_hp']   = trim($_POST['no_hp'] ?? '');
+            $old['email']   = trim($_POST['email'] ?? '');
+            $password       = $_POST['password'] ?? '';
+            $confirmPassword= $_POST['confirm_password'] ?? '';
+
+            if ($old['nim_nip'] === '' || $old['unit'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
+                $errors[] = 'Semua kolom wajib diisi.';
+            }
+
+            if ($old['email'] && !filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
+                $errors[] = 'Format email tidak valid.';
+            }
+
+            if ($password !== $confirmPassword) {
+                $errors[] = 'Konfirmasi password tidak sesuai.';
+            }
+
+            $userModel = new User();
+
+            if ($userModel->isNIMExists($old['nim_nip'])) {
+                $errors[] = 'NIM/NIP sudah terdaftar.';
+            }
+
+            if ($userModel->isEmailExists($old['email'])) {
+                $errors[] = 'Email sudah terdaftar.';
+            }
+
+            if (empty($errors)) {
+                $userModel->registerTendik([
+                    'nim_nip'  => $old['nim_nip'],
+                    'unit'  => $old['jurusan'],
+                    'nama'     => $old['nama'],
+                    'no_hp'    => $old['no_hp'],
+                    'email'    => $old['email'],
+                    'password' => $password,
+                    'role'     => 'Tenaga Kependidikan'
+                ]);
+
+                Session::set('flash_success', 'Berhasil Membuat Akun!');
+                header("Location: ?route=Auth/registerTendik");
+                exit;
+            }
+        }
+
+        require __DIR__ . '/../views/auth/register_usertendik.php';
+    }
 
     private function jurusanOptions(): array
     {
@@ -192,6 +257,18 @@ class AuthController
             'Teknik Sipil',
             'Akuntansi',
             'Administrasi Niaga'
+        ];
+    }
+
+    private function unitOptions() : array
+    {
+        return[
+            'Perpustakaan',
+            'Teknologi Informasi dan Komunikasi',
+            'Rekayasa Teknologi dan Produk Unggulan',
+            'Perawatan dan Perbaikan',
+            'Pengembangan Karier dan Kewirausahaan',
+            'Layanan Uji Kompetensi'
         ];
     }
 

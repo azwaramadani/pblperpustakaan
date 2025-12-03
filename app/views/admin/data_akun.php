@@ -163,7 +163,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <tr>
                   <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
-                  <td><?= htmlspecialchars($u['program_studi']) ?? '-'?></td>
+                  <td><?= htmlspecialchars($u['program_studi'] ?? '-')?></td>
                   <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['no_hp'] ?? '-') ?></td>

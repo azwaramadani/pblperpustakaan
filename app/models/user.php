@@ -124,7 +124,6 @@ class User extends Model
             $data['role'] ?? 'Tenaga Kependidikan',
             $data['nim_nip'],
             $data['unit'],
-            $data['program_studi'] ?? null,
             $data['nama'],
             $data['no_hp'],
             $data['email'],
