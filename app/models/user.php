@@ -96,21 +96,39 @@ class User extends Model
         ]);
     }
 
-    # Registrasi user Dosen / Tendik, status akunnya langsung disetujui
+    # Registrasi user Dosen status akunnya langsung disetujui
     public function registerDosen($data)
     {
         $sql = "INSERT INTO {$this->table}
-                (nim_nip, jurusan, nama, no_hp, email, password, role, status_akun, created_at)
+                (role, nim_nip, jurusan, nama, no_hp, email, password, status_akun, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
 
         return $this->query($sql, [
+            $data['role'] ?? 'Dosen',
             $data['nim_nip'],
             $data['jurusan'],
             $data['nama'],
             $data['no_hp'],
             $data['email'],
-            password_hash($data['password'], PASSWORD_DEFAULT),
-            $data['role'] ?? 'Dosen'
+            password_hash($data['password'], PASSWORD_DEFAULT)
+        ]);
+    }
+
+    public function registerTendik($data)
+    {
+        $sql = "INSERT INTO {$this->table}
+                (role, nim_nip, unit, nama, no_hp, email, password, status_akun, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
+
+        return $this->query($sql, [
+            $data['role'] ?? 'Tenaga Kependidikan',
+            $data['nim_nip'],
+            $data['unit'],
+            $data['program_studi'] ?? null,
+            $data['nama'],
+            $data['no_hp'],
+            $data['email'],
+            password_hash($data['password'], PASSWORD_DEFAULT)
         ]);
     }
 
