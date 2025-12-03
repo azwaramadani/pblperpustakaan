@@ -6,7 +6,7 @@ $jurusanList = $jurusanList ?? [];
 $prodiList   = $prodiList ?? [];
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
 
-// Hitung informasi pagination untuk ditampilkan di UI
+// buat hitung informasi pagination buat ditampilin di UI
 $perPage     = (int)($pagination['limit'] ?? 10);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
@@ -125,6 +125,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <table class="data-table">
             <thead>
               <tr>
+                <th>No</th>
                 <th>Kode Booking</th>
                 <th>Role</th>
                 <th>Jurusan</th>
@@ -140,6 +141,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <?php if (empty($bookings)): ?>
                 <tr><td colspan="8" class="empty-row">Belum ada data booking.</td></tr>
               <?php else: ?>
+                <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($bookings as $b): ?>
                   <?php
                     $tanggal    = $b['tanggal'] ? date('d M Y', strtotime($b['tanggal'])) : '-';
@@ -148,6 +150,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     $statusKey  = strtolower($b['status_booking']);
                   ?>
                   <tr>
+                    <td><?= $rowNumber++ ?></td>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
                     <td><?= htmlspecialchars($b['role']) ?></td>
                     <td><?= htmlspecialchars($b['jurusan']) ?></td>
@@ -170,7 +173,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <!-- Kontrol pagination -->
         <div class="pagination-bar">
           <div class="pagination-info">
-            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> data (<?= $perPage ?> per halaman)
+            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
           </div>
           <div class="pagination-nav">
             <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>

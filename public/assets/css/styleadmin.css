@@ -447,7 +447,7 @@ table.data-table tbody tr:hover {
 /* Pagination controls */
 .pagination-bar {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
@@ -465,7 +465,7 @@ table.data-table tbody tr:hover {
     gap: 6px;
 }
 
-.page-btn {
+.page-btn { 
     display: inline-block;
     padding: 8px 12px;
     border-radius: 8px;
