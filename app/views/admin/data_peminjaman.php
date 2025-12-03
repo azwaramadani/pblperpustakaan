@@ -4,7 +4,7 @@ $filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', '
 $bookings    = $bookings ?? [];
 $jurusanList = $jurusanList ?? [];
 $prodiList   = $prodiList ?? [];
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>15, 'total'=>count($bookings)];
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
 
 // Hitung informasi pagination untuk ditampilkan di UI
 $perPage     = (int)($pagination['limit'] ?? 15);
@@ -138,7 +138,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($bookings)): ?>
-                <tr><td colspan="6" class="empty-row">Belum ada data booking.</td></tr>
+                <tr><td colspan="8" class="empty-row">Belum ada data booking.</td></tr>
               <?php else: ?>
                 <?php foreach ($bookings as $b): ?>
                   <?php

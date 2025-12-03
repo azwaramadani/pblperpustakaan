@@ -124,7 +124,7 @@ $error         = $error ?? null;
             </thead>
             <tbody>
               <?php if (empty($todayBookings)): ?>
-                <tr><td colspan="10" class="empty-row">Belum ada booking hari ini.</td></tr>
+                <tr><td colspan="9" class="empty-row">Belum ada booking hari ini.</td></tr>
               <?php else: ?>
                 <?php foreach ($todayBookings as $tb): ?>
                   <?php $statusKey = strtolower($tb['status_booking']); ?>

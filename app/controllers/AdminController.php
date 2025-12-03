@@ -95,7 +95,7 @@ class AdminController {
         $prodiSel   = $_GET['program_studi'] ?? '';
 
         # pagination setup
-        $perPage = 15; // jumlah baris per halaman
+        $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
 
