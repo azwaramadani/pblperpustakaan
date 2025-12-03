@@ -36,7 +36,7 @@ class AdminController {
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
 
-        $bookings  = $bookingModel->getAllSorted(
+        $bookings  = $bookingModel->getAllSortedPaginated(
                     $sortDate,
                     $fromDate ?: null,
                     $toDate ?: null,
@@ -91,6 +91,7 @@ class AdminController {
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate   = $_GET['from_date'] ?? '';
         $toDate     = $_GET['to_date'] ?? '';
+        $roleSel    = $_GET['role'] ?? '';
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
 
@@ -104,6 +105,7 @@ class AdminController {
                         $sortDate, 
                         $fromDate ?: null, 
                         $toDate ?: null,
+                        $roleSel ?: null,
                         $jurusanSel ?: null,
                         $prodiSel ?: null,
                         $perPage,
@@ -112,12 +114,14 @@ class AdminController {
         $bookings  = $pagination['data'];
 
         $jurusanList = $this->jurusanOptions();
-        $prodiList = $this->prodiOptions();
+        $prodiList   = $this->prodiOptions();
+        $roleList    = $this->roleOptions();
 
         $filters = [
             'sort_date'     => $sortDate,
             'from_date'     => $fromDate,
             'to_date'       => $toDate,
+            'role'          => $roleSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
         ];
@@ -266,6 +270,15 @@ class AdminController {
         exit;
     }
     
+    private function roleOptions(): array
+    {
+        return[
+            'Mahasiswa',
+            'Dosen',
+            'Tenaga Kependidikan',
+        ];
+    }
+
     private function jurusanOptions(): array
     {
         return [

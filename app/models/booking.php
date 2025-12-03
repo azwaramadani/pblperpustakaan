@@ -19,73 +19,12 @@ class Booking extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    #function/method buat admin dashboard data booking filtering booking berdasarkan date, jurusan, prodi
-    public function getAllSorted(
-        string $sortOrder = 'desc',
-        ?string $fromDate = null,
-        ?string $toDate = null,
-        ?string $jurusan = null,
-        ?string $programStudi = null
-    ) {
-        // Amankan nilai sort (hanya ASC atau DESC)
-        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
-
-        $where  = [];
-        $params = [];
-
-        // Filter tanggal mulai
-        if (!empty($fromDate)) {
-            $where[]  = "b.tanggal >= ?";
-            $params[] = $fromDate;
-        }
-
-        // Filter tanggal selesai
-        if (!empty($toDate)) {
-            $where[]  = "b.tanggal <= ?";
-            $params[] = $toDate;
-        }
-
-        // Filter jurusan (ambil dari kolom jurusan di tabel user)
-        if (!empty($jurusan)) {
-            $where[]  = "u.jurusan = ?";
-            $params[] = $jurusan;
-        }
-
-        // Filter program studi
-        // Catatan: jika belum ada kolom khusus program_studi, kita samakan dengan jurusan.
-        if (!empty($programStudi)) {
-            $where[]  = "u.program_studi = ?";
-            $params[] = $programStudi;
-        }
-
-        // Query dengan tambahan kolom jurusan/program_studi untuk ditampilkan
-        $sql = "SELECT
-                    b.*,
-                    u.role,
-                    u.jurusan,
-                    u.program_studi,
-                    u.nama AS nama_user,
-                    u.nim_nip,
-                    r.nama_ruangan
-                FROM {$this->table} b
-                JOIN user u ON b.user_id = u.user_id
-                JOIN room r ON b.room_id = r.room_id";
-
-        if ($where) {
-            $sql .= " WHERE " . implode(' AND ', $where);
-        }
-
-        // Urutkan berdasarkan tanggal dan jam mulai
-        $sql .= " ORDER BY b.tanggal {$order}, b.jam_mulai {$order}";
-
-        return $this->query($sql, $params)->fetchAll();
-    }
-
-    # Versi paginated: balikin data + info total untuk bikin navigasi halaman
+    # method data booking buat admin, pake sorting dan pagination
     public function getAllSortedPaginated(
         string $sortOrder = 'desc',
         ?string $fromDate = null,
         ?string $toDate = null,
+        ?string $role   = null,
         ?string $jurusan = null,
         ?string $programStudi = null,
         int $limit = 15,

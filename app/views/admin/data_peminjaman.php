@@ -7,7 +7,7 @@ $prodiList   = $prodiList ?? [];
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
 
 // Hitung informasi pagination untuk ditampilkan di UI
-$perPage     = (int)($pagination['limit'] ?? 15);
+$perPage     = (int)($pagination['limit'] ?? 10);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
 $totalRows   = (int)($pagination['total'] ?? count($bookings));
