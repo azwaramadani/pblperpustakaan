@@ -45,6 +45,10 @@ class Booking extends Model
             $where[]  = "b.tanggal <= ?";
             $params[] = $toDate;
         }
+        if (!empty($role)) {
+            $where[]  = "u.role <= ?";
+            $params[] = $role;
+        }
         if (!empty($jurusan)) {
             $where[]  = "u.jurusan = ?";
             $params[] = $jurusan;
