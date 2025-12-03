@@ -77,7 +77,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               </tr>
             </thead>
             <tbody>
-              <?php if (empty($userregist)): ?>
+              <?php if (empty($userregister)): ?>
                 <tr><td colspan="10" style="text-align:center;">user sudah divalidasi semua.</td></tr>
               <?php else: ?>
                 <?php foreach ($userregist as $ur): ?>
@@ -100,7 +100,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                           <img src="<?= $imgUrl ?>" alt="Bukti" class="img-thumb">
                         </a>
                       <?php else: ?>
-                        -
+                      -
                       <?php endif; ?>
                     </td>
                     <td><?= $ur['created_at'] ? date('d M Y H:i', strtotime($ur['created_at'])) : '-' ?></td>

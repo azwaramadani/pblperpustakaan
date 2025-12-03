@@ -1,9 +1,39 @@
 <?php
-$adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 $filters     = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
 $bookings    = $bookings ?? [];
 $jurusanList = $jurusanList ?? [];
-$prodiList = $prodiList ?? [];
+$prodiList   = $prodiList ?? [];
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>15, 'total'=>count($bookings)];
+
+// Hitung informasi pagination untuk ditampilkan di UI
+$perPage     = (int)($pagination['limit'] ?? 15);
+$currentPage = (int)($pagination['page'] ?? 1);
+$totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
+$totalRows   = (int)($pagination['total'] ?? count($bookings));
+
+$startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
+$endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
+
+// Susun query string supaya tombol halaman tetap membawa filter yang dipilih
+$queryParams = $_GET ?? [];
+$queryParams['route'] = 'Admin/dataPeminjaman';
+unset($queryParams['page']); // page dipasang ulang sesuai tombol yang diklik
+$baseQuery = http_build_query($queryParams);
+$baseQuery = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataPeminjaman&';
+
+// Tentukan range nomor halaman yang ditampilkan (max 5 nomor)
+$maxLinks   = 5;
+$startPage  = max(1, $currentPage - 2);
+$endPage    = min($totalPages, $currentPage + 2);
+if (($endPage - $startPage + 1) < $maxLinks) {
+    $needed    = $maxLinks - ($endPage - $startPage + 1);
+    $startPage = max(1, $startPage - $needed);
+    $endPage   = min($totalPages, $startPage + $maxLinks - 1);
+}
+$noData        = $totalRows === 0;
+$disablePrev   = $noData || $currentPage <= 1;
+$disableNext   = $noData || $currentPage >= $totalPages;
 ?>
 
 <!DOCTYPE html>
@@ -136,6 +166,23 @@ $prodiList = $prodiList ?? [];
               <?php endif; ?>
             </tbody>
           </table>
+        </div>
+        <!-- Kontrol pagination -->
+        <div class="pagination-bar">
+          <div class="pagination-info">
+            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> data (<?= $perPage ?> per halaman)
+          </div>
+          <div class="pagination-nav">
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPage - 1) ?>">‹ Sebelumnya</a>
+
+            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+              <a class="page-btn <?= ($p === $currentPage) ? 'active' : 'secondary' ?>" href="?<?= $baseQuery ?>page=<?= $p ?>"><?= $p ?></a>
+            <?php endfor; ?>
+
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= min($totalPages, $currentPage + 1) ?>">Berikutnya ›</a>
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= $totalPages ?>">Terakhir »</a>
+          </div>
         </div>
       </section>
 </body>

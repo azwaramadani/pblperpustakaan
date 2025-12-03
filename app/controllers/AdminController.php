@@ -94,22 +94,32 @@ class AdminController {
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
 
-        $bookings  = $bookingModel->getAllSorted(
-                     $sortDate, 
-                     $fromDate ?: null, 
-                     $toDate ?: null,
-                     $jurusanSel ?: null,
-                     $prodiSel ?: null);
-        
+        # pagination setup
+        $perPage = 15; // jumlah baris per halaman
+        $pageReq = (int)($_GET['page'] ?? 1);
+        $page    = $pageReq > 0 ? $pageReq : 1;
+
+        # ambil data + total sesuai filter + halaman
+        $pagination = $bookingModel->getAllSortedPaginated(
+                        $sortDate, 
+                        $fromDate ?: null, 
+                        $toDate ?: null,
+                        $jurusanSel ?: null,
+                        $prodiSel ?: null,
+                        $perPage,
+                        $page);
+
+        $bookings  = $pagination['data'];
+
         $jurusanList = $this->jurusanOptions();
         $prodiList = $this->prodiOptions();
 
         $filters = [
-            'sort_date'  => $sortDate,
-            'from_date'  => $fromDate,
-            'to_date'    => $toDate,
-            'jurusan'       => '',
-            'program_studi' => '',
+            'sort_date'     => $sortDate,
+            'from_date'     => $fromDate,
+            'to_date'       => $toDate,
+            'jurusan'       => $jurusanSel,
+            'program_studi' => $prodiSel,
         ];
 
         $success = Session::get('flash_success');
