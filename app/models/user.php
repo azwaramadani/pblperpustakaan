@@ -32,7 +32,7 @@ class User extends Model
     // buat admin data akun user dengan urutan akun dibuat terbaru
     public function usergetAllOrdered()
     {
-        $sql = "SELECT * FROM {$this->table} WHERE status_akun = 'Disetujui' ORDER BY created_at DESC";
+        $sql = "SELECT * FROM {$this->table} WHERE status_akun IN('Disetujui', 'Ditolak') ORDER BY created_at DESC";
         return $this->query($sql)->fetchAll();
     }
 

@@ -170,6 +170,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </tbody>
           </table>
         </div>
+        
         <!-- Kontrol pagination -->
         <div class="pagination-bar">
           <div class="pagination-info">
