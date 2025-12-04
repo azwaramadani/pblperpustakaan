@@ -66,7 +66,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Data Peminjaman</h2>
-          <p>Semua Data Peminjaman Oleh User.</p>
+          <p>Semua data peminjaman oleh user.</p>
         </div>
       </div>
       <div class="profile-summary top">

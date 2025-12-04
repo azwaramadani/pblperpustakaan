@@ -31,7 +31,7 @@ unset($queryParams['page']); // page dipasang ulang sesuai tombol yang diklik
 $baseQuery = http_build_query($queryParams);
 $baseQuery = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataPeminjaman&';
 
-// Tentukan range nomor halaman yang ditampilkan (max 5 nomor)
+// buat nentuin range nomor halaman yang ditampilin (max 5 nomor)
 $maxLinks   = 5;
 $startPage  = max(1, $currentPage - 2);
 $endPage    = min($totalPages, $currentPage + 2);

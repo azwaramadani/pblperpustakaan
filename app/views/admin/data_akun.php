@@ -56,7 +56,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
         <div class="section-head">
           <div>
             <h3>Data Akun User Validasi</h3>
-            <p class="subtitle">Data Akun User yang Harus Divalidasi.</p>
+            <p class="subtitle">Data akun user yang harus divalidasi.</p>
           </div>
         </div>
         <div class="table-wrap">
@@ -77,7 +77,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               </tr>
             </thead>
             <tbody>
-              <?php if (empty($userregister)): ?>
+              <?php if (empty($userregist)): ?>
                 <tr><td colspan="10" style="text-align:center;">user sudah divalidasi semua.</td></tr>
               <?php else: ?>
                 <?php foreach ($userregist as $ur): ?>
