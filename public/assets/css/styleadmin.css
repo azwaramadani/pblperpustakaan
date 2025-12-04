@@ -501,6 +501,49 @@ table.data-table tbody tr:hover {
     pointer-events: none;
 }
 
+/* Search bar di Data Peminjaman */
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 520px;        /* bebas sesuaikan */
+  border: 1px solid #d6d6d6;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  gap: 8px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 6px 4px;
+  background: transparent;
+  font-size: 14px;
+  color: #333;
+}
+
+.search-bar input::placeholder {
+  color: #999;
+}
+
+.search-bar button {
+  border: none;
+  background: transparent;
+  color: #f5a000;          /* warna ikon */
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar button:hover {
+  color: #d48900;
+}
+
 @media (max-width: 1024px) {
   .admin-layout {
     flex-direction: column;
