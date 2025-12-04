@@ -118,27 +118,27 @@ class Booking extends Model
     }
 
     public function getAllSortedPaginatedToday(
-        string $sortOrder     = 'desc',
-        ?string $role         = null,
-        ?string $unit         = null,
-        ?string $jurusan      = null,
-        ?string $programStudi = null,
-        int $limit            = 10,
-        int $page             = 1
+    string $sortOrder     = 'desc',
+    ?string $role         = null,
+    ?string $unit         = null,
+    ?string $jurusan      = null,
+    ?string $programStudi = null,
+    int $limit            = 10,
+    int $page             = 1
     ): array {
         $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
         $limit = max(1, $limit);
         $page  = max(1, $page);
 
-        $where  = [];
+        $where  = ["b.tanggal = CURDATE()"]; // memang untuk “hari ini”
         $params = [];
 
         if (!empty($role)) {
-            $where[]  = "u.role <= ?";
+            $where[]  = "u.role = ?";
             $params[] = $role;
         }
         if (!empty($unit)) {
-            $where[]  = "u.unit <= ?";
+            $where[]  = "u.unit = ?";
             $params[] = $unit;
         }
         if (!empty($jurusan)) {
@@ -150,14 +150,14 @@ class Booking extends Model
             $params[] = $programStudi;
         }
 
-        $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
+        $whereSql = " WHERE " . implode(' AND ', $where);
 
-        // Hitung total baris supaya tahu total halaman
+        // hitung total baris
         $countSql = "SELECT COUNT(*) AS total
-                     FROM {$this->table} b
-                     JOIN user u ON b.user_id = u.user_id
-                     JOIN room r ON b.room_id = r.room_id
-                     {$whereSql}";
+                    FROM {$this->table} b
+                    JOIN user u ON b.user_id = u.user_id
+                    JOIN room r ON b.room_id = r.room_id
+                    {$whereSql}";
         $totalRow = $this->query($countSql, $params)->fetch();
         $total    = (int)($totalRow['total'] ?? 0);
 
@@ -173,36 +173,35 @@ class Booking extends Model
 
         $totalPages = max(1, (int)ceil($total / $limit));
         if ($page > $totalPages) {
-            $page = $totalPages; // clamp supaya ga dapat halaman kosong
+            $page = $totalPages;
         }
         $offset = ($page - 1) * $limit;
 
-        // Ambil data sesuai halaman
+        // ambil data
         $dataSql = "SELECT
-                    b.booking_id,
-                    b.kode_booking,
-                    b.tanggal,
-                    b.jam_mulai,
-                    b.jam_selesai,
-                    b.created_at,
-                    b.status_booking,
-                    b.jumlah_peminjam,
-                    b.nimnip_penanggung_jawab,
-                    u.role,
-                    u.unit,
-                    u.jurusan,
-                    u.program_studi,
-                    u.nama AS nama_penanggung_jawab,
-                    u.nim_nip,
-                    r.nama_ruangan,
-                    COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
-                FROM {$this->table} b
-                JOIN user u ON b.user_id = u.user_id
-                JOIN room r ON b.room_id = r.room_id
-                {$whereSql}
-                GROUP BY b.booking_id
-                ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
-                LIMIT {$limit} OFFSET {$offset}";
+                        b.booking_id,
+                        b.kode_booking,
+                        b.tanggal,
+                        b.jam_mulai,
+                        b.jam_selesai,
+                        b.created_at,
+                        b.status_booking,
+                        b.jumlah_peminjam,
+                        u.role,
+                        u.unit,
+                        u.jurusan,
+                        u.program_studi,
+                        u.nama AS nama_penanggung_jawab,
+                        u.nim_nip AS nimnip_penanggung_jawab,
+                        r.nama_ruangan,
+                        COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
+                    FROM {$this->table} b
+                    JOIN user u ON b.user_id = u.user_id
+                    JOIN room r ON b.room_id = r.room_id
+                    {$whereSql}
+                    GROUP BY b.booking_id
+                    ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
+                    LIMIT {$limit} OFFSET {$offset}";
         $rows = $this->query($dataSql, $params)->fetchAll();
 
         return [
@@ -213,6 +212,7 @@ class Booking extends Model
             'limit'       => $limit,
         ];
     }
+
 
     #buat admin dashboard hitung semua bookingan hari ini
     public function countBookingToday()
