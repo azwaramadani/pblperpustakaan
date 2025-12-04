@@ -143,7 +143,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Nama User</th>
                 <th>NIM/NIP</th>
                 <th>Ruangan</th>
-                <th>Tanggal & Jam</th>
+                <th>Tanggal & Jam Peminjaman</th>
+                <th>Dibuat</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -169,6 +170,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($b['nim_nip']) ?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
+                    <td><?= htmlspecialchars($b['created_at']) ?></td>
                     <td>
                       <span class="status-chip status-<?= $statusKey ?>">
                         <?= htmlspecialchars($b['status_booking']) ?>
