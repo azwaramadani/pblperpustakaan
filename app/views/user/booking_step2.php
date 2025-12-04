@@ -72,10 +72,6 @@ Session::set('flash_error', null);
         <input type="hidden" name="jam_mulai" value="<?= htmlspecialchars($payload['jam_mulai']) ?>">
         <input type="hidden" name="jam_selesai" value="<?= htmlspecialchars($payload['jam_selesai']) ?>">
 
-        <label>Jumlah Mahasiswa
-          <input type="number" name="jumlah_peminjam" min="1" value="1" required>
-        </label>
-
         <label>Nama penanggung jawab
           <input type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($user['nama']) ?>" required>
         </label>
@@ -88,6 +84,10 @@ Session::set('flash_error', null);
           <input type="email" name="email_penanggung_jawab" required>
         </label>
 
+        <label>Jumlah Mahasiswa
+          <input type="number" name="jumlah_peminjam" min="1" value="1" required>
+        </label>
+        
         <label>NIM/NIP peminjam ruangan (anggota)
           <input type="text" name="nimnip_peminjam" required>
         </label>

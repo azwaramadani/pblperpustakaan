@@ -26,6 +26,8 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
+        #buat set auto selesai kalu jam booking udah nyentuh jam selesai
+        $bookingModel->markFinishedBookings();
         #filter dashboard data booking
         $sortCreate = strtolower($_GET['sort_create'] ?? 'desc');
         $roleSel    = $_GET['role'] ?? '';

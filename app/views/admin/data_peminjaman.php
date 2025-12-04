@@ -151,7 +151,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Role</th>
                 <th>Jurusan</th>
                 <th>Program Studi</th>
-                <th>Nama Pembuat Booking</th>
+                <th>Nama Penanggung Jawab</th>
                 <th>NIM/NIP Penanggung Jawab</th>
                 <th>Ruangan</th>
                 <th>Tanggal & Jam Peminjaman</th>

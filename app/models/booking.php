@@ -307,6 +307,7 @@ class Booking extends Model
                     b.email_penanggung_jawab,
                     b.nimnip_peminjam,
                     b.status_booking,
+                    b.created_at,
                     r.nama_ruangan,
                     r.gambar_ruangan AS gambar,
                     CASE WHEN f.booking_id IS NULL THEN 0 ELSE 1 END AS sudah_feedback

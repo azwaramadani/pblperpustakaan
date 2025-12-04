@@ -88,6 +88,7 @@ class UserController{
                 'email'         => $row['email_penanggung_jawab'] ?? '-',
                 'nim_ruangan'   => $row['nimnip_peminjam'] ?? '-',
                 'status'        => $row['status_booking'] ?? '-',
+                'created_at'    => $row['created_at'] ?? '-',
                 'gambar'        => $gambarUrl,
                 'sudah_feedback'=> !empty($row['sudah_feedback'])
             ];
