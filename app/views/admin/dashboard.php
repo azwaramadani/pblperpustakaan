@@ -73,10 +73,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <div class="main-area">
     <header class="top-nav">
       <div class="nav-brand">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
         <div>
           <h2 style="margin:0;">Dashboard Admin</h2>
-          <p style="margin:4px 0 0;">Ringkasan peminjaman ruangan dan feedback</p>
+          <p style="margin:4px 0 0;">Ringkasan peminjaman ruangan dan feedback.</p>
         </div>
       </div>
       <div class="profile-summary top">
@@ -95,10 +94,15 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <?php if (!empty($error)): ?>
         <div class="flash error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
-
-      <!-- Kartu ringkasan -->
-
+ 
+      <!-- stats card -->  
       <div class="stats-grid">
+        <a href="?route=Admin/dataAkun" class="stats-cardlink">
+            <div class="stat-card">
+              <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
+              <p class="stat-label">Total user</p>
+            </div>
+        </a>
         <a href="?route=Admin/dataAkun" class="stats-cardlink">
           <div class="stat-card">
             <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
@@ -116,14 +120,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <a href="?route=Admin/dataruangan" class="stats-cardlink">
           <div class="stat-card">
             <p class="stat-number"><?= (int)$stats['room_active'] ?></p>
-            <p class="stat-label">Ruangan aktif hari ini</p>
-          </div>
-        </a>
-
-        <a href="?route=Admin/dataAkun" class="stats-cardlink">
-          <div class="stat-card">
-            <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
-            <p class="stat-label">Total user</p>
+            <p class="stat-label">Ruangan aktif</p>
           </div>
         </a>  
       </div>
@@ -272,7 +269,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                   <tr>
                     <td><?= $i + 1 ?></td>
                     <td><?= htmlspecialchars($room['nama_ruangan']) ?></td>
-                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> org</td>
+                    <td><?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</td>
                     <td><?= htmlspecialchars($room['status']) ?></td>
                     <td><?= (int) ($room['total_booking'] ?? 0) ?></td>
                   </tr>

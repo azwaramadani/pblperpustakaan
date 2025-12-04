@@ -66,6 +66,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Data Peminjaman</h2>
+          <p>Semua Data Peminjaman Oleh User.</p>
         </div>
       </div>
       <div class="profile-summary top">
@@ -148,7 +149,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($bookings)): ?>
-                <tr><td colspan="8" class="empty-row">Belum ada data booking.</td></tr>
+                <tr><td colspan="9" class="empty-row">Belum ada data booking.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($bookings as $b): ?>
