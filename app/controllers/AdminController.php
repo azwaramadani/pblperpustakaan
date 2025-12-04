@@ -114,6 +114,7 @@ class AdminController {
                         $fromDate ?: null, 
                         $toDate ?: null,
                         $roleSel ?: null,
+                        $unitSel ?: null,
                         $jurusanSel ?: null,
                         $prodiSel ?: null,
                         $perPage,
