@@ -89,7 +89,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                   <tr>
                     <td><?= htmlspecialchars($ur['role'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['jurusan'] ?? '-') ?></td>
-                    <td><?= htmlspecialchars($ur['program_studi']) ?? '-'?></td>
+                    <td><?= htmlspecialchars($ur['program_studi'] ?? '-')?></td>
                     <td><?= htmlspecialchars($ur['nim_nip'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['nama'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['no_hp'] ?? '-') ?></td>

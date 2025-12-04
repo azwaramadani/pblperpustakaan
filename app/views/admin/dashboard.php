@@ -182,6 +182,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Nama Penanggung Jawab</th>
                 <th>NIM/NIP Penanggung Jawab</th>
                 <th>Total Peminjam</th>
+                <th>Tanggal & Waktu Peminjaman</th>
                 <th>Dibuat</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -193,7 +194,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($todayBookings as $tb): ?>
-                  <?php $statusKey = strtolower($tb['status_booking']); ?>
+                  <?php
+                    $tanggal    = $tb['tanggal'] ? date('d M Y', strtotime($tb['tanggal'])) : '-';
+                    $jamMulai   = $tb['jam_mulai'] ? date('H:i', strtotime($tb['jam_mulai'])) : '-';
+                    $jamSelesai = $tb['jam_selesai'] ? date('H:i', strtotime($tb['jam_selesai'])) : '-';
+                    $statusKey = strtolower($tb['status_booking']); 
+                  ?>
                   <tr>
                     <td><?= $rowNumber++ ?></td>
                     <td><?= htmlspecialchars($tb['kode_booking']) ?></td>
@@ -203,6 +209,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($tb['nama_penanggung_jawab']) ?></td>
                     <td><?= htmlspecialchars($tb['nim_nip_penanggung_jawab']) ?></td>
                     <td><?= (int)$tb['total_peminjam'] ?></td>
+                    <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
                     <td><?= $tb['created_at'] ? date('d M Y H:i', strtotime($tb['created_at'])) : '-' ?></td>
                     <td>
                       <span class="status-chip status-<?= $statusKey ?>">
