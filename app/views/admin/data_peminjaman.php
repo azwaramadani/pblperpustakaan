@@ -1,13 +1,16 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'jurusan'=>'', 'program_studi'=>''];
+$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>''];
 $bookings    = $bookings ?? [];
 $roleList    = $roleList ?? [];
+$unitList      = $unitList ?? [];
 $jurusanList = $jurusanList ?? [];
 $prodiList   = $prodiList ?? [];
+
+//pagination
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
 
-// buat hitung informasi pagination buat ditampilin di UI
+//buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
 $perPage     = (int)($pagination['limit'] ?? 10);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
@@ -110,7 +113,15 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
             <?php endforeach; ?>
           </select>
-
+          
+          <label>Unit</label>
+          <select name="unit">
+            <option value="">Semua</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>
+          
           <label>Jurusan</label>
           <select name="jurusan">
             <option value="">Semua</option>

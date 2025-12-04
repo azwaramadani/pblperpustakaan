@@ -5,21 +5,23 @@ $topRooms      = $topRooms ?? [];
 $todayDate     = $todayDate ?? date('Y-m-d');
 $feedbacks     = $feedbacks ?? [];
 $stats         = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$filters       = $filters ?? ['sort_date'=>'desc','from_date'=>'','to_date'=>'', 'jurusan'=>'', 'program_studi'=>''];
+$filters       = $filters ?? ['sort_create'=>'desc', 'role'=> '', 'unit'=> '','jurusan'=>'', 'program_studi'=>''];
 $fbFilters     = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
+$roleList    = $roleList ?? [];
+$unitList      = $unitList ?? [];
 $jurusanList   = $jurusanList ?? [];
 $prodiList     = $prodiList ?? [];
 $success       = $success ?? null;
 $error         = $error ?? null;
 
 //pagination
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($todayBookings)];
 
-// buat hitung informasi pagination buat ditampilin di UI
+// buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
 $perPage     = (int)($pagination['limit'] ?? 10);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
-$totalRows   = (int)($pagination['total'] ?? count($bookings));
+$totalRows   = (int)($pagination['total'] ?? count($todayBookings));
 
 $startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
 $endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
@@ -59,7 +61,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
-      <p>Panel Admin</p>
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
@@ -138,17 +139,27 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dashboard">
 
-          <label>Urut tanggal</label>
-          <select name="sort_date">
-            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          <label>Urut dibuat</label>
+          <select name="sort_create">
+            <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
           </select>
 
-          <label>Dari</label>
-          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
+          <label>Role</label>
+          <select name="role">
+            <option value="">Semua</option>
+            <?php foreach ($roleList as $rl): ?>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
 
-          <label>Sampai</label>
-          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
+          <label>Unit</label>
+          <select name="unit">
+            <option value="">Semua</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>    
 
           <label>Jurusan</label>
           <select name="jurusan">
@@ -249,7 +260,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         </div>
       </section>
 
-      <!-- Panel Ruangan -->
+      <!-- Table ruangan -->
       <section class="panel">
         <div class="section-head">
           <div>

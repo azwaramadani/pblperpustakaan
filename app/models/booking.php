@@ -21,14 +21,15 @@ class Booking extends Model
 
     # method data booking buat admin, pake sorting dan pagination
     public function getAllSortedPaginated(
-        string $sortOrder = 'desc',
-        ?string $fromDate = null,
-        ?string $toDate = null,
-        ?string $role   = null,
-        ?string $jurusan = null,
+        string $sortOrder     = 'desc',
+        ?string $fromDate     = null,
+        ?string $toDate       = null,
+        ?string $role         = null,
+        ?string $unit         = null,
+        ?string $jurusan      = null,
         ?string $programStudi = null,
-        int $limit = 10,
-        int $page = 1
+        int $limit            = 10,
+        int $page             = 1
     ): array {
         $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
         $limit = max(1, $limit);
@@ -48,6 +49,10 @@ class Booking extends Model
         if (!empty($role)) {
             $where[]  = "u.role <= ?";
             $params[] = $role;
+        }
+        if (!empty($unit)) {
+            $where[]  = "u.unit = ?";
+            $params[] = $unit;
         }
         if (!empty($jurusan)) {
             $where[]  = "u.jurusan = ?";
@@ -89,6 +94,94 @@ class Booking extends Model
         $dataSql = "SELECT
                         b.*,
                         u.role,
+                        u.unit,
+                        u.jurusan,
+                        u.program_studi,
+                        u.nama AS nama_user,
+                        u.nim_nip,
+                        r.nama_ruangan
+                    FROM {$this->table} b
+                    JOIN user u ON b.user_id = u.user_id
+                    JOIN room r ON b.room_id = r.room_id
+                    {$whereSql}
+                    ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
+                    LIMIT {$limit} OFFSET {$offset}";
+        $rows = $this->query($dataSql, $params)->fetchAll();
+
+        return [
+            'data'        => $rows,
+            'total'       => $total,
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'limit'       => $limit,
+        ];
+    }
+
+    public function getAllSortedPaginatedToday(
+        string $sortOrder     = 'desc',
+        ?string $role         = null,
+        ?string $unit         = null,
+        ?string $jurusan      = null,
+        ?string $programStudi = null,
+        int $limit            = 10,
+        int $page             = 1
+    ): array {
+        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+        $limit = max(1, $limit);
+        $page  = max(1, $page);
+
+        $where  = [];
+        $params = [];
+
+        if (!empty($role)) {
+            $where[]  = "u.role <= ?";
+            $params[] = $role;
+        }
+        if (!empty($unit)) {
+            $where[]  = "u.unit <= ?";
+            $params[] = $unit;
+        }
+        if (!empty($jurusan)) {
+            $where[]  = "u.jurusan = ?";
+            $params[] = $jurusan;
+        }
+        if (!empty($programStudi)) {
+            $where[]  = "u.program_studi = ?";
+            $params[] = $programStudi;
+        }
+
+        $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
+
+        // Hitung total baris supaya tahu total halaman
+        $countSql = "SELECT COUNT(*) AS total
+                     FROM {$this->table} b
+                     JOIN user u ON b.user_id = u.user_id
+                     JOIN room r ON b.room_id = r.room_id
+                     {$whereSql}";
+        $totalRow = $this->query($countSql, $params)->fetch();
+        $total    = (int)($totalRow['total'] ?? 0);
+
+        if ($total === 0) {
+            return [
+                'data'         => [],
+                'total'        => 0,
+                'page'         => 1,
+                'total_pages'  => 1,
+                'limit'        => $limit,
+            ];
+        }
+
+        $totalPages = max(1, (int)ceil($total / $limit));
+        if ($page > $totalPages) {
+            $page = $totalPages; // clamp supaya ga dapat halaman kosong
+        }
+        $offset = ($page - 1) * $limit;
+
+        // Ambil data sesuai halaman
+        $dataSql = "SELECT
+                        b.*,
+                        u.role,
+                        u.unit,
                         u.jurusan,
                         u.program_studi,
                         u.nama AS nama_user,

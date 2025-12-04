@@ -8,14 +8,14 @@ class AdminController {
         Session::checkAdminLogin();
         Session::preventCache();
 
-        $adminModel   = new Admin();
-        $bookingModel = new Booking();
-        $feedbackModel= new Feedback();
-        $userModel = new User();
-        $roomModel = new Room();
+        $adminModel    = new Admin();
+        $bookingModel  = new Booking();
+        $feedbackModel = new Feedback();
+        $userModel     = new User();
+        $roomModel     = new Room();
 
-        $adminId   = Session::get('admin_id');
-        $admin     = $adminModel->findById($adminId);
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
 
         #ini buat card paling atas
         $today = date('Y-m-d');
@@ -26,41 +26,48 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
-        #tabel data booking hari ini di dashboard admin, buat di acc sama admin
-        $todayBookings = $bookingModel->getBookingsByDate($today);
-
-        #filter data bookingnya
-        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
-        $fromDate   = $_GET['from_date'] ?? '';
-        $toDate     = $_GET['to_date'] ?? '';
+        #filter dashboard data booking
+        $sortCreate = strtolower($_GET['sort_create'] ?? 'desc');
+        $roleSel    = $_GET['role'] ?? '';
+        $unitSel    = $_GET['unit'] ?? '';
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
 
-        $bookings  = $bookingModel->getAllSortedPaginated(
-                    $sortDate,
-                    $fromDate ?: null,
-                    $toDate ?: null,
-                    $jurusanSel ?: null,
-                    $prodiSel ?: null);
-        
-        $jurusanList = $this->jurusanOptions();
-        $prodiList = $this->prodiOptions();
+        # pagination setup
+        $perPage = 10; // jumlah baris per halaman
+        $pageReq = (int)($_GET['page'] ?? 1);
+        $page    = $pageReq > 0 ? $pageReq : 1;
 
-        #buat admin ngefilter jurusan/prodi bookingan di hari today
+        # ambil data + total sesuai filter + halaman
+        $pagination = $bookingModel->getAllSortedPaginatedToday(
+                        $sortCreate,
+                        $roleSel ?: null,
+                        $jurusanSel ?: null,
+                        $prodiSel ?: null,
+                        $perPage,
+                        $page);
+        
+        $todayBookings = $pagination['data'];    
+    
+        $roleList    = $this->roleOptions();
+        $unitList    = $this->unitOptions();
+        $jurusanList = $this->jurusanOptions();
+        $prodiList   = $this->prodiOptions();
+
         $filters = [
-            'sort_date'     => $sortDate,
-            'from_date'     => $fromDate,
-            'to_date'       => $toDate,
+            'sort_create'   => $sortCreate,
+            'role'          => $roleSel,
+            'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
         ];
-        
+
         #data tabel dashboard admin ruangan populer dan feedback user
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
         #filter data feedback
         $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
         $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
-        $feedbacks = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
+        $feedbacks       = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
 
         $fbFilters = [
             'fb_sort_date'      => $fbSortDate,
@@ -92,6 +99,7 @@ class AdminController {
         $fromDate   = $_GET['from_date'] ?? '';
         $toDate     = $_GET['to_date'] ?? '';
         $roleSel    = $_GET['role'] ?? '';
+        $unitSel    = $_GET['unit'] ?? '';
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
 
@@ -113,15 +121,17 @@ class AdminController {
 
         $bookings  = $pagination['data'];
 
+        $roleList    = $this->roleOptions();
+        $unitList    = $this->unitOptions();
         $jurusanList = $this->jurusanOptions();
         $prodiList   = $this->prodiOptions();
-        $roleList    = $this->roleOptions();
-
+        
         $filters = [
             'sort_date'     => $sortDate,
             'from_date'     => $fromDate,
             'to_date'       => $toDate,
             'role'          => $roleSel,
+            'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
         ];
@@ -276,6 +286,18 @@ class AdminController {
             'Mahasiswa',
             'Dosen',
             'Tenaga Kependidikan',
+        ];
+    }
+
+    private function unitOptions(): array
+    {
+        return[
+            'Perpustakaan',
+            'Teknologi Informasi dan Komunikasi',
+            'Rekayasa Teknologi dan Produk Unggulan',
+            'Perawatan dan Perbaikan',
+            'Pengembangan Karier dan Kewirausahaan',
+            'Layanan Uji Kompetensi'
         ];
     }
 
