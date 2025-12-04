@@ -105,6 +105,7 @@ class AdminController {
         $unitSel    = $_GET['unit'] ?? '';
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
+        $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
@@ -120,6 +121,7 @@ class AdminController {
                         $unitSel ?: null,
                         $jurusanSel ?: null,
                         $prodiSel ?: null,
+                        $keyword ?: null,
                         $perPage,
                         $page);
 
@@ -138,6 +140,7 @@ class AdminController {
             'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
+            'keyword'       => $keyword,
         ];
 
         $success = Session::get('flash_success');

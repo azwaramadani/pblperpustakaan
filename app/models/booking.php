@@ -28,6 +28,7 @@ class Booking extends Model
         ?string $unit         = null,
         ?string $jurusan      = null,
         ?string $programStudi = null,
+        ?string $searchName   = null, //buat nyari nama
         int $limit            = 10,
         int $page             = 1
     ): array {
@@ -62,10 +63,17 @@ class Booking extends Model
             $where[]  = "u.program_studi = ?";
             $params[] = $programStudi;
         }
+        if (!empty($searchName)) {
+            // Cari di nama penanggung jawab (booking) atau nama user
+            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $like     = '%' . $searchName . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
 
         $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
 
-        // Hitung total baris supaya tahu total halaman
+        // Hitung total baris buat pagination
         $countSql = "SELECT COUNT(*) AS total
                      FROM {$this->table} b
                      JOIN user u ON b.user_id = u.user_id
@@ -90,7 +98,7 @@ class Booking extends Model
         }
         $offset = ($page - 1) * $limit;
 
-        // Ambil data sesuai halaman
+        //Ambil data sesuai halaman + urut
         $dataSql = "SELECT
                         b.*,
                         u.role,

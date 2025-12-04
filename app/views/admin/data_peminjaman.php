@@ -1,6 +1,6 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>''];
+$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
 $bookings    = $bookings ?? [];
 $roleList    = $roleList ?? [];
 $unitList      = $unitList ?? [];
@@ -90,7 +90,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </div>
         </div>
 
-        <!-- Filter/sort by date + jurusan + prodi -->
+        <!-- Filter/sort dan search-->
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/datapeminjaman">
 
@@ -137,6 +137,13 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
+          
+          <label>Cari Nama</label>
+          <input type="text"
+               name="keyword"
+               placeholder="Nama penanggung jawab"
+               value="<?= htmlspecialchars($filters['keyword']) ?>">
+          <!-- kolom ini mengirim keyword ke controller dan model -->
 
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
