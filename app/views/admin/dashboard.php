@@ -201,7 +201,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($todayBookings)): ?>
-                <tr><td colspan="10" class="empty-row">Belum ada booking hari ini.</td></tr>
+                <tr><td colspan="11" class="empty-row">Belum ada booking hari ini.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($todayBookings as $tb): ?>
@@ -218,7 +218,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($tb['jurusan']) ?></td>
                     <td><?= htmlspecialchars($tb['program_studi']) ?></td>
                     <td><?= htmlspecialchars($tb['nama_penanggung_jawab']) ?></td>
-                    <td><?= htmlspecialchars($tb['nim_nip_penanggung_jawab']) ?></td>
+                    <td><?= htmlspecialchars($tb['nimnip_penanggung_jawab']) ?></td>
                     <td><?= (int)$tb['total_peminjam'] ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
                     <td><?= $tb['created_at'] ? date('d M Y H:i', strtotime($tb['created_at'])) : '-' ?></td>

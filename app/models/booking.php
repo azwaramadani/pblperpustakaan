@@ -179,20 +179,30 @@ class Booking extends Model
 
         // Ambil data sesuai halaman
         $dataSql = "SELECT
-                        b.*,
-                        u.role,
-                        u.unit,
-                        u.jurusan,
-                        u.program_studi,
-                        u.nama AS nama_user,
-                        u.nim_nip,
-                        r.nama_ruangan
-                    FROM {$this->table} b
-                    JOIN user u ON b.user_id = u.user_id
-                    JOIN room r ON b.room_id = r.room_id
-                    {$whereSql}
-                    ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
-                    LIMIT {$limit} OFFSET {$offset}";
+                    b.booking_id,
+                    b.kode_booking,
+                    b.tanggal,
+                    b.jam_mulai,
+                    b.jam_selesai,
+                    b.created_at,
+                    b.status_booking,
+                    b.jumlah_peminjam,
+                    b.nimnip_penanggung_jawab,
+                    u.role,
+                    u.unit,
+                    u.jurusan,
+                    u.program_studi,
+                    u.nama AS nama_penanggung_jawab,
+                    u.nim_nip,
+                    r.nama_ruangan,
+                    COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
+                FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id
+                {$whereSql}
+                GROUP BY b.booking_id
+                ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
+                LIMIT {$limit} OFFSET {$offset}";
         $rows = $this->query($dataSql, $params)->fetchAll();
 
         return [

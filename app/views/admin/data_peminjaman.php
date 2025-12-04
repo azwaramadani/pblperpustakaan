@@ -121,7 +121,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
             <?php endforeach; ?>
           </select>
-          
+
           <label>Jurusan</label>
           <select name="jurusan">
             <option value="">Semua</option>
@@ -151,8 +151,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Role</th>
                 <th>Jurusan</th>
                 <th>Program Studi</th>
-                <th>Nama User</th>
-                <th>NIM/NIP</th>
+                <th>Nama Pembuat Booking</th>
+                <th>NIM/NIP Penanggung Jawab</th>
                 <th>Ruangan</th>
                 <th>Tanggal & Jam Peminjaman</th>
                 <th>Dibuat</th>
@@ -161,7 +161,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($bookings)): ?>
-                <tr><td colspan="9" class="empty-row">Belum ada data booking.</td></tr>
+                <tr><td colspan="10" class="empty-row">Belum ada data booking.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($bookings as $b): ?>

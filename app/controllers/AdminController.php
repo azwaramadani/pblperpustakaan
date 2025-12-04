@@ -42,6 +42,7 @@ class AdminController {
         $pagination = $bookingModel->getAllSortedPaginatedToday(
                         $sortCreate,
                         $roleSel ?: null,
+                        $unitSel ?: null,
                         $jurusanSel ?: null,
                         $prodiSel ?: null,
                         $perPage,
