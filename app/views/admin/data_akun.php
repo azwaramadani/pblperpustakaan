@@ -337,6 +337,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <th>No</th>
               <th>Nama</th>
               <th>Role</th>
+              <th>Unit</th>
               <th>Jurusan</th>
               <th>Program Studi</th>
               <th>NIM/NIP</th>
@@ -363,6 +364,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                   <td><?= $rowNumber++ ?></td>
                   <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
+                  <td><?= htmlspecialchars($u['unit'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['program_studi'] ?? '-')?></td>
                   <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
@@ -398,7 +400,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </tbody>
         </table>
       </div>
-    <!-- Kontrol pagination -->
+
+      <!-- Kontrol pagination -->
       <div class="pagination-bar">
         <div class="pagination-info">
           Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
