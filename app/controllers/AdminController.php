@@ -214,8 +214,6 @@ class AdminController {
 
         $adminId    = Session::get('admin_id');
         $admin      = $adminModel->findById($adminId);
-        $userregist = $userModel->userMenungguandDitolak();
-        $users      = $userModel->usergetAllOrdered();
         
         #filter data akun
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
@@ -243,15 +241,26 @@ class AdminController {
                         $keyword ?: null,
                         $perPage,
                         $page);
+
+        $paginationregist = $userModel->userregistgetAllSortedPaginated(
+                        $sortDate, 
+                        $fromDate ?: null, 
+                        $toDate ?: null,
+                        $roleSel ?: null,
+                        $unitSel ?: null,
+                        $jurusanSel ?: null,
+                        $prodiSel ?: null,
+                        $keyword ?: null,
+                        $perPage,
+                        $page);
         
-        $userregist = $pagination['data'];               
+        $userregist = $paginationregist['data'];               
         $users      = $pagination['data'];
 
         $roleList    = $this->roleOptions();
         $unitList    = $this->unitOptions();
         $jurusanList = $this->jurusanOptions();
         $prodiList   = $this->prodiOptions();
-
 
         $filters = [
             'sort_date'     => $sortDate,

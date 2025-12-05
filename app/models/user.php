@@ -32,7 +32,7 @@ class User extends Model
         ?string $unit         = null,
         ?string $jurusan      = null,
         ?string $programStudi = null,
-        ?string $searchName   = null, //buat nyari nama
+        ?string $searchName   = null, 
         int $limit            = 10,
         int $page             = 1
     ): array {
@@ -117,10 +117,99 @@ class User extends Model
         ];
     }
 
-    public function userMenungguandDitolak()
-    {
-        $sql = "SELECT * FROM {$this->table} WHERE status_akun IN('Ditolak', 'Menunggu') ORDER BY created_at DESC";
-        return $this->query($sql)->fetchAll();
+    public function userregistgetAllSortedPaginated(
+        string $sortOrder     = 'desc',
+        ?string $fromDate     = null,
+        ?string $toDate       = null,
+        ?string $role         = null,
+        ?string $unit         = null,
+        ?string $jurusan      = null,
+        ?string $programStudi = null,
+        ?string $searchName   = null, 
+        int $limit            = 10,
+        int $page             = 1
+    ): array {
+        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+        $limit = max(1, $limit);
+        $page  = max(1, $page);
+
+        $where  = [];
+        $params = [];
+
+        $where[] = "(user.status_akun IN('Menunggu', 'Ditolak'))";
+
+        if (!empty($fromDate)) {
+            $where[]  = "user.created_at >= ?";
+            $params[] = $fromDate;
+        }
+        if (!empty($toDate)) {
+            $where[]  = "user.created_at <= ?";
+            $params[] = $toDate;
+        }
+        if (!empty($role)) {
+            $where[]  = "user.role <= ?";
+            $params[] = $role;
+        }
+        if (!empty($unit)) {
+            $where[]  = "user.unit = ?";
+            $params[] = $unit;
+        }
+        if (!empty($jurusan)) {
+            $where[]  = "user.jurusan = ?";
+            $params[] = $jurusan;
+        }
+        if (!empty($programStudi)) {
+            $where[]  = "user.program_studi = ?";
+            $params[] = $programStudi;
+        }
+        if (!empty($searchName)) {
+            // Cari di nama atau nim/nip user
+            $where[]  = "(user.nim_nip LIKE ? OR user.nama LIKE ?)";
+            $like     = '%' . $searchName . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
+
+        // Hitung total baris buat pagination
+        $countSql = "SELECT COUNT(*) AS total
+                     FROM {$this->table}
+                     {$whereSql}";
+        $totalRow = $this->query($countSql, $params)->fetch();
+        $total    = (int)($totalRow['total'] ?? 0);
+
+        if ($total === 0) {
+            return [
+                'data'         => [],
+                'total'        => 0,
+                'page'         => 1,
+                'total_pages'  => 1,
+                'limit'        => $limit,
+            ];
+        }
+
+        $totalPages = max(1, (int)ceil($total / $limit));
+        if ($page > $totalPages) {
+            $page = $totalPages; // clamp supaya ga dapat halaman kosong
+        }
+        $offset = ($page - 1) * $limit;
+
+        //Ambil data sesuai halaman + urut
+        $dataSql = "SELECT *
+                    FROM {$this->table}
+                    {$whereSql}
+                    ORDER BY created_at {$order}
+                    LIMIT {$limit} OFFSET {$offset}";
+        $rows = $this->query($dataSql, $params)->fetchAll();
+
+        return [
+            'data'        => $rows,
+            'total'       => $total,
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'limit'       => $limit,
+        ];
     }
 
     // buat admin data akun user dengan urutan akun dibuat terbaru
