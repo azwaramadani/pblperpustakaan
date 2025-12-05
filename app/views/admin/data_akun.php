@@ -261,6 +261,75 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <p class="subtitle">Data Semua Akun User.</p>
           </div>
         </div>
+
+        <!-- Filter/sort dan search-->
+        <form class="filter-bar" method="GET" action="">
+          <input type="hidden" name="route" value="Admin/dataAkun">
+
+          <label>Urut tanggal</label>
+          <select name="sort_date">
+            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
+
+          <label>Dari</label>
+          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
+
+          <label>Sampai</label>
+          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
+
+          <label>Role</label>
+          <select name="role">
+            <option value="">Semua</option>
+            <?php foreach ($roleList as $rl): ?>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
+          
+          <label>Unit</label>
+          <select name="unit">
+            <option value="">Semua</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Jurusan</label>
+          <select name="jurusan">
+            <option value="">Semua</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Program Studi</label>
+          <select name="program_studi">
+            <option value="">Semua</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <br>
+          
+          <div class="search-bar">
+            <input
+              type="text"
+              name="keyword"
+              placeholder="Cari nama akun..."
+              value="<?= htmlspecialchars($filters['keyword']) ?>">
+            <button type="submit" aria-label="Cari">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+              </svg>
+            </button>
+          </div>
+
+          <button type="submit" class="btn-filter">Terapkan</button>
+          <a class="btn-reset" href="?route=Admin/dataakun">Reset</a>
+        </form>
+
         <div class="table-wrap">
         <table class="data-table">
           <thead>
@@ -281,7 +350,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </thead>
           <tbody>
             <?php if (empty($users)): ?>
-              <tr><td colspan="10" style="text-align:center;">Belum ada data user.</td></tr>
+              <tr><td colspan="10" style="text-align:center;">Belum ada user dengan nama atau nim/nip tersebut .</td></tr>
             <?php else: ?>
               <?php $rowNumber = $startRow ?: 1; ?>
               <?php foreach ($users as $u): ?>
