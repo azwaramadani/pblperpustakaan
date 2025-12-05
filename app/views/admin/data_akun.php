@@ -237,9 +237,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
         <!-- Kontrol pagination -->
         <div class="pagination-bar">
-          <div class="pagination-info">
-            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
-          </div>
           <div class="pagination-nav">
             <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
             <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPage - 1) ?>">‹ Sebelumnya</a>

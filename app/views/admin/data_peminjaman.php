@@ -165,6 +165,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>No</th>
                 <th>Kode Booking</th>
                 <th>Role</th>
+                <th>Unit</th>
                 <th>Jurusan</th>
                 <th>Program Studi</th>
                 <th>Nama Penanggung Jawab</th>
@@ -191,11 +192,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= $rowNumber++ ?></td>
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
                     <td><?= htmlspecialchars($b['role']) ?></td>
-                    <td><?= htmlspecialchars($b['jurusan']) ?></td>
-                    <td><?= htmlspecialchars($b['program_studi']) ?></td>
-                    <td><?= htmlspecialchars($b['nama_user']) ?></td>
-                    <td><?= htmlspecialchars($b['nim_nip']) ?></td>
-                    <td><?= htmlspecialchars($b['nama_ruangan']) ?></td>
+                    <td><?= htmlspecialchars($b['unit'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['jurusan']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['program_studi']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['nama_user']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['nim_nip']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
                     <td><?= htmlspecialchars($b['created_at']) ?></td>
                     <td>

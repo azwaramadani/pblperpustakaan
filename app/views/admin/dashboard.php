@@ -203,6 +203,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>No</th>
                 <th>Kode Booking</th>
                 <th>Role</th>
+                <th>Unit</th>
                 <th>Jurusan</th>
                 <th>Program Studi</th>
                 <th>Nama Penanggung Jawab</th>
@@ -230,6 +231,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= $rowNumber++ ?></td>
                     <td><?= htmlspecialchars($tb['kode_booking']?? '-') ?></td>
                     <td><?= htmlspecialchars($tb['role'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars($tb['unit'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($tb['jurusan'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($tb['program_studi'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($tb['nama_penanggung_jawab'] ?? '-') ?></td>
