@@ -1,8 +1,46 @@
 <?php
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
 $users       = $users ?? [];
 $userregist  = $userregist ?? [];
-$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$roleList    = $roleList ?? [];
+$unitList    = $unitList ?? [];
+$jurusanList = $jurusanList ?? [];
+$prodiList   = $prodiList ?? [];
+
+//pagination
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
+
+//buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
+$perPage     = (int)($pagination['limit'] ?? 10);
+$currentPage = (int)($pagination['page'] ?? 1);
+$totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
+$totalRows   = (int)($pagination['total'] ?? count($bookings));
+
+$startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
+$endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
+
+// Susun query string supaya tombol halaman tetap membawa filter yang dipilih
+$queryParams                 = $_GET ?? [];
+$queryParams['route']        = 'Admin/dataAkun';
+unset($queryParams['page']); // page dipasang ulang sesuai tombol yang diklik
+$baseQuery                   = http_build_query($queryParams);
+$baseQuery                   = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataAkun&';
+
+// Tentukan range nomor halaman yang ditampilkan (max 5 nomor)
+$maxLinks   = 5;
+$startPage  = max(1, $currentPage - 2);
+$endPage    = min($totalPages, $currentPage + 2);
+if (($endPage - $startPage + 1) < $maxLinks) {
+    $needed    = $maxLinks - ($endPage - $startPage + 1);
+    $startPage = max(1, $startPage - $needed);
+    $endPage   = min($totalPages, $startPage + $maxLinks - 1);
+}
+$noData        = $totalRows === 0;
+$disablePrev   = $noData || $currentPage <= 1;
+$disableNext   = $noData || $currentPage >= $totalPages;
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -59,6 +97,75 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             <p class="subtitle">Data akun user yang harus divalidasi.</p>
           </div>
         </div>
+
+        <!-- Filter/sort dan search-->
+        <form class="filter-bar" method="GET" action="">
+          <input type="hidden" name="route" value="Admin/dataAkun">
+
+          <label>Urut tanggal</label>
+          <select name="sort_date">
+            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
+
+          <label>Dari</label>
+          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
+
+          <label>Sampai</label>
+          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
+
+          <label>Role</label>
+          <select name="role">
+            <option value="">Semua</option>
+            <?php foreach ($roleList as $rl): ?>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
+          
+          <label>Unit</label>
+          <select name="unit">
+            <option value="">Semua</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Jurusan</label>
+          <select name="jurusan">
+            <option value="">Semua</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Program Studi</label>
+          <select name="program_studi">
+            <option value="">Semua</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <br>
+          
+          <div class="search-bar">
+            <input
+              type="text"
+              name="keyword"
+              placeholder="Cari nama penanggung jawab..."
+              value="<?= htmlspecialchars($filters['keyword']) ?>">
+            <button type="submit" aria-label="Cari">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+              </svg>
+            </button>
+          </div>
+
+          <button type="submit" class="btn-filter">Terapkan</button>
+          <a class="btn-reset" href="?route=Admin/dataakun">Reset</a>
+        </form>
+
         <div class="table-wrap">
           <table class="data-table">
             <thead>

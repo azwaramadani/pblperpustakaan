@@ -20,11 +20,11 @@ $startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
 $endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
 
 // Susun query string supaya tombol halaman tetap membawa filter yang dipilih
-$queryParams = $_GET ?? [];
-$queryParams['route'] = 'Admin/dataPeminjaman';
+$queryParams                 = $_GET ?? [];
+$queryParams['route']        = 'Admin/dataPeminjaman';
 unset($queryParams['page']); // page dipasang ulang sesuai tombol yang diklik
-$baseQuery = http_build_query($queryParams);
-$baseQuery = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataPeminjaman&';
+$baseQuery                   = http_build_query($queryParams);
+$baseQuery                   = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataPeminjaman&';
 
 // Tentukan range nomor halaman yang ditampilkan (max 5 nomor)
 $maxLinks   = 5;

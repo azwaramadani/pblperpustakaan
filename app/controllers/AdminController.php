@@ -88,7 +88,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/dashboard.php';
     }
 
-
+    //method handler data peminjaman admin
     public function dataPeminjaman()
     {
         Session::checkAdminLogin();
@@ -217,6 +217,52 @@ class AdminController {
         $userregist = $userModel->userMenungguandDitolak();
         $users      = $userModel->usergetAllOrdered();
         
+        #filter data akun
+        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate   = $_GET['from_date'] ?? '';
+        $toDate     = $_GET['to_date'] ?? '';
+        $roleSel    = $_GET['role'] ?? '';
+        $unitSel    = $_GET['unit'] ?? '';
+        $jurusanSel = $_GET['jurusan'] ?? '';
+        $prodiSel   = $_GET['program_studi'] ?? '';
+        $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
+
+        # pagination setup
+        $perPage = 10; // jumlah baris per halaman
+        $pageReq = (int)($_GET['page'] ?? 1);
+        $page    = $pageReq > 0 ? $pageReq : 1;
+
+        $pagination = $userModel->usergetAllSortedPaginated(
+                        $sortDate, 
+                        $fromDate ?: null, 
+                        $toDate ?: null,
+                        $roleSel ?: null,
+                        $unitSel ?: null,
+                        $jurusanSel ?: null,
+                        $prodiSel ?: null,
+                        $keyword ?: null,
+                        $perPage,
+                        $page);
+        
+        $userregist = $pagination['data'];               
+        $users      = $pagination['data'];
+
+        $roleList    = $this->roleOptions();
+        $unitList    = $this->unitOptions();
+        $jurusanList = $this->jurusanOptions();
+        $prodiList   = $this->prodiOptions();
+
+
+        $filters = [
+            'sort_date'     => $sortDate,
+            'from_date'     => $fromDate,
+            'to_date'       => $toDate,
+            'role'          => $roleSel,
+            'unit'          => $unitSel,
+            'jurusan'       => $jurusanSel,
+            'program_studi' => $prodiSel,
+            'keyword'       => $keyword,
+        ];
 
         $success = Session::get('flash_success');
         $error   = Session::get('flash_error');
