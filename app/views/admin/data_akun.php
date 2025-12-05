@@ -151,7 +151,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <input
               type="text"
               name="keyword"
-              placeholder="Cari nama user..."
+              placeholder="Cari nama akun..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -170,11 +170,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <table class="data-table">
             <thead>
               <tr>
+                <th>No</th>
+                <th>Nama</th>
                 <th>Role</th>
                 <th>Jurusan</th>
                 <th>Program Studi</th>
                 <th>NIM/NIP</th>
-                <th>Nama</th>
                 <th>No HP</th>
                 <th>Email</th>
                 <th>Bukti Aktivasi</th>
@@ -185,8 +186,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($userregist)): ?>
-                <tr><td colspan="10" style="text-align:center;">user sudah divalidasi semua.</td></tr>
+                <tr><td colspan="10" style="text-align:center;">user dengan nama atau nim/nip tersebut sudah divalidasi.</td></tr>
               <?php else: ?>
+                <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($userregist as $ur): ?>
                   <?php
                     $img = $ur['bukti_aktivasi'] ?: '';
@@ -194,11 +196,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     $statusKey = strtolower($ur['status_akun']);
                   ?>
                   <tr>
+                    <td><?= $rowNumber++ ?></td>
+                    <td><?= htmlspecialchars($ur['nama'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['role'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['jurusan'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['program_studi'] ?? '-')?></td>
                     <td><?= htmlspecialchars($ur['nim_nip'] ?? '-') ?></td>
-                    <td><?= htmlspecialchars($ur['nama'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['no_hp'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($ur['email'] ?? '-') ?></td>
                     <td>
@@ -231,6 +234,24 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </tbody>
           </table>
         </div>
+
+        <!-- Kontrol pagination -->
+        <div class="pagination-bar">
+          <div class="pagination-info">
+            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
+          </div>
+          <div class="pagination-nav">
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPage - 1) ?>">‹ Sebelumnya</a>
+
+            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+              <a class="page-btn <?= ($p === $currentPage) ? 'active' : 'secondary' ?>" href="?<?= $baseQuery ?>page=<?= $p ?>"><?= $p ?></a>
+            <?php endfor; ?>
+
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= min($totalPages, $currentPage + 1) ?>">Berikutnya ›</a>
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= $totalPages ?>">Terakhir »</a>
+          </div>
+        </div>
     </section>
   
     <section class="panel">
@@ -244,11 +265,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <table class="data-table">
           <thead>
             <tr>
+              <th>No</th>
+              <th>Nama</th>
               <th>Role</th>
               <th>Jurusan</th>
               <th>Program Studi</th>
               <th>NIM/NIP</th>
-              <th>Nama</th>
               <th>No HP</th>
               <th>Email</th>
               <th>Bukti Aktivasi</th>
@@ -261,6 +283,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <?php if (empty($users)): ?>
               <tr><td colspan="10" style="text-align:center;">Belum ada data user.</td></tr>
             <?php else: ?>
+              <?php $rowNumber = $startRow ?: 1; ?>
               <?php foreach ($users as $u): ?>
                 <?php
                   $img = $u['bukti_aktivasi'] ?: '';
@@ -268,11 +291,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                   $statusKey = strtolower($u['status_akun']);
                 ?>
                 <tr>
+                  <td><?= $rowNumber++ ?></td>
+                  <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['role'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['jurusan'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['program_studi'] ?? '-')?></td>
                   <td><?= htmlspecialchars($u['nim_nip'] ?? '-') ?></td>
-                  <td><?= htmlspecialchars($u['nama'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['no_hp'] ?? '-') ?></td>
                   <td><?= htmlspecialchars($u['email'] ?? '-') ?></td>
                   <td>
@@ -304,6 +328,23 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <?php endif; ?>
           </tbody>
         </table>
+      </div>
+    <!-- Kontrol pagination -->
+      <div class="pagination-bar">
+        <div class="pagination-info">
+          Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
+        </div>
+        <div class="pagination-nav">
+          <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
+          <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPage - 1) ?>">‹ Sebelumnya</a>
+
+          <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+            <a class="page-btn <?= ($p === $currentPage) ? 'active' : 'secondary' ?>" href="?<?= $baseQuery ?>page=<?= $p ?>"><?= $p ?></a>
+          <?php endfor; ?>
+
+          <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= min($totalPages, $currentPage + 1) ?>">Berikutnya ›</a>
+          <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= $totalPages ?>">Terakhir »</a>
+        </div>
       </div>
       </section>
     </main>
