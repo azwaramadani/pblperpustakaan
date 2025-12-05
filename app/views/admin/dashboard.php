@@ -231,7 +231,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($tb['kode_booking']) ?></td>
                     <td><?= htmlspecialchars($tb['role']) ?></td>
                     <td><?= htmlspecialchars($tb['jurusan']) ?></td>
-                    <td><?= htmlspecialchars($tb['program_studi']) ?></td>
+                    <td><?= htmlspecialchars($tb['program_studi'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($tb['nama_penanggung_jawab']) ?></td>
                     <td><?= htmlspecialchars($tb['nimnip_penanggung_jawab']) ?></td>
                     <td><?= (int)$tb['total_peminjam'] ?></td>
