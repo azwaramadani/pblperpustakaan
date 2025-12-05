@@ -43,6 +43,8 @@ class User extends Model
         $where  = [];
         $params = [];
 
+        $where[] = "(user.status_akun = 'Disetujui')";
+
         if (!empty($fromDate)) {
             $where[]  = "user.created_at >= ?";
             $params[] = $fromDate;
