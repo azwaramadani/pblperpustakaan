@@ -131,6 +131,7 @@ class Booking extends Model
     ?string $unit         = null,
     ?string $jurusan      = null,
     ?string $programStudi = null,
+    ?string $searchName   = null,
     int $limit            = 10,
     int $page             = 1
     ): array {

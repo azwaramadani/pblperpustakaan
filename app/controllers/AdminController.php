@@ -28,13 +28,14 @@ class AdminController {
 
         #buat set auto selesai kalu jam booking udah nyentuh jam selesai
         $bookingModel->markFinishedBookings();
+
         #filter dashboard data booking
         $sortCreate = strtolower($_GET['sort_create'] ?? 'desc');
         $roleSel    = $_GET['role'] ?? '';
         $unitSel    = $_GET['unit'] ?? '';
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
-
+        $keyword    = trim($_GET['keyword'] ?? '');
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
@@ -47,6 +48,7 @@ class AdminController {
                         $unitSel ?: null,
                         $jurusanSel ?: null,
                         $prodiSel ?: null,
+                        $keyword ?: null,
                         $perPage,
                         $page);
         
@@ -63,6 +65,7 @@ class AdminController {
             'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
+            'keyword'       => $keyword,
         ];
 
         #data tabel dashboard admin ruangan populer dan feedback user
