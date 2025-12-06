@@ -25,14 +25,17 @@
     <div class="profile-dropdown">
       <div class="profile-trigger">
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
-        <div class="user-name"><p><?= htmlspecialchars($data['user']['nama']) ?></p></div>
+        <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
       </div>
       <div class="profile-card">
-        <p><strong><?= htmlspecialchars($data['user']['nama']) ?></strong></p>
-        <p><?= htmlspecialchars($data['user']['role']) ?></p>
-        <p><?= htmlspecialchars($data['user']['nim_nip']) ?></p>
-        <p><?= htmlspecialchars($data['user']['no_hp']) ?></p>
-        <p><?= htmlspecialchars($data['user']['email']) ?></p>
+        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+        <p><?= htmlspecialchars($user['role']) ?></p>
+        <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['nim_nip']) ?></p>
+        <p><?= htmlspecialchars($user['no_hp']) ?></p>
+        <p><?= htmlspecialchars($user['email']) ?></p>
         <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
       </div>
     </div>
@@ -57,9 +60,7 @@
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png">
     </div>
   </section>
-
-
-
+  
   <!-- FITUR SECTION -->
   <section class="fitur">
     <div class="fitur-row">
@@ -86,6 +87,26 @@
         <h3>Mudah Digunakan</h3>
         <p>Antarmuka ramah mahasiswa.</p>
       </div>
+    </div>
+  </section>
+
+  <section class="ruangan-section">
+    <div class="section-header">
+      <h2>Ruangan Populer di Rudy</h2>
+      <p>Ruang study favorit mahasiswa!</p>
+    </div>
+    <div class="ruangan-list">
+      <?php foreach ($toprooms as $rooms): ?>
+        <article class="card">
+          <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
+          <div class="card-body">
+            <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
+            <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
+            <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
+            <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
+          </div>
+        </article>
+      <?php endforeach; ?>  
     </div>
   </section>
 

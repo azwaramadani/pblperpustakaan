@@ -249,7 +249,7 @@ class Booking extends Model
     }
 
     # Query buat nampilin urutan ruangan terbanyak yang dibooking sama user/admin buat admin dashboard atau bisa juga home/index
-    public function getTopRoomsByBooking(int $limit = 9)
+    public function getTopRoomsbyBooking(int $limit = 9)
     {
         $limit = (int) $limit;
         $sql = "SELECT

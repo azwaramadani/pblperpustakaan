@@ -1,7 +1,3 @@
-<?php
-$toprooms = $toprooms ?? [];
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>

@@ -11,19 +11,13 @@ class UserController{
             exit;
         }
 
-        $userModel  = new User();
-        $roomModel  = new Room();
+        $userModel    = new User();
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
 
-        $user_id = Session::get('user_id');
-        $user    = $userModel->findById($user_id);
-
-        $rooms   = $roomModel->getAll();
-
-        # data yang dikirim ke view
-        $data = [
-            'user'  => $user,
-            'rooms' => $rooms
-        ];
+        $user_id  = Session::get('user_id');
+        $user     = $userModel->findById($user_id);
+        $toprooms = $bookingModel->getTopRoomsbyBooking(3);
 
         require __DIR__ . '/../views/user/home.php';
     }

@@ -94,8 +94,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <section class="panel">
         <div class="section-head">
           <div>
-            <h3>Data Akun User Validasi</h3>
-            <p class="subtitle">Data akun user yang harus divalidasi.</p>
+            <h3>Akun User Validasi</h3>
+            <p class="subtitle">Data semua akun user yang harus divalidasi.</p>
           </div>
         </div>
 
@@ -263,8 +263,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <section class="panel">
         <div class="section-head">
           <div>
-            <h3>Data Semua Akun User</h3>
-            <p class="subtitle">Data Semua Akun User.</p>
+            <h3>Akun User</h3>
+            <p class="subtitle">Data semua akun user.</p>
           </div>
         </div>
 
