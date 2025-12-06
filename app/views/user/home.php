@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rudy Ruang Study</title>
-
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css">
 </head>
 
@@ -41,7 +40,6 @@
     </div>
 </header>
 
-
 <main>
   <section class="hero">
     <div class="hero-text">
@@ -60,8 +58,7 @@
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png">
     </div>
   </section>
-  
-  <!-- FITUR SECTION -->
+
   <section class="fitur">
     <div class="fitur-row">
       <div class="fitur-item">

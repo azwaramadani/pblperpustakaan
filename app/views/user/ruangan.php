@@ -1,8 +1,3 @@
-<?php
-$user = $data['user'];
-$ruangan = $data['rooms'];
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -33,7 +28,10 @@ $ruangan = $data['rooms'];
     </div>
     <div class="profile-card">
       <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
-      <p><?= htmlspecialchars($data['user']['role']) ?></p>
+      <p><?= htmlspecialchars($user['role']) ?></p>
+      <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['nim_nip']) ?></p>
       <p><?= htmlspecialchars($user['no_hp']) ?></p>
       <p><?= htmlspecialchars($user['email']) ?></p>
@@ -54,10 +52,10 @@ $ruangan = $data['rooms'];
     </section>
 
     <div class="room-container">
-    <?php if (empty($ruangan)): ?>
+    <?php if (empty($rooms)): ?>
         <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
     <?php else: ?>
-        <?php foreach ($ruangan as $r): ?>
+        <?php foreach ($rooms as $r): ?>
             <div class="room-card">
                 <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png"
                      alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">

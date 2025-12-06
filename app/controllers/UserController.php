@@ -26,19 +26,12 @@ class UserController{
     {
         Session::checkUserLogin();
         Session::preventCache();
-        # Ambil data user dari session
+    
         $userModel = new User();
-        $user = $userModel->findById(Session::get('user_id'));
-
-        # Ambil semua ruangan
         $roomModel = new Room();
-        $rooms = $roomModel->getAll();
 
-        # Data dikirim ke view
-        $data = [
-            'user' => $user,
-            'rooms' => $rooms
-        ];
+        $user  = $userModel->findById(Session::get('user_id'));
+        $rooms = $roomModel->getAll();
 
         require __DIR__ . '/../views/user/ruangan.php';
     }
