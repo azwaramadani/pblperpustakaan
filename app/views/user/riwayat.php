@@ -40,42 +40,52 @@
 
 <h2 class="title">Riwayat Peminjaman Saya</h2>
 <div class="container">
-    <?php foreach ($riwayat as $r): ?>
-        <div class="card">
-            <div class="info">
-                <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
-                <p><strong>Kode Booking:</strong> <?= htmlspecialchars($r['kode_booking']) ?></p>
-                <p><strong>Pembuat Booking:</strong> <?= htmlspecialchars($user['nama']) ?></p>
-                <p><strong>Waktu Peminjaman:</strong> <?= htmlspecialchars($r['tanggal']) ?></p>
-                <p><strong>Jam Peminjaman:</strong> <?= htmlspecialchars($r['jam']) ?></p>
-                <p><strong>Nama Penanggung Jawab:</strong> <?= htmlspecialchars($r['penanggung']) ?></p>
-                <p><strong>NIM Penanggung Jawab:</strong> <?= htmlspecialchars($r['nim']) ?></p>
-                <p><strong>Email Penanggung Jawab:</strong> <?= htmlspecialchars($r['email']) ?></p>
-                <p><strong>NIM Peminjam Ruangan:</strong> <?= htmlspecialchars($r['nim_ruangan']) ?></p>
-                <p><strong>Waktu Dibuat:</strong> <?= htmlspecialchars($r['created_at']) ?></p>
-                <p><strong>Status:</strong> 
-                    <span class="status <?= strtolower($r['status']) ?>">
-                        <?= htmlspecialchars($r['status']) ?>
-                    </span>
-                </p>
-            </div>
+    <?php if (empty($riwayat)): ?>
+        <div class="empty-state">
+            <h3>Belum Ada Riwayat Peminjaman</h3>
+            <p>Anda belum pernah melakukan peminjaman ruangan.</p>
+            <a href="?route=User/ruangan" class="btn btn-primary">Lihat Ruangan Tersedia</a>
+        </div>
+    <?php else: ?>
+        <?php foreach ($riwayat as $r): ?>
+            <div class="card">
+                <div class="info">
+                    <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
+                    <p><strong>Kode Booking:</strong> <?= htmlspecialchars($r['kode_booking']) ?></p>
+                    <p><strong>Pembuat Booking:</strong> <?= htmlspecialchars($user['nama']) ?></p>
+                    <p><strong>Waktu Peminjaman:</strong> <?= htmlspecialchars($r['tanggal']) ?></p>
+                    <p><strong>Jam Peminjaman:</strong> <?= htmlspecialchars($r['jam']) ?></p>
+                    <p><strong>Nama Penanggung Jawab:</strong> <?= htmlspecialchars($r['penanggung']) ?></p>
+                    <p><strong>NIM Penanggung Jawab:</strong> <?= htmlspecialchars($r['nim']) ?></p>
+                    <p><strong>Email Penanggung Jawab:</strong> <?= htmlspecialchars($r['email']) ?></p>
+                    <p><strong>NIM Peminjam Ruangan:</strong> <?= htmlspecialchars($r['nim_ruangan']) ?></p>
+                    <p><strong>Waktu Dibuat:</strong> <?= htmlspecialchars($r['created_at']) ?></p>
+                    <p><strong>Status:</strong> 
+                        <span class="status <?= htmlspecialchars(strtolower($r['status'])) ?>">
+                            <?= htmlspecialchars($r['status']) ?>
+                        </span>
+                    </p>
+                </div>
 
-            <div class="gambar">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan">
-                <div class="btn-group">
-                    <?php if ($r['status'] == 'Disetujui'): ?>
-                        <a href="?route=Booking/editForm/<?= urlencode($r['booking_id']) ?>" class="btn ubah">Ubah</a>
-                        <a href="?route=Booking/cancel/<?= urlencode($r['booking_id']) ?>" class="btn batal btn-cancel">Batalkan</a>
-                    <?php elseif ($r['status'] == 'Selesai' && !$r['sudah_feedback']): ?>
-                        <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Beri Feedback</a>
-                    <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
-                        <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Lihat Feedback Saya</a>
-                    <?php endif; ?>
+                <div class="gambar">
+                    <img src="<?= htmlspecialchars($r['gambar']) ?>" 
+                        alt="<?= htmlspecialchars($r['nama_ruangan']) ?>"
+                        onerror="this.src='<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png'">
+                    <div class="btn-group">
+                        <?php if ($r['status'] == 'Disetujui'): ?>
+                            <a href="?route=Booking/editForm/<?= urlencode($r['booking_id']) ?>" class="btn ubah">Ubah</a>
+                            <a href="?route=Booking/cancel/<?= urlencode($r['booking_id']) ?>" class="btn batal btn-cancel">Batalkan</a>
+                        <?php elseif ($r['status'] == 'Selesai' && !$r['sudah_feedback']): ?>
+                            <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Beri Feedback</a>
+                        <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
+                            <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Lihat Feedback Saya</a>
+                        <?php endif; ?>
 
+                    </div>
                 </div>
             </div>
-        </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 
 <!-- ===== Footer ===== -->
@@ -107,6 +117,5 @@ dengan mudah dan efisien.</p>
         </div>
     </div>
 </footer>
-
 </body>
 </html>

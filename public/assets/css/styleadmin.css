@@ -780,6 +780,23 @@ table.data-table tbody tr:hover {
     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    margin: 20px 0 10px;
+    color: #333;
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
 @media (max-width: 768px) {
   .top-nav {
     flex-direction: column;

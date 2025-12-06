@@ -20,6 +20,13 @@ class UserController{
         $toprooms = $bookingModel->getTopRoomsbyBooking(3);
         $rooms    = $roomModel->getAll();
 
+        //error handling kalo user dihapus
+        if (!$user) {
+            Session::destroy();
+            header('Location: ?route=Auth/login');
+            exit;
+        }
+
         require __DIR__ . '/../views/user/home.php';
     }
 
@@ -33,6 +40,13 @@ class UserController{
 
         $user  = $userModel->findById(Session::get('user_id'));
         $rooms = $roomModel->getAll();
+
+        //error handling kalo user dihapus
+        if (!$user) {
+            Session::destroy();
+            header('Location: ?route=Auth/login');
+            exit;
+        }
 
         require __DIR__ . '/../views/user/ruangan.php';
     }
@@ -50,6 +64,13 @@ class UserController{
         $bookingModel->markFinishedBookings();
         $riwayatRaw = $bookingModel->getHistoryByUser($userId);
 
+        //error handling kalo user dihapus
+        if (!$user) {
+            Session::destroy();
+            header('Location: ?route=Auth/login');
+            exit;
+        }
+        
         //proses data riwayat
         $riwayat    = [];
         
