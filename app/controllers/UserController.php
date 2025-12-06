@@ -19,7 +19,7 @@ class UserController{
         $user     = $userModel->findById($user_id);
         $toprooms = $bookingModel->getTopRoomsbyBooking(3);
         $rooms    = $roomModel->getAll();
-        
+
         require __DIR__ . '/../views/user/home.php';
     }
 
@@ -44,13 +44,12 @@ class UserController{
 
         $userModel    = new User();
         $bookingModel = new Booking();
+
+        $userId     = Session::get('user_id');
+        $user       = $userModel->findById($userId);
         $bookingModel->markFinishedBookings();
-
-        $userId = Session::get('user_id');
-        $user   = $userModel->findById($userId);
-
         $riwayatRaw = $bookingModel->getHistoryByUser($userId);
-
+                      
         $riwayat = array_map(function ($row) {
             $tanggal = !empty($row['tanggal'])
                 ? date('d M Y', strtotime($row['tanggal']))
@@ -81,13 +80,6 @@ class UserController{
                 'sudah_feedback'=> !empty($row['sudah_feedback'])
             ];
         }, $riwayatRaw);
-
-        $data = [
-            'user'  => $user,
-            'rooms' => [] // placeholder supaya view tidak error
-        ];
-
-        $user_data = $user;
 
         require __DIR__ . '/../views/user/riwayat.php';
     }

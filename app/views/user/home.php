@@ -122,7 +122,6 @@
 </main>
 
 <footer class="footer">
-
   <div class="footer-brand">
     <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     <p>Rudy Ruang Study - platform peminjaman ruangan study yang praktis, transparan, dan terintegrasi.</p>
@@ -152,7 +151,6 @@
       <p>Kampus PNJ, Depok</p>
     </div>
   </div>
-
 </footer>
 
 <script>

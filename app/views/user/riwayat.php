@@ -1,7 +1,3 @@
-<?php
-$user = $data['user'];
-$ruangan = $data['rooms'];
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -13,7 +9,6 @@ $ruangan = $data['rooms'];
 </head>
 <body>
 
-<!-- ===== Navbar ===== -->
 <header class="navbar">
   <div class="logo">
     <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ" height="40">
@@ -27,14 +22,17 @@ $ruangan = $data['rooms'];
   <div class="profile-dropdown">
     <div class="profile-trigger">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
-      <div class="user-name"><p><?= htmlspecialchars($user_data['nama']) ?></p></div>
+      <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
     </div>
     <div class="profile-card">
-      <p><strong><?= htmlspecialchars($user_data['nama']) ?></strong></p>
-      <p><?= htmlspecialchars($data['user']['role']) ?></p>
-      <p><?= htmlspecialchars($user_data['nim_nip']) ?></p>
-      <p><?= htmlspecialchars($user_data['no_hp']) ?></p>
-      <p><?= htmlspecialchars($user_data['email']) ?></p>
+      <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+      <p><?= htmlspecialchars($user['role']) ?></p>
+      <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['nim_nip']) ?></p>
+      <p><?= htmlspecialchars($user['no_hp']) ?></p>
+      <p><?= htmlspecialchars($user['email']) ?></p>
       <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
     </div>
   </div>
