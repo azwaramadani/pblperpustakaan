@@ -170,9 +170,10 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Program Studi</th>
                 <th>Nama Penanggung Jawab</th>
                 <th>NIM/NIP Penanggung Jawab</th>
+                <th>Total Peminjam</th>
                 <th>Ruangan</th>
-                <th>Tanggal & Jam Peminjaman</th>
-                <th>Dibuat</th>
+                <th>Waktu Peminjaman</th>
+                <th>Waktu Dibuat</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -197,6 +198,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($b['program_studi']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['nama_user']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']?? '-') ?></td>
+                    <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
                     <td><?= htmlspecialchars($b['created_at']) ?></td>

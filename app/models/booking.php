@@ -100,18 +100,27 @@ class Booking extends Model
 
         //Ambil data sesuai halaman + urut
         $dataSql = "SELECT
-                        b.*,
+                        b.booking_id,
+                        b.kode_booking,
+                        b.tanggal,
+                        b.jam_mulai,
+                        b.jam_selesai,
+                        b.created_at,
+                        b.status_booking,
+                        b.jumlah_peminjam,
                         u.role,
                         u.unit,
                         u.jurusan,
                         u.program_studi,
                         u.nama AS nama_user,
                         u.nim_nip,
-                        r.nama_ruangan
+                        r.nama_ruangan,
+                        COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
                     FROM {$this->table} b
                     JOIN user u ON b.user_id = u.user_id
                     JOIN room r ON b.room_id = r.room_id
                     {$whereSql}
+                    GROUP BY b.booking_id
                     ORDER BY b.tanggal {$order}, b.jam_mulai {$order}
                     LIMIT {$limit} OFFSET {$offset}";
         $rows = $this->query($dataSql, $params)->fetchAll();
@@ -126,20 +135,20 @@ class Booking extends Model
     }
 
     public function getAllSortedPaginatedToday(
-    string $sortOrder     = 'desc',
-    ?string $role         = null,
-    ?string $unit         = null,
-    ?string $jurusan      = null,
-    ?string $programStudi = null,
-    ?string $searchName   = null,
-    int $limit            = 10,
-    int $page             = 1
+        string $sortOrder     = 'desc',
+        ?string $role         = null,
+        ?string $unit         = null,
+        ?string $jurusan      = null,
+        ?string $programStudi = null,
+        ?string $searchName   = null,
+        int $limit            = 10,
+        int $page             = 1
     ): array {
         $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
         $limit = max(1, $limit);
         $page  = max(1, $page);
 
-        $where  = ["b.tanggal = CURDATE()"]; // memang untuk “hari ini”
+        $where  = ["b.tanggal = CURDATE()"]; //buat mastiin hari ini doang yang diambil
         $params = [];
 
         if (!empty($role)) {
@@ -157,6 +166,13 @@ class Booking extends Model
         if (!empty($programStudi)) {
             $where[]  = "u.program_studi = ?";
             $params[] = $programStudi;
+        }
+        if (!empty($searchName)) {
+            // Cari di nama penanggung jawab (booking) atau nama user
+            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $like     = '%' . $searchName . '%';
+            $params[] = $like;
+            $params[] = $like;
         }
 
         $whereSql = " WHERE " . implode(' AND ', $where);
