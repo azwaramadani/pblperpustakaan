@@ -11,8 +11,16 @@ class User extends Model
     public function countRegisteredToday()
     {
         $date = $date ?? date('Y-m-d');
-        $sql = "SELECT COUNT(*) AS total FROM {$this->table} WHERE DATE (CREATED_AT) = ?";
-        $row = $this->query($sql, [$date])->fetch();
+        $sql  = "SELECT COUNT(*) AS total FROM {$this->table} WHERE DATE (CREATED_AT) = ?";
+        $row  = $this->query($sql, [$date])->fetch();
+        return (int)($row['total'] ?? 0);
+    }
+
+    // buat dashboard admin hitung semua user yang harus divalidasi atau status akunnya menunggu
+    public function mustvalidateRegistered()
+    {
+        $sql  = "SELECT COUNT(*) AS total FROM {$this->table} WHERE status_akun = 'Menunggu'";
+        $row  = $this->query($sql)->fetch();
         return (int)($row['total'] ?? 0);
     }
 

@@ -4,10 +4,10 @@ $todayBookings = $todayBookings ?? [];
 $topRooms      = $topRooms ?? [];
 $todayDate     = $todayDate ?? date('Y-m-d');
 $feedbacks     = $feedbacks ?? [];
-$stats         = $stats ?? ['user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+$stats         = $stats ?? ['user_mustvalidate'=>0, 'user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
 $filters       = $filters ?? ['sort_create'=>'desc', 'role'=> '', 'unit'=> '','jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
 $fbFilters     = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
-$roleList    = $roleList ?? [];
+$roleList      = $roleList ?? [];
 $unitList      = $unitList ?? [];
 $jurusanList   = $jurusanList ?? [];
 $prodiList     = $prodiList ?? [];
@@ -99,16 +99,24 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <!-- stats card -->  
       <div class="stats-grid">
         <a href="?route=Admin/dataAkun" class="stats-cardlink">
-            <div class="stat-card">
-              <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
-              <p class="stat-label">Total user</p>
-            </div>
+          <div class="stat-card">
+            <p class="stat-number"><?= (int)$stats['user_mustvalidate'] ?></p>
+            <p class="stat-label">Akun user yang harus divalidasi</p>
+          </div>
         </a>
+
         <a href="?route=Admin/dataAkun" class="stats-cardlink">
           <div class="stat-card">
             <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
             <p class="stat-label">User register hari ini</p>
           </div>
+        </a>
+
+        <a href="?route=Admin/dataAkun" class="stats-cardlink">
+            <div class="stat-card">
+              <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
+              <p class="stat-label">Total user</p>
+            </div>
         </a>
         
         <a href="?route=Admin/dashboard" class="stats-cardlink">

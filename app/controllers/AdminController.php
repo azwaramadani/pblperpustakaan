@@ -21,6 +21,7 @@ class AdminController {
         $today = date('Y-m-d');
         $stats = [
             'user_today'        => $userModel->countRegisteredToday($today),
+            'user_mustvalidate' => $userModel->mustvalidateRegistered(),
             'booking_today'     => $bookingModel->countBookingToday($today),
             'room_active'       => $roomModel->countActiverooms(),
             'user_total'        => $userModel->countAllusers(), 
@@ -36,6 +37,7 @@ class AdminController {
         $jurusanSel = $_GET['jurusan'] ?? '';
         $prodiSel   = $_GET['program_studi'] ?? '';
         $keyword    = trim($_GET['keyword'] ?? '');
+        
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
