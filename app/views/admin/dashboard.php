@@ -6,7 +6,6 @@ $todayDate     = $todayDate ?? date('Y-m-d');
 $feedbacks     = $feedbacks ?? [];
 $stats         = $stats ?? ['user_mustvalidate'=>0, 'user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
 $filters       = $filters ?? ['sort_create'=>'desc', 'role'=> '', 'unit'=> '','jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
-$fbFilters     = $fbFilters ?? ['fb_sort_date'=>'desc','fb_sort_feedback'=>'all'];
 $roleList      = $roleList ?? [];
 $unitList      = $unitList ?? [];
 $jurusanList   = $jurusanList ?? [];
@@ -334,21 +333,70 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </div>
         </div>
 
-        <!-- Filter feedback -->
+        <!-- Filter/sort by date + jurusan + prodi -->
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dashboard">
-          <label>Urut tanggal</label>
-          <select name="fb_sort_date">
-            <option value="desc" <?= ($fbFilters['fb_sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($fbFilters['fb_sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+
+          <label>Urut dibuat</label>
+          <select name="sort_create">
+            <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          </select>
+
+          <label>Role</label>
+          <select name="role">
+            <option value="">Semua</option>
+            <?php foreach ($roleList as $rl): ?>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Unit</label>
+          <select name="unit">
+            <option value="">Semua</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>    
+
+          <label>Jurusan</label>
+          <select name="jurusan">
+            <option value="">Semua</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <label>Program Studi</label>
+          <select name="program_studi">
+            <option value="">Semua</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php endforeach; ?>
           </select>
 
           <label>Feedback</label>
-          <select name="fb_feedback">
-            <option value="all"   <?= ($fbFilters['fb_sort_feedback'] === 'all')   ? 'selected' : '' ?>>Semua</option>
-            <option value="puas"  <?= ($fbFilters['fb_sort_feedback'] === 'puas')  ? 'selected' : '' ?>>Puas</option>
-            <option value="tidak" <?= ($fbFilters['fb_sort_feedback'] === 'tidak') ? 'selected' : '' ?>>Tidak Puas</option>
+          <select name="feedback">
+            <option value="">Semua</option>
+            <?php foreach ($feedbackList as $fbl): ?>
+              <option value="<?= htmlspecialchars($fbl) ?>" <?= ($fbFilters['feedback']===$fbl?'selected':'') ?>><?= htmlspecialchars($fbl) ?></option>
+            <?php endforeach; ?>
           </select>
+          
+          <div class="search-bar">
+            <input
+              type="text"
+              name="keyword"
+              placeholder="Cari nama penanggung jawab..."
+              value="<?= htmlspecialchars($filters['keyword']) ?>">
+            <button type="submit" aria-label="Cari">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+              </svg>
+            </button>
+          </div>
 
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/dashboard">Reset</a>

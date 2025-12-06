@@ -22,22 +22,93 @@ class Feedback extends Model
 
 
     # buat filter feedback dashboard admin
-    public function getAllWithFilters(string $sortDate = 'desc', string $feedbackFilter = 'all')
-    {
-        // Amankan nilai sort (ASC/DESC)
-        $order = strtoupper($sortDate) === 'ASC' ? 'ASC' : 'DESC';
+    public function feedbackgetAllSortedPaginated(
+        string $sortOrder     = 'desc',
+        ?string $fromDate     = null,
+        ?string $toDate       = null,
+        ?string $role         = null,
+        ?string $unit         = null,
+        ?string $jurusan      = null,
+        ?string $programStudi = null,
+        ?string $feedback     = null,
+        ?string $searchName   = null, 
+        int $limit            = 10,
+        int $page             = 1
+    ): array {
+        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+        $limit = max(1, $limit);
+        $page  = max(1, $page);
 
         $where  = [];
         $params = [];
 
-        // Filter puas: 'puas' -> puas=1, 'tidak' -> puas=0
-        if ($feedbackFilter === 'puas') {
+        if ($feedback === 'Puas') {
             $where[]  = "f.puas = 1";
-        } elseif ($feedbackFilter === 'tidak') {
+        } elseif ($feedback === 'Tidak Puas') {
             $where[]  = "f.puas = 0";
         }
 
-        $sql = "SELECT
+        if (!empty($fromDate)) {
+            $where[]  = "b.tanggal >= ?";
+            $params[] = $fromDate;
+        }
+        if (!empty($toDate)) {
+            $where[]  = "b.tanggal <= ?";
+            $params[] = $toDate;
+        }
+        if (!empty($role)) {
+            $where[]  = "u.role <= ?";
+            $params[] = $role;
+        }
+        if (!empty($unit)) {
+            $where[]  = "u.unit = ?";
+            $params[] = $unit;
+        }
+        if (!empty($jurusan)) {
+            $where[]  = "u.jurusan = ?";
+            $params[] = $jurusan;
+        }
+        if (!empty($programStudi)) {
+            $where[]  = "u.program_studi = ?";
+            $params[] = $programStudi;
+        }
+        if (!empty($searchName)) {
+            // Cari berdasarkan nama penanggung jawab (yang buat booking) atau nama user
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
+            $like     = '%' . $searchName . '%';
+            $params[] = $like;
+            $params[] = $like;
+        }
+
+        $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
+
+        // Hitung total baris buat pagination
+        $countSql = "SELECT COUNT(*) AS total
+                     FROM {$this->table} f
+                     JOIN user u ON f.user_id = u.user_id
+                     JOIN room r ON f.room_id = r.room_id
+                     {$whereSql}";
+        $totalRow = $this->query($countSql, $params)->fetch();
+        $total    = (int)($totalRow['total'] ?? 0);
+
+        if ($total === 0) {
+            return [
+                'data'         => [],
+                'total'        => 0,
+                'page'         => 1,
+                'total_pages'  => 1,
+                'limit'        => $limit,
+            ];
+        }
+
+        $totalPages = max(1, (int)ceil($total / $limit));
+        if ($page > $totalPages) {
+            $page = $totalPages; // clamp supaya ga dapat halaman kosong
+        }
+        $offset = ($page - 1) * $limit;
+
+        //Ambil data sesuai halaman + urut
+        $dataSql = "SELECT
                     f.feedback_id,
                     f.booking_id,
                     f.user_id,
@@ -52,24 +123,18 @@ class Feedback extends Model
                 FROM {$this->table} f
                 JOIN user u ON f.user_id = u.user_id
                 JOIN room r ON f.room_id = r.room_id
-                LEFT JOIN booking b ON b.booking_id = f.booking_id";
+                LEFT JOIN booking b ON b.booking_id = f.booking_id
+                {$whereSql} LIMIT {$limit} OFFSET {$offset}";
+        $rows = $this->query($dataSql, $params)->fetchAll();
 
-        if ($where) {
-            $sql .= " WHERE " . implode(' AND ', $where);
-        }
-
-        // Urutkan berdasarkan tanggal_feedback
-        $sql .= " ORDER BY f.tanggal_feedback {$order}";
-
-        return $this->query($sql, $params)->fetchAll();
+        return [
+            'data'        => $rows,
+            'total'       => $total,
+            'page'        => $page,
+            'total_pages' => $totalPages,
+            'limit'       => $limit,
+        ];
     }
-
-    // Versi lama (tanpa filter) masih bisa dipakai jika diperlukan
-    public function getAllWithRelations()
-    {
-        return $this->getAllWithFilters('desc', 'all');
-    }
-
     
     // Ambil feedback berdasarkan booking (untuk form edit/cek sudah ada)
     public function findByBooking($bookingId, $userId)

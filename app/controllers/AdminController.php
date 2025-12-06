@@ -27,16 +27,18 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
-        #buat set auto selesai kalu jam booking udah nyentuh jam selesai
+        #buat set auto selesai kalo jam booking udah nyentuh jam selesai
         $bookingModel->markFinishedBookings();
 
-        #filter dashboard data booking
-        $sortCreate = strtolower($_GET['sort_create'] ?? 'desc');
-        $roleSel    = $_GET['role'] ?? '';
-        $unitSel    = $_GET['unit'] ?? '';
-        $jurusanSel = $_GET['jurusan'] ?? '';
-        $prodiSel   = $_GET['program_studi'] ?? '';
-        $keyword    = trim($_GET['keyword'] ?? '');
+        #filter dashboard data booking + feedback
+        $sortCreate  = strtolower($_GET['sort_create'] ?? 'desc');
+        $roleSel     = $_GET['role'] ?? '';
+        $unitSel     = $_GET['unit'] ?? '';
+        $jurusanSel  = $_GET['jurusan'] ?? '';
+        $prodiSel    = $_GET['program_studi'] ?? '';
+        $feedbackSel = $_GET['feedback'] ?? '';
+        $keyword     = trim($_GET['keyword'] ?? '');
+
         
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
@@ -54,12 +56,25 @@ class AdminController {
                         $perPage,
                         $page);
         
+        $feedbackpagination = $feedbackModel->feedbackgetAllSortedPaginated(
+                        $sortCreate,
+                        $roleSel ?: null,
+                        $unitSel ?: null,
+                        $jurusanSel ?: null,
+                        $prodiSel ?: null,
+                        $feedbackSel ?: null,
+                        $keyword ?: null,
+                        $perPage,
+                        $page);
+        
         $todayBookings = $pagination['data'];    
-    
-        $roleList    = $this->roleOptions();
-        $unitList    = $this->unitOptions();
-        $jurusanList = $this->jurusanOptions();
-        $prodiList   = $this->prodiOptions();
+        $feedbacks     = $feedbackpagination['data'];
+
+        $roleList     = $this->roleOptions();
+        $unitList     = $this->unitOptions();
+        $jurusanList  = $this->jurusanOptions();
+        $prodiList    = $this->prodiOptions();
+        $feedbackList = $this->feedbackOptions();
 
         $filters = [
             'sort_create'   => $sortCreate,
@@ -70,16 +85,17 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        #data tabel dashboard admin ruangan populer dan feedback user
+        #Ruangan dengan Booking terbanyak
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
-        #filter data feedback
-        $fbSortDate      = strtolower($_GET['fb_sort_date'] ?? 'desc');
-        $fbSortFeedback  = strtolower($_GET['fb_sort_feedback'] ?? 'all');
-        $feedbacks       = $feedbackModel->getAllWithFilters($fbSortDate, $fbSortFeedback);
 
         $fbFilters = [
-            'fb_sort_date'      => $fbSortDate,
-            'fb_sort_feedback'  => $fbSortFeedback,
+            'sort_create'   => $sortCreate,
+            'role'          => $roleSel,
+            'unit'          => $unitSel,
+            'jurusan'       => $jurusanSel,
+            'program_studi' => $prodiSel,
+            'feedback'      => $feedbackSel,
+            'keyword'       => $keyword,
         ];
 
         $success = Session::get('flash_success');
@@ -351,6 +367,14 @@ class AdminController {
         exit;
     }
     
+    private function feedbackOptions(): array
+    {
+        return[
+            'Puas',
+            'Tidak Puas',
+        ];
+    }
+
     private function roleOptions(): array
     {
         return[
