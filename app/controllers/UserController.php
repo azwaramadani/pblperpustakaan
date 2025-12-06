@@ -18,7 +18,8 @@ class UserController{
         $user_id  = Session::get('user_id');
         $user     = $userModel->findById($user_id);
         $toprooms = $bookingModel->getTopRoomsbyBooking(3);
-
+        $rooms    = $roomModel->getAll();
+        
         require __DIR__ . '/../views/user/home.php';
     }
 

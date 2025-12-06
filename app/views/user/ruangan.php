@@ -77,8 +77,6 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-
-
 </main>
 
 <footer class="footer">

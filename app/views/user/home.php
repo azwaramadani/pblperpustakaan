@@ -93,14 +93,16 @@
       <p>Ruang study favorit mahasiswa!</p>
     </div>
     <div class="ruangan-list">
-      <?php foreach ($toprooms as $rooms): ?>
+      <?php foreach ($toprooms as $tr): ?>
         <article class="card">
           <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
           <div class="card-body">
-            <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
-            <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
-            <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
-            <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
+            <h3><?= htmlspecialchars($tr['nama_ruangan']) ?></h3>
+            <p>Kapasitas: <?= htmlspecialchars($tr['kapasitas_min']) ?> - <?=  htmlspecialchars($tr['kapasitas_max'])?> orang </p>
+            <p>Status : <span class="status"><?=  htmlspecialchars($tr['status']) ?></span></p>
+            <a href="?route=Booking/step1/<?= $tr['room_id'] ?>">
+              <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
+            </a>  
           </div>
         </article>
       <?php endforeach; ?>  
