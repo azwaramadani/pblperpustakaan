@@ -130,20 +130,11 @@
   <div class="footer-nav">
     <div>
       <h4>Navigasi</h4>
-      <a href="?route=User/home">Beranda</a>
-      <a href="?route=Guest/ruangan">Ruangan</a>
+      <a href="?route=user/home">Beranda</a>
+      <a href="?route=user/ruangan">Ruangan</a>
       <a id="navigasipanduan" href="#">Panduan</a>
-      <a href="?route=Auth/login">Masuk</a>
     </div>
-
-    <div>
-      <h4>Bantuan</h4>
-      <a href="#">FAQ</a>
-      <a id="bantuanpanduan" href="#">Panduan</a>
-      <a href="#">Alur</a>
-      <a href="#">Akun</a>
-    </div>
-
+    
     <div>
       <h4>Kontak</h4>
       <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>

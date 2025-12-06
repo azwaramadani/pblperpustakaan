@@ -88,34 +88,28 @@
     <?php endif; ?>
 </div>
 
-<!-- ===== Footer ===== -->
 <footer class="footer">
-    <div class="footer-brand">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
-        <p>Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar
-dengan mudah dan efisien.</p>
-    </div>
+  <div class="footer-brand">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
+    <p>Rudy Ruang Study - platform peminjaman ruangan study yang praktis, transparan, dan terintegrasi.</p>
+  </div>
 
-    <div class="footer-nav">
-        <div>
-            <h4>Navigasi</h4>
-            <a href="#">Beranda</a>
-            <a href="#">Daftar Ruangan</a>
-            <a href="#">Panduan</a>
-            <a href="#">Masuk</a>
-        </div>
-        <div>
-            <h4>Bantuan</h4>
-            <a href="#">FAQ</a>
-            <a href="#">Aturan Ruangan</a>
-        </div>
-        <div>
-            <h4>Kontak</h4>
-            <p>PerpusPNJ@gmail.com</p>
-            <p>0822-3245-6780</p>
-            <p>Kampus PNJ, Depok</p>
-        </div>
+  <div class="footer-nav">
+    <div>
+      <h4>Navigasi</h4>
+      <a href="?route=user/home">Beranda</a>
+      <a href="?route=user/ruangan">Ruangan</a>
+      <a id="navigasipanduan" href="#">Panduan</a>
     </div>
+    
+    <div>
+      <h4>Kontak</h4>
+      <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
+      <a href="tel:0822123456780">0822123456780</a>
+      <p>Kampus PNJ, Depok</p>
+    </div>
+  </div>
 </footer>
+
 </body>
 </html>
