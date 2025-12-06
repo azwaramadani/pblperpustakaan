@@ -14,7 +14,7 @@ class FeedbackController
         $feedbackModel = new Feedback();
 
         $userId  = Session::get('user_id');
-        $booking = $bookingModel->findByIdAndUser($bookingId, $userId); // pastikan punya booking ini
+        $booking = $bookingModel->findByIdAndUser($bookingId, $userId); //mastiin bisa kasih feedback kalau sudah booking
 
         if (!$booking) {
             http_response_code(404);

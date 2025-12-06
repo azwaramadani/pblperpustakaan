@@ -42,14 +42,14 @@ class Session
     public static function checkUserLogin()
     {
         if (!self::get('user_id')) {
-            header('Location: /login');
+            header('Location: /pblperpustakaan');
             exit;
         }
     }
 
     public static function checkAdminLogin(){
         if (!self::get('admin_id')) {
-            header('Location: /login');
+            header('Location: /pblperpustakaan');
             exit;
         }
     }
