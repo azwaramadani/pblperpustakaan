@@ -216,14 +216,15 @@ class AdminController {
         $admin      = $adminModel->findById($adminId);
         
         #filter data akun
-        $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
-        $fromDate   = $_GET['from_date'] ?? '';
-        $toDate     = $_GET['to_date'] ?? '';
-        $roleSel    = $_GET['role'] ?? '';
-        $unitSel    = $_GET['unit'] ?? '';
-        $jurusanSel = $_GET['jurusan'] ?? '';
-        $prodiSel   = $_GET['program_studi'] ?? '';
-        $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
+        $sortDate      = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate      = $_GET['from_date'] ?? '';
+        $toDate        = $_GET['to_date'] ?? '';
+        $roleSel       = $_GET['role'] ?? '';
+        $unitSel       = $_GET['unit'] ?? '';
+        $jurusanSel    = $_GET['jurusan'] ?? '';
+        $prodiSel      = $_GET['program_studi'] ?? '';
+        $statusakunSel = $_GET['status_akun'] ?? '';
+        $keyword       = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
@@ -243,24 +244,26 @@ class AdminController {
                         $page);
 
         $paginationregist = $userModel->userregistgetAllSortedPaginated(
-                        $sortDate, 
-                        $fromDate ?: null, 
-                        $toDate ?: null,
-                        $roleSel ?: null,
-                        $unitSel ?: null,
-                        $jurusanSel ?: null,
-                        $prodiSel ?: null,
-                        $keyword ?: null,
-                        $perPage,
-                        $page);
+                                $sortDate, 
+                                $fromDate ?: null, 
+                                $toDate ?: null,
+                                $roleSel ?: null,
+                                $unitSel ?: null,
+                                $jurusanSel ?: null,
+                                $prodiSel ?: null,
+                                $statusakunSel ?: null,
+                                $keyword ?: null,
+                                $perPage,
+                                $page);
         
         $userregist = $paginationregist['data'];               
         $users      = $pagination['data'];
 
-        $roleList    = $this->roleOptions();
-        $unitList    = $this->unitOptions();
-        $jurusanList = $this->jurusanOptions();
-        $prodiList   = $this->prodiOptions();
+        $roleList        = $this->roleOptions();
+        $unitList        = $this->unitOptions();
+        $jurusanList     = $this->jurusanOptions();
+        $prodiList       = $this->prodiOptions();
+        $statusakunList  = $this->statusakunOptions();
 
         $filters = [
             'sort_date'     => $sortDate,
@@ -270,6 +273,7 @@ class AdminController {
             'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
+            'status_akun'   => $statusakunSel,
             'keyword'       => $keyword,
         ];
 
@@ -351,6 +355,14 @@ class AdminController {
             'Mahasiswa',
             'Dosen',
             'Tenaga Kependidikan',
+        ];
+    }
+
+    private function statusakunOptions(): array
+    {
+        return [
+            'Menunggu',
+            'Ditolak',
         ];
     }
 

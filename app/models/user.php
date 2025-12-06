@@ -127,6 +127,7 @@ class User extends Model
         ?string $unit         = null,
         ?string $jurusan      = null,
         ?string $programStudi = null,
+        ?string $statusAkun   = null,
         ?string $searchName   = null, 
         int $limit            = 10,
         int $page             = 1
@@ -163,6 +164,10 @@ class User extends Model
         if (!empty($programStudi)) {
             $where[]  = "user.program_studi = ?";
             $params[] = $programStudi;
+        }
+        if (!empty($statusAkun)) {
+            $where[]  = "user.status_akun = ?";
+            $params[] = $statusAkun;
         }
         if (!empty($searchName)) {
             // Cari di nama atau nim/nip user

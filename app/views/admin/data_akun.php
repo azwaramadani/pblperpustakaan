@@ -1,12 +1,13 @@
 <?php
-$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
-$users       = $users ?? [];
-$userregist  = $userregist ?? [];
-$roleList    = $roleList ?? [];
-$unitList    = $unitList ?? [];
-$jurusanList = $jurusanList ?? [];
-$prodiList   = $prodiList ?? [];
+$adminName      = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$filters        = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'status_akun'=>'', 'keyword'=>''];
+$users          = $users ?? [];
+$userregist     = $userregist ?? [];
+$roleList       = $roleList ?? [];
+$unitList       = $unitList ?? [];
+$jurusanList    = $jurusanList ?? [];
+$prodiList      = $prodiList ?? [];
+$statusakunList = $statusakunList ?? [];
 
 //pagination
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
@@ -145,13 +146,21 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
+
+          <label>Status Akun</label>
+          <select name="status_akun">
+            <option value="">Semua</option>
+            <?php foreach ($statusakunList as $stl): ?>
+              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filters['status_akun']===$stl?'selected':'') ?>><?= htmlspecialchars($stl) ?></option>
+            <?php endforeach; ?>
+          </select>
           <br>
           
           <div class="search-bar">
             <input
               type="text"
               name="keyword"
-              placeholder="Cari nama akun..."
+              placeholder="Cari nama atau NIM/NIP akun..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -186,7 +195,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($userregist)): ?>
-                <tr><td colspan="10" style="text-align:center;">user dengan nama atau nim/nip tersebut sudah divalidasi.</td></tr>
+                <tr><td colspan="10" style="text-align:center;">user sudah divalidasi.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($userregist as $ur): ?>
@@ -312,7 +321,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <input
               type="text"
               name="keyword"
-              placeholder="Cari nama akun..."
+              placeholder="Cari nama atau NIM/NIP akun..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
