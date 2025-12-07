@@ -55,11 +55,11 @@ Class bookingController{
         $userModel    = new User();
         $roomModel    = new Room();
         $bookingModel = new Booking();
-        
 
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
 
+        // cek bentrok jadwal
         if ($bookingModel->hasOverlap(
                 $payload['room_id'], 
                 $payload['tanggal'], 
@@ -85,19 +85,24 @@ Class bookingController{
             exit;
         }
 
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+
+        $anggotaInput = $_POST['nim_anggota'] ?? [];
+        $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
+
         $payload = [
             'room_id'                 => (int)($_POST['room_id'] ?? 0),
             'tanggal'                 => trim($_POST['tanggal'] ?? ''),
             'jam_mulai'               => trim($_POST['jam_mulai'] ?? ''),
             'jam_selesai'             => trim($_POST['jam_selesai'] ?? ''),
-            'jumlah_peminjam'        => (int)($_POST['jumlah_peminjam'] ?? 0),
+            'jumlah_peminjam'         => (int)($_POST['jumlah_peminjam'] ?? 0),
             'nama_penanggung_jawab'   => trim($_POST['nama_penanggung_jawab'] ?? ''),
             'nimnip_penanggung_jawab' => trim($_POST['nimnip_penanggung_jawab'] ?? ''),
             'email_penanggung_jawab'  => trim($_POST['email_penanggung_jawab'] ?? ''),
-            'nimnip_peminjam'         => trim($_POST['nimnip_peminjam'] ?? ''),
         ];
 
-        foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab','nimnip_peminjam'] as $key) {
+        foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
             if (empty($payload[$key])) {
                 Session::set('flash_error', 'Lengkapi semua field.');
                 header('Location: ?route=Booking/step1/'.$payload['room_id']);
@@ -105,31 +110,39 @@ Class bookingController{
             }
         }
 
-        $roomModel = new Room();
+        // Minimal 1 anggota
+        if (count($anggota) === 0) {
+            Session::set('flash_error', 'Tambahkan minimal 1 NIM/NIP anggota.');
+            header('Location: ?route=Booking/step1/' . $payload['room_id']);
+            exit;
+        }
+
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) {
             http_response_code(404);
             exit('Ruangan tidak ditemukan.');
         }
 
-        $bookingModel = new Booking();
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
             Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
             exit;
         }
 
-        // validasi nimnip_peminjam gaboleh minjem ruangan yang sama di tanggal yang sama
-        if ($bookingModel->memberAlreadyBooked(
-                $payload['nimnip_peminjam'],
-                $payload['room_id'],
-                $payload['tanggal']
-            )) {
+        // Cek setiap NIM (penanggung + semua anggota) supaya tidak double-book tanggal & ruangan yang sama
+        $nimsToCheck   = $anggota;
+        $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
 
-            Session::set('flash_error', 'NIM/NIP ini sudah pernah terdaftar sebagai peminjam ruangan ini pada tanggal tersebut.');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']); 
-            exit;
+        foreach ($nimsToCheck as $nimCheck) {
+            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['room_id'], $payload['tanggal'])) {
+                Session::set('flash_error', 'NIM/NIP ' . $nimCheck . ' sudah terdaftar di ruangan ini pada tanggal tersebut.');
+                header('Location: ?route=Booking/step1/' . $payload['room_id']);
+                exit;
+            }
         }
+
+        // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
+        $payload['nimnip_peminjam'] = implode(',', $anggota);
         
         $payload['user_id']        = Session::get('user_id');
         $payload['status_booking'] = 'Disetujui';
