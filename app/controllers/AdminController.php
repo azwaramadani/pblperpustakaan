@@ -226,6 +226,234 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
 
+    # Form tambah ruangan
+    public function addRuangan()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $adminModel = new Admin();
+        $adminId    = Session::get('admin_id');
+        $admin      = $adminModel->findById($adminId);
+
+        $success = Session::get('flash_success');
+        $error   = Session::get('flash_error');
+        Session::set('flash_success', null);
+        Session::set('flash_error', null);
+
+        require __DIR__ . '/../views/admin/add_ruangan.php';
+    }
+
+    # Simpan ruangan baru
+    public function storeRuangan()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $namaRuangan   = trim($_POST['nama_ruangan'] ?? '');
+        $kapasitasMin  = (int)($_POST['kapasitas_min'] ?? 0);
+        $kapasitasMax  = (int)($_POST['kapasitas_max'] ?? 0);
+        $deskripsi     = trim($_POST['deskripsi'] ?? '');
+        $status        = $_POST['status'] ?? 'Tersedia';
+        $manualImage   = trim($_POST['gambar_ruangan_manual'] ?? '');
+        $statusAllowed = ['Tersedia','Tidak Tersedia'];
+
+        if (!in_array($status, $statusAllowed, true)) {
+            $status = 'Tersedia';
+        }
+
+        if ($namaRuangan === '' || $kapasitasMin <= 0 || $kapasitasMax <= 0 || $kapasitasMin > $kapasitasMax) {
+            Session::set('flash_error', 'Lengkapi data ruangan dengan benar (kapasitas min tidak boleh lebih besar dari maks).');
+            header('Location: ?route=Admin/addRuangan');
+            exit;
+        }
+
+        # Upload gambar kalau ada, atau pakai path manual
+        $gambarPath = $this->handleRoomImageUpload($_FILES['gambar_ruangan'] ?? [], $manualImage ?: null);
+
+        $roomModel = new Room();
+        $roomModel->create([
+            'gambar_ruangan' => $gambarPath,
+            'nama_ruangan'   => $namaRuangan,
+            'kapasitas_min'  => $kapasitasMin,
+            'kapasitas_max'  => $kapasitasMax,
+            'deskripsi'      => $deskripsi,
+            'status'         => $status,
+        ]);
+
+        Session::set('flash_success', 'Ruangan berhasil ditambahkan.');
+        header('Location: ?route=Admin/dataRuangan');
+        exit;
+    }
+
+    # Form edit ruangan
+    public function editRuangan($roomId)
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $adminModel = new Admin();
+        $roomModel  = new Room();
+
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
+        $room    = $roomModel->findById((int)$roomId);
+
+        if (!$room) {
+            Session::set('flash_error', 'Ruangan tidak ditemukan.');
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $success = Session::get('flash_success');
+        $error   = Session::get('flash_error');
+        Session::set('flash_success', null);
+        Session::set('flash_error', null);
+
+        require __DIR__ . '/../views/admin/edit_ruangan.php';
+    }
+
+    # Update data ruangan
+    public function updateRuangan()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $roomId       = (int)($_POST['room_id'] ?? 0);
+        $namaRuangan  = trim($_POST['nama_ruangan'] ?? '');
+        $kapasitasMin = (int)($_POST['kapasitas_min'] ?? 0);
+        $kapasitasMax = (int)($_POST['kapasitas_max'] ?? 0);
+        $deskripsi    = trim($_POST['deskripsi'] ?? '');
+        $status       = $_POST['status'] ?? 'Tersedia';
+        $manualImage  = trim($_POST['gambar_ruangan_manual'] ?? '');
+        $statusAllowed = ['Tersedia','Tidak Tersedia'];
+
+        if (!in_array($status, $statusAllowed, true)) {
+            $status = 'Tersedia';
+        }
+
+        $roomModel = new Room();
+        $existing  = $roomModel->findById($roomId);
+
+        if (!$existing) {
+            Session::set('flash_error', 'Ruangan tidak ditemukan.');
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        if ($namaRuangan === '' || $kapasitasMin <= 0 || $kapasitasMax <= 0 || $kapasitasMin > $kapasitasMax) {
+            Session::set('flash_error', 'Lengkapi data ruangan dengan benar (kapasitas min tidak boleh lebih besar dari maks).');
+            header('Location: ?route=Admin/editRuangan/' . $roomId);
+            exit;
+        }
+
+        $currentImage = $manualImage !== '' ? $manualImage : ($existing['gambar_ruangan'] ?? null);
+        $gambarPath   = $this->handleRoomImageUpload($_FILES['gambar_ruangan'] ?? [], $currentImage);
+
+        $roomModel->update($roomId, [
+            'gambar_ruangan' => $gambarPath,
+            'nama_ruangan'   => $namaRuangan,
+            'kapasitas_min'  => $kapasitasMin,
+            'kapasitas_max'  => $kapasitasMax,
+            'deskripsi'      => $deskripsi,
+            'status'         => $status,
+        ]);
+
+        Session::set('flash_success', 'Data ruangan berhasil diperbarui.');
+        header('Location: ?route=Admin/dataRuangan');
+        exit;
+    }
+
+    # Hapus ruangan (dengan konfirmasi modal di view)
+    public function deleteRuangan()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $roomId = (int)($_POST['room_id'] ?? 0);
+        if (!$roomId) {
+            Session::set('flash_error', 'Data ruangan tidak valid.');
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $roomModel = new Room();
+        $room      = $roomModel->findById($roomId);
+
+        if (!$room) {
+            Session::set('flash_error', 'Ruangan sudah tidak ada.');
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        # Hapus file gambar lama kalau masih tersimpan lokal
+        if (!empty($room['gambar_ruangan']) && strpos($room['gambar_ruangan'], 'public/assets/image/ruangan/') === 0) {
+            $oldPath = __DIR__ . '/../../' . $room['gambar_ruangan'];
+            if (file_exists($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        $roomModel->deleteById($roomId);
+
+        Session::set('flash_success', 'Ruangan berhasil dihapus.');
+        header('Location: ?route=Admin/dataRuangan');
+        exit;
+    }
+
+     # Tampilkan feedback per ruangan
+    public function feedbackRuangan($roomId)
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $adminModel    = new Admin();
+        $roomModel     = new Room();
+        $feedbackModel = new Feedback();
+
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
+
+        $room = $roomModel->findWithStats((int)$roomId);
+        if (!$room) {
+            Session::set('flash_error', 'Ruangan tidak ditemukan.');
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $feedbacks = $feedbackModel->getByRoom((int)$roomId);
+        $totalFeedback = count($feedbacks);
+        $puasCount     = 0;
+        foreach ($feedbacks as $fb) {
+            if (!empty($fb['puas'])) {
+                $puasCount++;
+            }
+        }
+
+        $feedbackSummary = [
+            'total'      => $totalFeedback,
+            'puas'       => $puasCount,
+            'tidak_puas' => $totalFeedback - $puasCount,
+        ];
+
+        require __DIR__ . '/../views/admin/feedback_ruangan.php';
+    }
+
     //method handler buat admin kelola data akun user 
     public function dataAkun()
     {
@@ -370,6 +598,35 @@ class AdminController {
         $target  = in_array($redirect, $allowed, true) ? $redirect : 'Admin/dataPeminjaman';
         header('Location: ?route=' . $target);
         exit;
+    }
+    
+     # Helper upload gambar ruangan (opsional)
+    private function handleRoomImageUpload(array $file, ?string $currentPath = null): ?string
+    {
+        // Jika tidak ada file baru, tetap pakai path lama
+        if (!isset($file['name']) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || ($file['size'] ?? 0) <= 0) {
+            return $currentPath;
+        }
+
+        // Simpan ke folder publik supaya bisa diakses oleh browser
+        $uploadDir = __DIR__ . '/../../public/assets/image/ruangan/';
+        $uploaded  = uploadFile($file, $uploadDir);
+
+        if ($uploaded === false) {
+            return $currentPath; // gagal upload, jangan kosongkan gambar lama
+        }
+
+        $newPath = 'public/assets/image/ruangan/' . $uploaded;
+
+        // Hapus file lama kalau sebelumnya disimpan di folder yang sama
+        if ($currentPath && strpos($currentPath, 'public/assets/image/ruangan/') === 0) {
+            $old = __DIR__ . '/../../' . $currentPath;
+            if (file_exists($old)) {
+                @unlink($old);
+            }
+        }
+
+        return $newPath;
     }
     
     private function feedbackOptions(): array

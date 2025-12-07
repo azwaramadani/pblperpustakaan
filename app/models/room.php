@@ -51,6 +51,29 @@ class Room extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    # Ambil satu ruangan + statistiknya
+    public function findWithStats(int $id)
+    {
+        $sql = "SELECT
+                    r.room_id,
+                    r.gambar_ruangan,
+                    r.nama_ruangan,
+                    r.kapasitas_min,
+                    r.kapasitas_max,
+                    r.deskripsi,
+                    r.status,
+                    COUNT(DISTINCT b.booking_id) AS total_booking,
+                    COUNT(DISTINCT f.feedback_id) AS total_feedback,
+                    COALESCE(ROUND(AVG(f.puas) * 100), 0) AS puas_percent
+                FROM {$this->table} r
+                LEFT JOIN booking b ON b.room_id = r.room_id
+                LEFT JOIN feedback f ON f.room_id = r.room_id
+                WHERE r.room_id = ?
+                GROUP BY r.room_id, r.gambar_ruangan, r.nama_ruangan, r.kapasitas_min, r.kapasitas_max, r.deskripsi, r.status
+                LIMIT 1";
+        return $this->query($sql, [$id])->fetch();
+    }
+
     # Tambah ruangan
     public function create($data)
     {
@@ -92,5 +115,12 @@ class Room extends Model
                 WHERE room_id = ?";
 
         return $this->query($sql, [$status, $id]);
+    }
+
+    # Hapus ruangan
+    public function deleteById($id)
+    {
+        $sql = "DELETE FROM {$this->table} WHERE room_id = ?";
+        return $this->query($sql, [$id]);
     }
 }
