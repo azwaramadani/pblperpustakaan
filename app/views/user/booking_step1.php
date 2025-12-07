@@ -1,24 +1,4 @@
 <?php
-// Simulasi Data (jika tidak ada data dari controller)
-// Anda bisa menghapus blok ini jika sudah terintegrasi dengan framework
-$user = $data['user'] ?? [
-  'nama'    => Session::get('nama') ?? 'Mahasiswa PNJ',
-  'nim_nip' => Session::get('nim_nip') ?? '12345678',
-  'no_hp'   => Session::get('no_hp') ?? '08123456789',
-  'email'   => Session::get('email') ?? 'user@pnj.ac.id',
-  'role'    => 'Mahasiswa'
-];
-
-// Pastikan data room ada isinya agar tidak error saat testing
-$room = $data['room'] ?? [
-    'nama_ruangan' => 'Lentera Edukasi',
-    'deskripsi' => 'Ruangan khusus bimbingan dan konseling dengan suasana tenang dan privat. Cocok untuk sesi diskusi, pendampingan akademik, atau konsultasi pribadi.',
-    'kapasitas_min' => 2,
-    'kapasitas_max' => 4,
-    'room_id' => 1
-];
-
-$puasPercent = $data['puas_percent'] ?? 90;
 $badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err  = Session::get('flash_error');
 Session::set('flash_error', null);
@@ -63,8 +43,11 @@ if (!function_exists('app_config')) {
         <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
       </div>
       <div class="profile-card">
-        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>        
-        <p><?= htmlspecialchars($data['user']['role']) ?></p>
+        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+        <p><?= htmlspecialchars($user['role']) ?></p>
+        <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
         <p><?= htmlspecialchars($user['nim_nip']) ?></p>
         <p><?= htmlspecialchars($user['no_hp']) ?></p>
         <p><?= htmlspecialchars($user['email']) ?></p>

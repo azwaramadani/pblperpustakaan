@@ -9,24 +9,19 @@ Class bookingController{
         Session::checkUserLogin();
         Session::preventCache();
 
-        $roomModel = new Room();
+        $roomModel     = new Room();
+        $userModel     = new User();
+        $feedbackModel = new Feedback();
+
         $room = $roomModel->findById($roomId);
+
         if (!$room) {
             http_response_code(404);
             exit('Ruangan tidak ditemukan.');
         }
 
-        $userModel     = new User();
-        $feedbackModel = new Feedback();
-
         $user         = $userModel->findById(Session::get('user_id'));
         $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
-
-        $data = [
-            'room'         => $room,
-            'user'         => $user,
-            'puas_percent' => $puasPercent
-        ];
 
         require __DIR__ . '/../views/user/booking_step1.php';
     }
@@ -36,7 +31,11 @@ Class bookingController{
     {
         Session::checkUserLogin();
         Session::preventCache();
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { header('Location: ?route=User/ruangan'); exit; }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=User/ruangan'); 
+            exit; 
+            }
 
         $payload = [
             'room_id'    => (int)($_POST['room_id'] ?? 0),
@@ -44,27 +43,35 @@ Class bookingController{
             'jam_mulai'  => trim($_POST['jam_mulai'] ?? ''),
             'jam_selesai'=> trim($_POST['jam_selesai'] ?? ''),
         ];
+
         foreach (['room_id','tanggal','jam_mulai','jam_selesai'] as $key) {
             if (empty($payload[$key])) {
                 Session::set('flash_error', 'Isi tanggal dan jam mulai/selesai.');
-                header('Location: ?route=Booking/step1/'.$payload['room_id']); exit;
+                header('Location: ?route=Booking/step1/'.$payload['room_id']); 
+                exit;
             }
         }
 
-        $roomModel = new Room();
+        $userModel    = new User();
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+        
+
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
 
-        $bookingModel = new Booking();
-        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])){
+        if ($bookingModel->hasOverlap(
+                $payload['room_id'], 
+                $payload['tanggal'], 
+                $payload['jam_mulai'], 
+                $payload['jam_selesai']
+        )){
             Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']); exit;
         }
 
-        $userModel = new User();
         $user = $userModel->findById(Session::get('user_id'));
 
-        $data = ['room' => $room, 'payload' => $payload, 'user' => $user];
         require __DIR__ . '/../views/user/booking_step2.php';
     }
 

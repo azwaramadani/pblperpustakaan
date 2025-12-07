@@ -1,14 +1,4 @@
 <?php
-$user    = $data['user'] ?? [
-  'nama'   => Session::get('nama') ?? '',
-  'nim_nip'=> Session::get('nim_nip') ?? '',
-  'no_hp'  => Session::get('no_hp') ?? '',
-  'email'  => Session::get('email') ?? '',
-];
-$room    = $data['room'];
-$payload = $data['payload'];
-$puasPercent = $data['puas_percent'] ?? 0;
-$badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err     = Session::get('flash_error');
 Session::set('flash_error', null);
 ?>
@@ -37,8 +27,11 @@ Session::set('flash_error', null);
         <div class="user-name"><p><?= htmlspecialchars($user['nama']) ?></p></div>
       </div>
       <div class="profile-card">
-        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>        
-        <p><?= htmlspecialchars($data['user']['role']) ?></p>
+        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+        <p><?= htmlspecialchars($user['role']) ?></p>
+        <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+        <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
         <p><?= htmlspecialchars($user['nim_nip']) ?></p>
         <p><?= htmlspecialchars($user['no_hp']) ?></p>
         <p><?= htmlspecialchars($user['email']) ?></p>
@@ -54,6 +47,7 @@ Session::set('flash_error', null);
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
         <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan study') ?></p>
         <p>Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+        <h3>Waktu Peminjaman:</h3>
         <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
       </div>
     </div>
@@ -85,7 +79,7 @@ Session::set('flash_error', null);
         </label>
 
         <label>Jumlah Mahasiswa
-          <input type="number" name="jumlah_peminjam" min="1" value="1" required>
+          <input type="number" name="jumlah_peminjam" min="2" value="2" required>
         </label>
         
         <label>NIM/NIP peminjam ruangan (anggota)
