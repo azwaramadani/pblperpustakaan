@@ -32,6 +32,9 @@ class AdminController {
 
         #filter dashboard data booking + feedback
         $sortCreate  = strtolower($_GET['sort_create'] ?? 'desc');
+        $sortDate    = strtolower($_GET['sort_date'] ?? 'desc');
+        $fromDate    = $_GET['from_date'] ?? '';
+        $toDate      = $_GET['to_date'] ?? '';
         $roleSel     = $_GET['role'] ?? '';
         $unitSel     = $_GET['unit'] ?? '';
         $jurusanSel  = $_GET['jurusan'] ?? '';
@@ -57,7 +60,7 @@ class AdminController {
                         $page);
         
         $feedbackpagination = $feedbackModel->feedbackgetAllSortedPaginated(
-                        $sortCreate,
+                        $sortDate,
                         $roleSel ?: null,
                         $unitSel ?: null,
                         $jurusanSel ?: null,
@@ -89,7 +92,9 @@ class AdminController {
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
 
         $fbFilters = [
-            'sort_create'   => $sortCreate,
+            'sort_date'     => $sortDate,
+            'from_date'     => $fromDate,
+            'to_date'       => $toDate,
             'role'          => $roleSel,
             'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,

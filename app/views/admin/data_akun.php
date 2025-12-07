@@ -1,22 +1,13 @@
 <?php
 $adminName      = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters        = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'status_akun'=>'', 'keyword'=>''];
-$users          = $users ?? [];
-$userregist     = $userregist ?? [];
-$roleList       = $roleList ?? [];
-$unitList       = $unitList ?? [];
-$jurusanList    = $jurusanList ?? [];
-$prodiList      = $prodiList ?? [];
-$statusakunList = $statusakunList ?? [];
-
 //pagination
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($users)];
 
 //buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
 $perPage     = (int)($pagination['limit'] ?? 10);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
-$totalRows   = (int)($pagination['total'] ?? count($bookings));
+$totalRows   = (int)($pagination['total'] ?? count($users));
 
 $startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
 $endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
@@ -28,7 +19,7 @@ unset($queryParams['page']); // page dipasang ulang sesuai tombol yang diklik
 $baseQuery                   = http_build_query($queryParams);
 $baseQuery                   = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dataAkun&';
 
-// Tentukan range nomor halaman yang ditampilkan (max 5 nomor)
+// Tentukan range nomor halaman yang ditampilin
 $maxLinks   = 5;
 $startPage  = max(1, $currentPage - 2);
 $endPage    = min($totalPages, $currentPage + 2);
@@ -195,7 +186,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($userregist)): ?>
-                <tr><td colspan="10" style="text-align:center;">user sudah divalidasi.</td></tr>
+                <tr><td colspan="11" style="text-align:center;">user sudah divalidasi.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($userregist as $ur): ?>
@@ -357,7 +348,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </thead>
           <tbody>
             <?php if (empty($users)): ?>
-              <tr><td colspan="10" style="text-align:center;">Belum ada user dengan nama atau nim/nip tersebut .</td></tr>
+              <tr><td colspan="11" style="text-align:center;">Belum ada data user.</td></tr>
             <?php else: ?>
               <?php $rowNumber = $startRow ?: 1; ?>
               <?php foreach ($users as $u): ?>

@@ -1,5 +1,4 @@
 <?php
-$rooms = $rooms ?? [];
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 ?>
 

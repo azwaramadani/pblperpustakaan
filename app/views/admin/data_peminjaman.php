@@ -1,11 +1,5 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$filters     = $filters ?? ['sort_date'=>'desc', 'from_date'=>'','to_date'=>'', 'role'=> '', 'unit'=> '', 'jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
-$bookings    = $bookings ?? [];
-$roleList    = $roleList ?? [];
-$unitList      = $unitList ?? [];
-$jurusanList = $jurusanList ?? [];
-$prodiList   = $prodiList ?? [];
 
 //pagination
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
@@ -96,8 +90,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
           <label>Urut tanggal</label>
           <select name="sort_date">
-            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru</option>
+            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama</option>
           </select>
 
           <label>Dari</label>

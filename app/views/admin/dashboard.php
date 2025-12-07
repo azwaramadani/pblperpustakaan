@@ -1,15 +1,7 @@
 <?php
 $adminName     = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$todayBookings = $todayBookings ?? [];
-$topRooms      = $topRooms ?? [];
 $todayDate     = $todayDate ?? date('Y-m-d');
-$feedbacks     = $feedbacks ?? [];
 $stats         = $stats ?? ['user_mustvalidate'=>0, 'user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$filters       = $filters ?? ['sort_create'=>'desc', 'role'=> '', 'unit'=> '','jurusan'=>'', 'program_studi'=>'', 'keyword'=>''];
-$roleList      = $roleList ?? [];
-$unitList      = $unitList ?? [];
-$jurusanList   = $jurusanList ?? [];
-$prodiList     = $prodiList ?? [];
 $success       = $success ?? null;
 $error         = $error ?? null;
 
@@ -148,8 +140,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
           <label>Urut dibuat</label>
           <select name="sort_create">
-            <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+            <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru</option>
+            <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama</option>
           </select>
 
           <label>Role</label>
@@ -337,17 +329,23 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dashboard">
 
-          <label>Urut dibuat</label>
-          <select name="sort_create">
-            <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          <label>Urut Tanggal</label>
+          <select name="sort_date">
+            <option value="desc" <?= ($fbFilters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru</option>
+            <option value="asc"  <?= ($fbFilters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama</option>
           </select>
+
+          <label>Dari</label>
+          <input type="date" name="from_date" value="<?= htmlspecialchars($fbFilters['from_date']) ?>">
+
+          <label>Sampai</label>
+          <input type="date" name="to_date" value="<?= htmlspecialchars($fbFilters['to_date']) ?>">        
 
           <label>Role</label>
           <select name="role">
             <option value="">Semua</option>
             <?php foreach ($roleList as $rl): ?>
-              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($fbFilters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -355,7 +353,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="unit">
             <option value="">Semua</option>
             <?php foreach ($unitList as $unl): ?>
-              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($fbFilters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
             <?php endforeach; ?>
           </select>    
 
@@ -432,6 +430,25 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </tbody>
           </table>
         </div>
+
+        <!-- Kontrol pagination -->
+        <div class="pagination-bar">
+          <div class="pagination-info">
+            Menampilkan <?= $startRow ? "{$startRow} - {$endRow}" : "0" ?> dari <?= $totalRows ?> Data.
+          </div>
+          <div class="pagination-nav">
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
+            <a class="page-btn secondary <?= $disablePrev ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPage - 1) ?>">‹ Sebelumnya</a>
+
+            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+              <a class="page-btn <?= ($p === $currentPage) ? 'active' : 'secondary' ?>" href="?<?= $baseQuery ?>page=<?= $p ?>"><?= $p ?></a>
+            <?php endfor; ?>
+
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= min($totalPages, $currentPage + 1) ?>">Berikutnya ›</a>
+            <a class="page-btn secondary <?= $disableNext ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= $totalPages ?>">Terakhir »</a>
+          </div>
+        </div>
+
       </section>
     </main>
   </div>

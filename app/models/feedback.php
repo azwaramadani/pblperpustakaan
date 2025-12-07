@@ -47,13 +47,12 @@ class Feedback extends Model
         } elseif ($feedback === 'Tidak Puas') {
             $where[]  = "f.puas = 0";
         }
-
         if (!empty($fromDate)) {
-            $where[]  = "b.tanggal >= ?";
+            $where[]  = "f.tanggal_feedback >= ?";
             $params[] = $fromDate;
         }
         if (!empty($toDate)) {
-            $where[]  = "b.tanggal <= ?";
+            $where[]  = "f.tanggal_feedback <= ?";
             $params[] = $toDate;
         }
         if (!empty($role)) {
@@ -87,6 +86,7 @@ class Feedback extends Model
                      FROM {$this->table} f
                      JOIN user u ON f.user_id = u.user_id
                      JOIN room r ON f.room_id = r.room_id
+                     JOIN booking b ON f.booking_id = b.booking_id
                      {$whereSql}";
         $totalRow = $this->query($countSql, $params)->fetch();
         $total    = (int)($totalRow['total'] ?? 0);
@@ -123,8 +123,10 @@ class Feedback extends Model
                 FROM {$this->table} f
                 JOIN user u ON f.user_id = u.user_id
                 JOIN room r ON f.room_id = r.room_id
-                LEFT JOIN booking b ON b.booking_id = f.booking_id
-                {$whereSql} LIMIT {$limit} OFFSET {$offset}";
+                JOIN booking b ON b.booking_id = f.booking_id
+                {$whereSql} 
+                ORDER BY f.tanggal_feedback {$order}
+                LIMIT {$limit} OFFSET {$offset}";
         $rows = $this->query($dataSql, $params)->fetchAll();
 
         return [

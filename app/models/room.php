@@ -5,7 +5,7 @@
 
 class Room extends Model
 {
-    protected $table = 'room';   # ← ini yang benar
+    protected $table = 'room';   
 
     # Ambil semua ruangan
     public function getAll()
@@ -42,20 +42,6 @@ class Room extends Model
                 GROUP BY r.room_id, r.gambar_ruangan, r.nama_ruangan, r.kapasitas_min, r.kapasitas_max, r.deskripsi, r.status
                 ORDER BY r.nama_ruangan ASC";
         return $this->query($sql)->fetchAll();
-    }
-
-    # Ambil ruangan populer (opsional kalau punya rating)
-    public function getPopular()
-    {
-        $sql = "SELECT * FROM {$this->table} ORDER BY room_id ASC LIMIT 3";
-        return $this->query($sql)->fetchAll();
-    }
-
-    # Ambil berdasarkan ID
-    public function findById($id)
-    {
-        $sql = "SELECT * FROM {$this->table} WHERE room_id = ?";
-        return $this->query($sql, [$id])->fetch();
     }
 
     # Tambah ruangan
