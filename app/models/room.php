@@ -10,11 +10,11 @@ class Room extends Model
     # Ambil semua ruangan
     public function getAll()
     {
-        $sql = "SELECT * FROM {$this->table} ORDER BY nama_ruangan ASC";
+        $sql = "SELECT * FROM {$this->table} ORDER BY status ASC";
         return $this->query($sql)->fetchAll();
     }
 
-    # buat user pilih ruangan trus booking
+    # method handler buat user pilih ruangan -> booking
     public function findById($id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE room_id = ?";
@@ -51,7 +51,7 @@ class Room extends Model
         return $this->query($sql)->fetchAll();
     }
 
-    # Ambil satu ruangan + statistiknya
+    # method buat feedback ruangan panel admin
     public function findWithStats(int $id)
     {
         $sql = "SELECT
@@ -74,7 +74,7 @@ class Room extends Model
         return $this->query($sql, [$id])->fetch();
     }
 
-    # Tambah ruangan
+    # Method Tambah ruangan
     public function create($data)
     {
         $sql = "INSERT INTO {$this->table}
@@ -90,7 +90,7 @@ class Room extends Model
         ]);
     }
 
-    # Update ruangan
+    # Method Update data ruangan
     public function update($id, $data)
     {
         $sql = "UPDATE {$this->table}
@@ -106,16 +106,6 @@ class Room extends Model
             $data['status'],
             $id
         ]);
-    }
-
-    # Update status ruangan
-    public function updateStatus($id, $status)
-    {
-        $sql = "UPDATE {$this->table}
-                SET status = ?
-                WHERE room_id = ?";
-
-        return $this->query($sql, [$status, $id]);
     }
 
     # Hapus ruangan

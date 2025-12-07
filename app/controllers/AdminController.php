@@ -244,7 +244,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/add_ruangan.php';
     }
 
-    # Simpan ruangan baru
+    #method handler buat nambah ruangan baru
     public function storeRuangan()
     {
         Session::checkAdminLogin();
@@ -291,7 +291,7 @@ class AdminController {
         exit;
     }
 
-    # method handler buat redirect ke form edit ruangan
+    # method handler buat redirect admin ke form edit ruangan
     public function editRuangan($roomId)
     {
         Session::checkAdminLogin();
@@ -318,7 +318,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/edit_ruangan.php';
     }
 
-    # method handler form edit ruangannya
+    # ini baru method handler utama buat edit ruangan
     public function updateRuangan()
     {
         Session::checkAdminLogin();
