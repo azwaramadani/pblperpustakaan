@@ -94,7 +94,7 @@ class Room extends Model
     public function update($id, $data)
     {
         $sql = "UPDATE {$this->table}
-                SET gambar_ruangan=?, nama_ruangan=?, kapasitas_min=?, kapasitas_max=?, deskripsi=?
+                SET gambar_ruangan=?, nama_ruangan=?, kapasitas_min=?, kapasitas_max=?, deskripsi=?, status=?
                 WHERE room_id=?";
 
         return $this->query($sql, [
@@ -103,6 +103,7 @@ class Room extends Model
             $data['kapasitas_min'],
             $data['kapasitas_max'],
             $data['deskripsi'],
+            $data['status'],
             $id
         ]);
     }

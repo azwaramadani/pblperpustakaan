@@ -329,13 +329,13 @@ class AdminController {
             exit;
         }
 
-        $roomId       = (int)($_POST['room_id'] ?? 0);
-        $namaRuangan  = trim($_POST['nama_ruangan'] ?? '');
-        $kapasitasMin = (int)($_POST['kapasitas_min'] ?? 1);
-        $kapasitasMax = (int)($_POST['kapasitas_max'] ?? 0);
-        $deskripsi    = trim($_POST['deskripsi'] ?? '');
-        $status       = $_POST['status'] ?? 'Tersedia';
-        $manualImage  = trim($_POST['gambar_ruangan_manual'] ?? '');
+        $roomId        = (int)($_POST['room_id'] ?? 0);
+        $namaRuangan   = trim($_POST['nama_ruangan'] ?? '');
+        $kapasitasMin  = (int)($_POST['kapasitas_min'] ?? 1);
+        $kapasitasMax  = (int)($_POST['kapasitas_max'] ?? 0);
+        $deskripsi     = trim($_POST['deskripsi'] ?? '');
+        $status        = $_POST['status'] ?? 'Tersedia';
+        $manualImage   = trim($_POST['gambar_ruangan_manual'] ?? '');
         $statusAllowed = ['Tersedia','Tidak Tersedia'];
 
         if (!in_array($status, $statusAllowed, true)) {
