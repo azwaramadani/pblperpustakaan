@@ -64,7 +64,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <?php else: ?>
         <?php foreach ($rooms as $r): ?>
           <?php
-            $img        = $r['gambar_ruangan'] ?: 'public/assets/image/contohruangan.png';
+            $img        = 'public/assets/image/contohruangan.png';
             $imgUrl     = preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/');
             $kapasitas  = $r['kapasitas_min'].' - '.$r['kapasitas_max'].' orang';
             $totalBook  = (int)($r['total_booking'] ?? 0);
@@ -73,11 +73,11 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             $status     = $r['status'] ?? 'Tersedia';
             $statusCls  = (strtolower($status) === 'tersedia') ? 'status-disetujui' : 'status-ditolak';
           ?>
-          <div class="room-card">
-            <div class="room-info">
+          <div class="adminroom-card">
+            <div class="adminroom-info">
               <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                 <h3 style="margin:0;"><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
-                <span class="status-chip <?= $statusCls ?>"><?= htmlspecialchars($status) ?></span>
+                <span class="adminstatus-chip <?= $statusCls ?>"><?= htmlspecialchars($status) ?></span>
               </div>
               <p><strong>Deskripsi:</strong> <?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi.') ?></p>
               <p><strong>Kapasitas:</strong> <?= htmlspecialchars($kapasitas) ?></p>
@@ -96,7 +96,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 </div>
               </div>
             </div>
-            <div class="room-actions">
+            <div class="adminroom-actions">
               <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
               <a class="btn-rect" href="?route=Admin/feedbackRuangan/<?= $r['room_id'] ?>">Lihat Feedback</a>
               <a class="btn-rect" href="?route=Admin/editRuangan/<?= $r['room_id'] ?>">Ubah</a>

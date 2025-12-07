@@ -797,6 +797,68 @@ table.data-table tbody tr:hover {
     margin-bottom: 30px;
 }
 
+/* Kartu ruangan: blok, beri ruang kanan untuk gambar */
+.adminroom-card {
+  display: block;
+  position: relative;
+  padding: 20px 360px 24px 20px;
+  min-height: 230px;
+}
+
+/* Judul + status sejajar */
+.adminroom-info > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.adminroom-info h3 {
+  margin: 0;
+}
+
+.adminruanganstatus-chip {
+  position: static;
+}
+
+/* Gambar ditempatkan di kanan, absolut */
+.adminroom-actions img {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+/* Tombol aksi sejajar (inline) di bawah teks */
+.adminroom-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+.adminroom-actions .btn-rect {
+  min-width: 120px;
+  margin: 0;
+  text-align: center;
+}
+
+/* Responsif: kalau layar sempit, gambar ikut alur normal */
+@media (max-width: 900px) {
+  .adminroom-card {
+    padding-right: 20px;
+  }
+  .adminroom-actions img {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .top-nav {
     flex-direction: column;
