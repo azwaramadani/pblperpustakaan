@@ -75,13 +75,13 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
 
         <label>Status</label>
         <select name="status" required>
-          <option value="Tersedia" <?= (strtolower($room['status'] ?? '') === 'tersedia') ? 'selected' : '' ?>>Tersedia</option>
-          <option value="Tidak Tersedia" <?= (strtolower($room['status'] ?? '') === 'tidak tersedia') ? 'selected' : '' ?>>Tidak Tersedia</option>
+          <option value="Tersedia" <?= (strtolower($room['status'] ?? '') === 'Tersedia') ? 'selected' : '' ?>>Tersedia</option>
+          <option value="Tidak Tersedia" <?= (strtolower($room['status'] ?? '') === 'Tidak Tersedia') ? 'selected' : '' ?>>Tidak Tersedia</option>
         </select>
 
         <label>Gambar saat ini</label>
         <?php if ($imgUrl): ?>
-          <img src="<?= $imgUrl ?>" alt="Gambar ruangan" style="width:240px; border-radius:12px;">
+          <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Gambar ruangan" style="width:240px; border-radius:12px;">
         <?php else: ?>
           <p style="margin:0;">Belum ada gambar.</p>
         <?php endif; ?>

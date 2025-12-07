@@ -711,50 +711,167 @@ table.data-table tbody tr:hover {
     color: #111827;
 }
 
-.room-card {
-    display: flex;
-    justify-content: space-between;
-    gap: 18px;
-    background: #fff;
-    border: 1px solid #e2e6ee;
-    border-radius: 18px;
-    padding: 18px 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 18px;
-}
+  /* Container untuk semua card */
+    .rooms-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-.room-info h3 {
-    margin: 0 0 12px;
-    font-size: 20px;
-    color: #0d8f8c;
-}
+    /* Card individual untuk setiap ruangan */
+    .room-card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+    }
 
-.room-info p {
-    margin: 6px 0;
-    color: #111;
-    font-size: 14px;
-    line-height: 1.5;
-}
+    .room-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-.room-info strong {
-    color: #111827;
-}
+    /* Bagian kiri: Informasi ruangan */
+    .room-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-.room-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    min-width: 210px;
-}
+    .room-info h3 {
+      font-size: 20px;
+      margin: 0 0 8px 0;
+      color: #212529;
+      font-weight: 600;
+    }
 
-.room-actions img {
-    width: 240px;
-    height: 160px;
-    border-radius: 14px;
-    object-fit: cover;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-}
+    .room-info p {
+      margin: 0;
+      line-height: 1.6;
+      color: #495057;
+      font-size: 14px;
+    }
+
+    .room-info p strong {
+      color: #212529;
+      font-weight: 600;
+    }
+
+    /* Bagian kanan: Gambar dan tombol aksi */
+    .room-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      min-width: 280px;
+    }
+
+    .room-actions img {
+      width: 280px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    /* Container tombol */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    /* Styling tombol aksi */
+    .btn-action {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-feedback {
+      background: #FFC107;
+      color: #000;
+    }
+
+    .btn-feedback:hover {
+      background: #FFB300;
+    }
+
+    .btn-edit {
+      background: #FFC107;
+      color: #000;
+    }
+
+    .btn-edit:hover {
+      background: #FFB300;
+    }
+
+    .btn-delete {
+      background: #FFC107;
+      color: #000;
+    }
+
+    .btn-delete:hover {
+      background: #FFB300;
+    }
+
+    /* Status chip */
+    .status-chip {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .status-tersedia {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-tidak-tersedia {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* Responsive untuk mobile */
+    @media (max-width: 768px) {
+      .room-card {
+        flex-direction: column;
+      }
+
+      .room-actions {
+        min-width: 100%;
+        align-items: stretch;
+      }
+
+      .room-actions img {
+        width: 100%;
+      }
+
+      .action-buttons {
+        justify-content: stretch;
+        flex-wrap: wrap;
+      }
+
+      .btn-action {
+        flex: 1;
+        min-width: 100px;
+      }
+    }
 
 .btn-rect {
     border: none;

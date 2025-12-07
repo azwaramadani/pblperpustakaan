@@ -291,7 +291,7 @@ class AdminController {
         exit;
     }
 
-    # Form edit ruangan
+    # method handler buat redirect ke form edit ruangan
     public function editRuangan($roomId)
     {
         Session::checkAdminLogin();
@@ -318,7 +318,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/edit_ruangan.php';
     }
 
-    # Update data ruangan
+    # method handler form edit ruangannya
     public function updateRuangan()
     {
         Session::checkAdminLogin();
@@ -331,7 +331,7 @@ class AdminController {
 
         $roomId       = (int)($_POST['room_id'] ?? 0);
         $namaRuangan  = trim($_POST['nama_ruangan'] ?? '');
-        $kapasitasMin = (int)($_POST['kapasitas_min'] ?? 0);
+        $kapasitasMin = (int)($_POST['kapasitas_min'] ?? 1);
         $kapasitasMax = (int)($_POST['kapasitas_max'] ?? 0);
         $deskripsi    = trim($_POST['deskripsi'] ?? '');
         $status       = $_POST['status'] ?? 'Tersedia';

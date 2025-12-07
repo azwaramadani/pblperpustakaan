@@ -1,6 +1,5 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$feedbacks   = $feedbacks ?? [];
 $summary     = $feedbackSummary ?? ['total'=>0,'puas'=>0,'tidak_puas'=>0];
 ?>
 
@@ -51,7 +50,7 @@ $summary     = $feedbackSummary ?? ['total'=>0,'puas'=>0,'tidak_puas'=>0];
           <h3><?= htmlspecialchars($room['nama_ruangan'] ?? '-') ?></h3>
           <p class="subtitle"><?= htmlspecialchars($room['deskripsi'] ?? 'Belum ada deskripsi.') ?></p>
         </div>
-        <a class="btn-add" href="?route=Admin/dataRuangan">Kembali ke Data Ruangan</a>
+        <a class="btn-add" href="?route=Admin/dataRuangan" style="text-decoration: none">Kembali ke Data Ruangan</a>
       </div>
 
       <div class="panel" style="margin-bottom:16px;">
