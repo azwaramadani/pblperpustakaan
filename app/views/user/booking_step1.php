@@ -1,35 +1,62 @@
 <?php
+// Simulasi Data (jika tidak ada data dari controller)
+// Anda bisa menghapus blok ini jika sudah terintegrasi dengan framework
 $user = $data['user'] ?? [
-  'nama'   => Session::get('nama') ?? '',
-  'nim_nip'=> Session::get('nim_nip') ?? '',
-  'no_hp'  => Session::get('no_hp') ?? '',
-  'email'  => Session::get('email') ?? '',
+  'nama'    => Session::get('nama') ?? 'Mahasiswa PNJ',
+  'nim_nip' => Session::get('nim_nip') ?? '12345678',
+  'no_hp'   => Session::get('no_hp') ?? '08123456789',
+  'email'   => Session::get('email') ?? 'user@pnj.ac.id',
+  'role'    => 'Mahasiswa'
 ];
-$room = $data['room'] ?? [];
-$puasPercent = $data['puas_percent'] ?? 0;
+
+// Pastikan data room ada isinya agar tidak error saat testing
+$room = $data['room'] ?? [
+    'nama_ruangan' => 'Lentera Edukasi',
+    'deskripsi' => 'Ruangan khusus bimbingan dan konseling dengan suasana tenang dan privat. Cocok untuk sesi diskusi, pendampingan akademik, atau konsultasi pribadi.',
+    'kapasitas_min' => 2,
+    'kapasitas_max' => 4,
+    'room_id' => 1
+];
+
+$puasPercent = $data['puas_percent'] ?? 90;
 $badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err  = Session::get('flash_error');
 Session::set('flash_error', null);
+
+// Helper function untuk base_url jika belum didefinisikan (untuk preview)
+if (!function_exists('app_config')) {
+    function app_config() { return ['base_url' => '']; }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pilih Tanggal & Jam - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleriwayat.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Link ke File CSS Eksternal -->
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css">
+  
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <header class="navbar">
-    <div class="logo">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
+    <div class="nav-left">
+      <!-- Pastikan path logo benar -->
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
     </div>
+    
     <nav class="nav-menu">
       <a href="?route=User/home">Beranda</a>
       <a href="?route=User/ruangan" class="active">Ruangan</a>
       <a href="?route=User/riwayat">Riwayat</a>
     </nav>
+
     <div class="profile-dropdown">
       <div class="profile-trigger">
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
@@ -46,46 +73,112 @@ Session::set('flash_error', null);
     </div>
   </header>
 
-  <main style="max-width:900px;margin:40px auto;">
-    <div style="display:flex;gap:24px;align-items:center;">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan" style="width:250px;border-radius:10px;">
-      <div>
-        <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
-        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan study') ?></p>
-        <p>Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+  <!-- MAIN CONTENT -->
+  <main class="main-container">
+    
+    <!-- 1. Room Header (Image + Text) -->
+    <div class="room-header">
+      <div class="room-img-container">
+        <!-- Placeholder image jika data gambar kosong -->
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="<?= htmlspecialchars($room['nama_ruangan']) ?>">
       </div>
-      <div style="margin:12px 0;">
-        <span class="puas-badge"><?= htmlspecialchars($badgeText) ?></span>
+      <div class="room-info">
+        <h1><?= htmlspecialchars($room['nama_ruangan']) ?></h1>
+        <p><?= htmlspecialchars($room['deskripsi']) ?></p>
+        <p class="capacity">Kapasitas : <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
       </div>
     </div>
 
-    <?php if ($err): ?>
-      <div style="color:red;margin-top:16px;"><?= htmlspecialchars($err) ?></div>
-    <?php endif; ?>
-
-    <div style="margin-top:24px;padding:24px;border:1px solid #ddd;border-radius:12px;background:#fff;">
-      <h3>Pilih tanggal dan jam peminjaman</h3>
-      <p>Batas Maksimal Waktu Peminjaman adalah 15:00 WIB.</p>
-      <form action="?route=Booking/step2" method="POST" style="display:grid;gap:16px;max-width:420px;">
-        <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
-        <label>Tanggal
-          <input type="date" name="tanggal" required>
-        </label>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <label style="flex:1;">Jam Mulai
-            <input type="time" name="jam_mulai" required>
-          </label>
-          <span>Sampai</span>
-          <label style="flex:1;">Jam Selesai
-            <input type="time" name="jam_selesai" required>
-          </label>
+    <!-- 2. Badge (Centered Pill) -->
+    <div class="badge-wrapper">
+        <div class="puas-badge">
+            <?= htmlspecialchars($badgeText) ?>
         </div>
-        <div style="display:flex;gap:12px;">
-          <a href="?route=User/ruangan" class="btn" style="flex:1;text-align:center;background:#0d9488;color:#fff;padding:10px 0;border-radius:6px;text-decoration:none;">Kembali</a>
-          <button type="submit" style="flex:1;background:#f6c200;border:0;padding:10px 0;border-radius:6px;cursor:pointer;">Lanjut</button>
+    </div>
+
+    <!-- 3. Form Card (White Box) -->
+    <div class="booking-card">
+      <h3>Pilih tanggal dan jam peminjaman</h3>
+
+      <?php if ($err): ?>
+        <div class="alert-error"><?= htmlspecialchars($err) ?></div>
+      <?php endif; ?>
+
+      <form action="?route=Booking/step2" method="POST">
+        <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
+        
+        <div class="form-grid">
+            <!-- Tanggal -->
+            <div class="form-group">
+                <label>Pilih tanggal</label>
+                <input type="date" name="tanggal" class="input-line" required>
+            </div>
+
+            <!-- Jam Mulai & Selesai -->
+            <div class="time-wrapper">
+                <div class="form-group time-box">
+                    <label>Pilih jam</label>
+                    <input type="time" name="jam_mulai" class="input-line" required>
+                </div>
+                
+                <span class="sampai-text">Sampai</span>
+
+                <div class="form-group time-box">
+                    <label>Pilih jam</label>
+                    <input type="time" name="jam_selesai" class="input-line" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="btn-action-row">
+            <a href="?route=User/ruangan" class="btn btn-back">Kembali</a>
+            <button type="?route=user/booking_step2" class="btn btn-next">Lanjut</button>
         </div>
       </form>
     </div>
+
   </main>
+
+  <!-- FOOTER (Hitam) -->
+  <footer>
+      <div class="footer-content">
+          <div class="footer-brand">
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy" style="height:30px;">
+            </div>
+            <p>
+                Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
+            </p>
+          </div>
+          <div class="footer-links">
+              <div class="link-group">
+                  <h4>Navigasi</h4>
+                  <ul>
+                      <li><a href="#">Beranda</a></li>
+                      <li><a href="#">Daftar Ruangan</a></li>
+                      <li><a href="#">Panduan</a></li>
+                      <li><a href="#">Masuk</a></li>
+                  </ul>
+              </div>
+              <div class="link-group">
+                  <h4>Bantuan</h4>
+                  <ul>
+                      <li><a href="#">FAQ</a></li>
+                      <li><a href="#">Aturan ruangan</a></li>
+                  </ul>
+              </div>
+              <div class="link-group">
+                  <h4>Kontak</h4>
+                  <ul>
+                      <li><a href="#">PerpusPNJ@email.com</a></li>
+                      <li><a href="#">0822123456780</a></li>
+                      <li><a href="#">Kampus PNJ, Depok</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </footer>
+
 </body>
 </html>
