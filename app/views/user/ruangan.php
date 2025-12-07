@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Daftar Ruangan | Rudy Ruang Study</title>
-
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleruangan.css?v=<?= time() ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
