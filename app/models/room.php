@@ -14,6 +14,13 @@ class Room extends Model
         return $this->query($sql)->fetchAll();
     }
 
+    # buat user pilih ruangan trus booking
+    public function findById($id)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE room_id = ?";
+        return $this->query($sql, [$id])->fetch();
+    }
+
     #buat admin dashboard hitung semua ruangan yang tersedia (gaada maintenance misalnya)
     public function countActiveRooms()
     {
