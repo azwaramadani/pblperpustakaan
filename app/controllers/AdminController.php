@@ -190,14 +190,10 @@ class AdminController {
         
         $bookingModel->markFinishedBookings();
 
-        #filter dashboard data booking
+        #filter dashboard data admin create booking
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate   = $_GET['from_date'] ?? '';
         $toDate     = $_GET['to_date'] ?? '';
-        $roleSel    = $_GET['role'] ?? '';
-        $unitSel    = $_GET['unit'] ?? '';
-        $jurusanSel = $_GET['jurusan'] ?? '';
-        $prodiSel   = $_GET['program_studi'] ?? '';
         $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
         # pagination setup
@@ -233,7 +229,7 @@ class AdminController {
 
         require __DIR__ . '/../views/admin/data_admincreatebooking.php';
     }
-    
+
     #method handler buat admin update status bookingan user
     public function updateStatus()
     {
