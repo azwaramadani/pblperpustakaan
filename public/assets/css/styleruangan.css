@@ -99,11 +99,6 @@ img {
 }
 
 /* TAB BUTTONS */
-.room-switch-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-}
 .tab-btn {
   all: unset;
   padding: 16px 55px;

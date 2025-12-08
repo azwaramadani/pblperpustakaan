@@ -33,6 +33,7 @@ class UserController{
 
         $user  = $userModel->findById(Session::get('user_id'));
         $rooms = $roomModel->getAll();
+        
 
         require __DIR__ . '/../views/user/ruangan.php';
     }

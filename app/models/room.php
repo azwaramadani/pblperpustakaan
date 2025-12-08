@@ -7,10 +7,10 @@ class Room extends Model
 {
     protected $table = 'room';   
 
-    # Ambil semua ruangan
+    # method buat user/ruangan, soalnya user gaboleh book ruang rapat 
     public function getAll()
     {
-        $sql = "SELECT * FROM {$this->table} ORDER BY status ASC";
+        $sql = "SELECT * FROM {$this->table} WHERE nama_ruangan IS NOT NULL AND nama_ruangan != 'Ruang Rapat' ORDER BY status ASC, kapasitas_max DESC ";
         return $this->query($sql)->fetchAll();
     }
 

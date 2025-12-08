@@ -43,11 +43,6 @@
     <section class="title-section">
         <h2 class="title">Daftar Ruangan</h2>
         <p class="subtitle">Lihat ketersediaan ruangan untuk belajar individu, diskusi kelompok, atau kegiatan akademik lainnya.</p>
-
-        <div class="room-switch-wrapper">
-            <button class="tab-btn active">Ruang Study</button>
-            <button class="tab-btn">Ruang Rapat</button>
-        </div>
     </section>
 
     <div class="room-container">

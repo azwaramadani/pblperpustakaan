@@ -90,7 +90,7 @@
   <section class="ruangan-section">
     <div class="section-header">
       <h2>Ruangan Populer di Rudy</h2>
-      <p>Ruang study favorit mahasiswa!</p>
+      <p>Ruangan Favorit Mahasiswa!</p>
     </div>
     <div class="ruangan-list">
       <?php foreach ($toprooms as $tr): ?>

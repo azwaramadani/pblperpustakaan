@@ -73,7 +73,8 @@ Class bookingController{
                 $payload['jam_selesai']
         )){
             Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']); exit;
+            header('Location: ?route=Booking/step1/'.$payload['room_id']); 
+            exit;
         }
 
         $user = $userModel->findById(Session::get('user_id'));
