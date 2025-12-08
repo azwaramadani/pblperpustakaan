@@ -50,7 +50,7 @@ body {
 }
 
 .nav-menu a.active, .nav-menu a:hover {
-    color: #000;
+    color: #007777;
     font-weight: 600;
 }
 
@@ -320,7 +320,7 @@ footer {
     background-color: #000;
     color: white;
     padding: 60px 5%;
-    margin-top: auto;
+
 }
 
 .footer-content {
@@ -332,8 +332,8 @@ footer {
     margin: 0 auto;
 }
 
-.footer-brand { flex: 1; min-width: 250px; }
-.footer-brand  /* Logo jadi putih */
+.footer-brand { flex: 1; min-width: 500px; }
+
 .footer-brand p { font-size: 13px; line-height: 1.6; color: #ccc; }
 
 .footer-links {
