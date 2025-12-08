@@ -22,6 +22,7 @@ $summary     = $feedbackSummary ?? ['total'=>0,'puas'=>0,'tidak_puas'=>0];
       <a href="?route=Admin/dashboard">Dashboard</a>
       <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
       <a href="?route=Admin/dataRuangan" class="active">Data Ruangan</a>
+      <a href="?route=Admin/dataFromAdminCreateBooking">Data Pinjam Admin</a>
       <a href="?route=Admin/dataAkun">Data Akun</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>

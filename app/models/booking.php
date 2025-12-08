@@ -176,6 +176,7 @@ class Booking extends Model
                         b.jumlah_peminjam,
                         b.nama_penanggung_jawab AS nama_penanggung_jawab,
                         b.nimnip_penanggung_jawab,
+                        b.email_penanggung_jawab,
                         r.nama_ruangan,
                         COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
                     FROM {$this->table} b

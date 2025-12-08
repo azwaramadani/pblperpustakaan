@@ -188,6 +188,8 @@ class AdminController {
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
         
+        $bookingModel->markFinishedBookings();
+
         #filter dashboard data booking
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate   = $_GET['from_date'] ?? '';
@@ -231,6 +233,7 @@ class AdminController {
 
         require __DIR__ . '/../views/admin/data_admincreatebooking.php';
     }
+    
     #method handler buat admin update status bookingan user
     public function updateStatus()
     {
@@ -648,7 +651,7 @@ class AdminController {
     #redirect helper setelah update status booking (bisa kembali ke dashboard)
     private function redirectAfterBookingUpdate(string $redirect = ''): void
     {
-        $allowed = ['Admin/dataPeminjaman','Admin/dashboard'];
+        $allowed = ['Admin/dataPeminjaman','Admin/dashboard', 'Admin/dataFromAdminCreateBooking'];
         $target  = in_array($redirect, $allowed, true) ? $redirect : 'Admin/dataPeminjaman';
         header('Location: ?route=' . $target);
         exit;

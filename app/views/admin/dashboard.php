@@ -2,8 +2,6 @@
 $adminName     = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 $todayDate     = $todayDate ?? date('Y-m-d');
 $stats         = $stats ?? ['user_mustvalidate'=>0, 'user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
-$success       = $success ?? null;
-$error         = $error ?? null;
 
 //pagination
 $pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($todayBookings)];
@@ -57,6 +55,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <a href="?route=Admin/dashboard" class="active">Dashboard</a>
       <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
       <a href="?route=Admin/dataRuangan">Data Ruangan</a>
+      <a href="?route=Admin/dataFromAdminCreateBooking">Data Pinjam Admin</a>
       <a href="?route=Admin/dataAkun">Data Akun</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>
@@ -315,7 +314,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </table>
         </div>
       </section>
-
     </main>
   </div>
 </div>

@@ -31,8 +31,8 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     <header class="top-nav">
       <div class="nav-brand">
         <div>
-          <h2 style="margin:0;">Data Peminjaman</h2>
-          <p>Semua data peminjaman oleh user.</p>
+          <h2 style="margin:0;">Data Peminjaman oleh Admin</h2>
+          <p>Semua data peminjaman yang dibuat oleh admin.</p>
         </div>
       </div>
       <div class="profile-summary top">
@@ -44,12 +44,20 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       </div>
     </header>
 
-    <!-- Panel Data Booking -->
+    <main class="content">
+      <?php if (!empty($success)): ?>
+        <div class="flash success"><?= htmlspecialchars($success) ?></div>
+      <?php endif; ?>
+      <?php if (!empty($error)): ?>
+        <div class="flash error"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
+
+    
       <section class="panel">
         <div class="section-head">
           <div>
-            <h3>Data Booking</h3>
-            <p class="subtitle">Semua peminjaman ruangan oleh user</p>
+            <h3>Data Peminjaman Admin</h3>
+            <p class="subtitle">Semua peminjaman ruangan yang dibuat oleh admin</p>
           </div>
         </div>
 
@@ -96,11 +104,13 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <th>Kode Booking</th>
                 <th>Nama Penanggung Jawab</th>
                 <th>NIM/NIP Penanggung Jawab</th>
+                <th>Email Penanggung Jawab</th>
                 <th>Total Peminjam</th>
                 <th>Ruangan</th>
                 <th>Waktu Peminjaman</th>
                 <th>Waktu Dibuat</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -120,6 +130,7 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                     <td><?= htmlspecialchars($b['kode_booking']) ?></td>
                     <td><?= htmlspecialchars($b['nama_penanggung_jawab']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['nimnip_penanggung_jawab']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['email_penanggung_jawab']?? '-') ?></td>
                     <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
@@ -129,6 +140,13 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                         <?= htmlspecialchars($b['status_booking']) ?>
                       </span>
                     </td>
+                    <td>
+                      <button class="aksi-btn js-open-status"
+                              data-id="<?= $b['booking_id'] ?>"
+                              data-status="<?= htmlspecialchars($b['status_booking']) ?>">
+                        Ubah Status
+                      </button>
+                    </td>
                   </tr>
                 <?php endforeach; ?>
               <?php endif; ?>
@@ -136,5 +154,52 @@ $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           </table>
         </div>
       </section>
+    </main>
+
+<!-- Modal ubah status booking -->
+<div class="modal-backdrop" id="modalBookingStatus">
+  <div class="modal-card">
+    <h4>Ubah Status Peminjaman</h4>
+    <form method="POST" action="?route=Admin/updateStatus" id="bookingStatusForm">
+      <input type="hidden" name="booking_id" id="bookingIdInput">
+      <input type="hidden" name="redirect" value="Admin/dataFromAdminCreateBooking">
+      <div class="radio-row">
+        <label><input type="radio" name="status_booking" value="Dibatalkan"> Dibatalkan</label>
+        <label><input type="radio" name="status_booking" value="Selesai"> Selesai</label>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-pill btn-save">Simpan</button>
+        <button type="button" class="btn-pill btn-cancel js-close-status">Batal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const modal = document.getElementById('modalBookingStatus');
+    const idInput = document.getElementById('bookingIdInput');
+    const radios = modal.querySelectorAll('input[name="status_booking"]');
+
+    document.querySelectorAll('.js-open-status').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const status = btn.dataset.status || '';
+        idInput.value = id;
+        radios.forEach(r => { r.checked = (r.value === status); });
+        modal.style.display = 'flex';
+      });
+    });
+
+    document.querySelectorAll('.js-close-status').forEach(btn => {
+      btn.addEventListener('click', () => modal.style.display = 'none');
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  })();
+</script>
+
 </body>
 </html>

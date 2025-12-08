@@ -76,6 +76,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       </div>
     </header>
 
+    <main class="content">
     <!-- Panel Data Booking -->
       <section class="panel">
         <div class="section-head">
@@ -227,5 +228,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </div>
         </div>
       </section>
+    </main>
 </body>
 </html>
