@@ -20,6 +20,12 @@ Class bookingController{
             exit('Ruangan tidak ditemukan.');
         }
 
+        if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
+            Session::set('flash_error', null);
+            header('Location: ?route=User/ruangan');
+            exit;
+        }
+
         $user         = $userModel->findById(Session::get('user_id'));
         $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
 
