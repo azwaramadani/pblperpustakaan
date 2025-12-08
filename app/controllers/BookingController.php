@@ -97,6 +97,12 @@ Class bookingController{
             exit('Ruangan tidak ditemukan.');
         }
 
+        if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
+            Session::set('flash_error', null);
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
         $adminId = Session::get('admin_id');
         $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
 
@@ -130,6 +136,8 @@ Class bookingController{
 
         $roomModel    = new Room();
         $bookingModel = new Booking();
+        $adminModel   = new Admin();
+
 
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
@@ -146,7 +154,7 @@ Class bookingController{
             exit;
         }
 
-        $adminId = Session::get('admin_id');
+        $adminId = $adminModel->findById(Session::get('admin_id'));
 
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
@@ -220,15 +228,15 @@ Class bookingController{
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         
-        $payload['user_id']        = Session::get('user_id');
+        $payload['admin_id']        = Session::get('admin_id');
         $payload['status_booking'] = 'Disetujui';
         $payload['waktu_booking']  = date('Y-m-d H:i:s');
         $payload['kode_booking']   = generateBookingCode();
 
-        $bookingModel->createUserBooking($payload);
+        $bookingModel->createAdminBooking($payload);
 
         Session::set('flash_success', 'Booking berhasil dibuat.');
-        header('Location: ?route=Admin/dashboard');
+        header('Location: ?route=Admin/dataFromAdminCreateBooking');
         exit;
     }
 

@@ -51,9 +51,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     </div>
     <nav class="sidebar-nav">
       <a href="?route=Admin/dashboard">Dashboard</a>
-      <a href="?route=Admin/dataPeminjaman" class="active">Data Peminjaman</a>
+      <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
       <a href="?route=Admin/dataRuangan">Data Ruangan</a>
-      <a href="?route=Admin/dataFromAdminCreateBooking">Data Admin Pinjam</a>
+      <a href="?route=Admin/dataFromAdminCreateBooking" class="active">Data Admin Pinjam</a>
       <a href="?route=Admin/dataAkun">Data Akun</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>

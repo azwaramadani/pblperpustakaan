@@ -134,6 +134,63 @@ class Booking extends Model
         ];
     }
 
+    # method data booking buat admin, pake sorting dan pagination
+    public function adminCreateGetAllSortedPaginated(
+        string $sortOrder     = 'desc',
+        ?string $fromDate     = null,
+        ?string $toDate       = null,
+        ?string $searchName   = null, //buat nyari nama
+    ): array {
+        $order = strtoupper($sortOrder) === 'ASC' ? 'ASC' : 'DESC';
+
+        $where  = [];
+        $params = [];
+
+        if (!empty($fromDate)) {
+            $where[]  = "b.tanggal >= ?";
+            $params[] = $fromDate;
+        }
+        if (!empty($toDate)) {
+            $where[]  = "b.tanggal <= ?";
+            $params[] = $toDate;
+        }
+        if (!empty($searchName)) {
+            // Cari di nama penanggung jawab (booking) atau nama user
+            $where[]  = "(b.nama_penanggung_jawab LIKE ?)";
+            $like     = '%' . $searchName;
+            $params[] = $like;
+
+        }
+
+        $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
+
+        $dataSql = "SELECT
+                        b.booking_id,
+                        b.kode_booking,
+                        b.tanggal,
+                        b.jam_mulai,
+                        b.jam_selesai,
+                        b.created_at,
+                        b.status_booking,
+                        b.jumlah_peminjam,
+                        u.nama AS nama_user,
+                        u.nim_nip,
+                        r.nama_ruangan,
+                        COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
+                    FROM {$this->table} b
+                    JOIN user u ON b.user_id = u.user_id
+                    JOIN room r ON b.room_id = r.room_id
+                    {$whereSql}
+                    GROUP BY b.booking_id
+                    ORDER BY b.tanggal {$order}, 
+                    b.jam_mulai {$order}";
+        $rows = $this->query($dataSql, $params)->fetchAll();
+
+        return [
+            'data'        => $rows,
+        ];
+    }
+
     public function getAllSortedPaginatedToday(
         string $sortOrder     = 'desc',
         ?string $role         = null,
@@ -397,6 +454,28 @@ class Booking extends Model
         ]);
     }
 
+    public function createAdminBooking($data)
+    {
+        $sql = "INSERT INTO {$this->table}
+                (admin_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
+                 nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
+                 nimnip_peminjam, kode_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return $this->query($sql, [
+            $data['admin_id'],
+            $data['room_id'],
+            $data['tanggal'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['jumlah_peminjam'],
+            $data['nama_penanggung_jawab'],
+            $data['nimnip_penanggung_jawab'],
+            $data['email_penanggung_jawab'],
+            $data['nimnip_peminjam'],
+            $data['kode_booking'],
+            $data['status_booking']
+        ]);
+    }
 
         // Cek bentrok booking lain di ruangan dan tanggal yang sama
     public function hasOverlap($room_id, $tanggal, $jam_mulai, $jam_selesai, $exclude_booking_id = null)
