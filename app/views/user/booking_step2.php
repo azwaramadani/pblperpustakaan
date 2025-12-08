@@ -63,14 +63,9 @@ $initialMembers = [''];
       </div>
       <div class="room-details">
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
-        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan khusus bimbingan dan konseling dengan suasana tenang dan privat.') ?></p>
+        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
       </div>
-    </div>
-
-    <!-- Badge Kepuasan -->
-    <div class="badge-wrapper">
-      <div class="puas-badge">90% Orang Puas</div>
     </div>
 
     <!-- Form Card -->
@@ -103,6 +98,13 @@ $initialMembers = [''];
           <label>Email penanggung jawab</label>
           <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
         </div>
+
+        <div class="form-group">
+          <label>Jumlah Peminjam</label>
+          <input class="input-line" type="number" name="jumlah_peminjam" min="2" value="2" required>
+        </div>
+
+        <div class="anggota-wrap" id="anggotaList">
 
         <!-- List Anggota -->
         <div id="anggotaList">
