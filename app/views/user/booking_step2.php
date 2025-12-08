@@ -76,12 +76,12 @@ $initialMembers = [''];
 
         <div class="form-group">
           <label>Nama penanggung jawab</label>
-          <input class="input-line" type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($user['nama']) ?>" required>
+          <input class="input-line" type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($user['nama']) ?>" readonly>
         </div>
 
         <div class="form-group">
           <label>NIM/NIP penanggung jawab</label>
-          <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($user['nim_nip']) ?>" required>
+          <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($user['nim_nip']) ?>" readonly>
         </div>
 
         <div class="form-group">
