@@ -208,13 +208,7 @@ class AdminController {
                         $sortDate, 
                         $fromDate ?: null, 
                         $toDate ?: null,
-                        $roleSel ?: null,
-                        $unitSel ?: null,
-                        $jurusanSel ?: null,
-                        $prodiSel ?: null,
-                        $keyword ?: null,
-                        $perPage,
-                        $page);
+                        $keyword ?: null);
 
         $bookings  = $pagination['data'];
 
@@ -227,10 +221,6 @@ class AdminController {
             'sort_date'     => $sortDate,
             'from_date'     => $fromDate,
             'to_date'       => $toDate,
-            'role'          => $roleSel,
-            'unit'          => $unitSel,
-            'jurusan'       => $jurusanSel,
-            'program_studi' => $prodiSel,
             'keyword'       => $keyword,
         ];
 

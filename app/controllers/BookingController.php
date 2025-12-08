@@ -228,7 +228,7 @@ Class bookingController{
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         
-        $payload['admin_id']        = Session::get('admin_id');
+        $payload['admin_id']       = Session::get('admin_id');
         $payload['status_booking'] = 'Disetujui';
         $payload['waktu_booking']  = date('Y-m-d H:i:s');
         $payload['kode_booking']   = generateBookingCode();

@@ -165,6 +165,7 @@ class Booking extends Model
         $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
 
         $dataSql = "SELECT
+                        a.admin_id,
                         b.booking_id,
                         b.kode_booking,
                         b.tanggal,
@@ -173,12 +174,12 @@ class Booking extends Model
                         b.created_at,
                         b.status_booking,
                         b.jumlah_peminjam,
-                        u.nama AS nama_user,
-                        u.nim_nip,
+                        b.nama_penanggung_jawab AS nama_penanggung_jawab,
+                        b.nimnip_penanggung_jawab,
                         r.nama_ruangan,
                         COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
                     FROM {$this->table} b
-                    JOIN user u ON b.user_id = u.user_id
+                    JOIN admin a ON b.admin_id = a.admin_id
                     JOIN room r ON b.room_id = r.room_id
                     {$whereSql}
                     GROUP BY b.booking_id
