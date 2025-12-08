@@ -47,7 +47,7 @@ class Room extends Model
                 LEFT JOIN booking b ON b.room_id = r.room_id
                 LEFT JOIN feedback f ON f.room_id = r.room_id
                 GROUP BY r.room_id, r.gambar_ruangan, r.nama_ruangan, r.kapasitas_min, r.kapasitas_max, r.deskripsi, r.status
-                ORDER BY r.created_at ASC";
+                ORDER BY r.status DESC";
         return $this->query($sql)->fetchAll();
     }
 
