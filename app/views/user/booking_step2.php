@@ -77,7 +77,7 @@ $initialMembers = [''];
       <?php endif; ?>
 
       <form action="?route=Booking/store" method="POST" id="bookingForm">
-        <!-- Hidden Inputs (Bawaan Logic Asli) -->
+        <!-- Hidden Inputs dari step1 -->
         <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>">
         <input type="hidden" name="tanggal" value="<?= htmlspecialchars($payload['tanggal']) ?>">
         <input type="hidden" name="jam_mulai" value="<?= htmlspecialchars($payload['jam_mulai']) ?>">
