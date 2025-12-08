@@ -285,54 +285,38 @@ body {
 }
 
 /* ===== FOOTER (UPDATED) ===== */
-.footer {
-  background: #000000 !important; /* Force Black Background */
-  color: #9CA3AF;
-  padding: 60px 8%;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 40px;
-  margin-top: auto; /* Push footer to bottom */
+footer {
+    background-color: #000;
+    color: white;
+    padding: 60px 5%;
+    margin-top: auto; /* Membuat footer selalu berada di bawah */
+    position: relative;
 }
-
-.footer-brand {
-  flex: 1;
-  min-width: 280px;
-  max-width: 350px;
-}
-
-.footer-brand img {
-  height: 45px;
-  width: auto;
-  margin-bottom: 20px;
-}
-
-/* Deskripsi Footer - Memaksa turun ke bawah */
-.footer-brand p {
-  color: #9CA3AF;
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 0;
-  max-width: 350px; /* Batasi lebar agar teks wrapping */
-}
-
 .footer {
   background: #000000;
   color: #bdc4d2;
   display: flex;
-  justify-content: space-between;
   gap: 60px;
   padding: 60px 80px;
 }
 
 .footer-brand {
-  max-width: 320px;
+    display: flex;
+    flex-direction: column; /* Menata logo dan teks penjelasan secara vertikal */
+    align-items: flex-start;
+    gap: 10px; /* Menambah jarak antara logo dan teks */
 }
 
-.footer-brand img {
+.footer-logo {
   width: 150px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+.footer-description {
+    font-size: 14px;  /* Mengatur ukuran font untuk teks penjelasan */
+    color: #ccc;
+    margin: 0;  /* Menghapus margin default */
+    text-align: left;  /* Menyelaraskan teks ke kiri */
 }
 
 .footer-nav {
