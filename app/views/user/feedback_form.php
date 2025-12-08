@@ -82,7 +82,7 @@ Session::set('flash_success', null);
 
         <div style="margin-top:16px;">
           <button type="submit" class="btn-submit">Simpan</button>
-          <a href="?route=User/riwayat" class="btn" style="margin-left:8px; text-decoration:none; padding:10px 16px; border-radius:10px; background:#e0e0e0; color:#000;">Kembali</a>
+          <a href="?route=User/riwayat" class="btn" style="margin-left:8px; text-decoration:none; padding:10px 16px; border-radius:10px; background:#4FD1C5; color:#000;">Kembali</a>
         </div>
       </form>
     <?php endif; ?>

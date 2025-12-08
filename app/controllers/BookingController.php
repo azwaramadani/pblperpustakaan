@@ -82,7 +82,157 @@ Class bookingController{
         require __DIR__ . '/../views/user/booking_step2.php';
     }
 
-    // Method handler buat nyimpen semua form booking dari admin ato user 
+    public function adminStep1($roomId)
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $roomModel     = new Room();
+        $feedbackModel = new Feedback();
+
+        $room = $roomModel->findById($roomId);        
+
+        if (!$room) {
+            http_response_code(404);
+            exit('Ruangan tidak ditemukan.');
+        }
+
+        $adminId = Session::get('admin_id');
+        $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
+
+        require __DIR__ . '/../views/admin/admin_bookingstep1.php';
+    }
+
+    public function adminStep2()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataRuangan'); 
+            exit; 
+            }
+
+        $payload = [
+            'room_id'    => (int)($_POST['room_id'] ?? 0),
+            'tanggal'    => trim($_POST['tanggal'] ?? ''),
+            'jam_mulai'  => trim($_POST['jam_mulai'] ?? ''),
+            'jam_selesai'=> trim($_POST['jam_selesai'] ?? ''),
+        ];
+
+        foreach (['room_id','tanggal','jam_mulai','jam_selesai'] as $key) {
+            if (empty($payload[$key])) {
+                Session::set('flash_error', 'Isi tanggal dan jam mulai/selesai.');
+                header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
+                exit;
+            }
+        }
+
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+
+        $room = $roomModel->findById($payload['room_id']);
+        if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
+
+        // cek bentrok jadwal
+        if ($bookingModel->hasOverlap(
+                $payload['room_id'], 
+                $payload['tanggal'], 
+                $payload['jam_mulai'], 
+                $payload['jam_selesai']
+        )){
+            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
+            exit;
+        }
+
+        $adminId = Session::get('admin_id');
+
+        require __DIR__ . '/../views/admin/admin_bookingstep2.php';
+    }
+
+    public function adminStore()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=admin/dataRuangan');
+            exit;
+        }
+
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+
+        $anggotaInput = $_POST['nim_anggota'] ?? [];
+        $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
+
+        $payload = [
+            'room_id'                 => (int)($_POST['room_id'] ?? 0),
+            'tanggal'                 => trim($_POST['tanggal'] ?? ''),
+            'jam_mulai'               => trim($_POST['jam_mulai'] ?? ''),
+            'jam_selesai'             => trim($_POST['jam_selesai'] ?? ''),
+            'jumlah_peminjam'         => (int)($_POST['jumlah_peminjam'] ?? 0),
+            'nama_penanggung_jawab'   => trim($_POST['nama_penanggung_jawab'] ?? ''),
+            'nimnip_penanggung_jawab' => trim($_POST['nimnip_penanggung_jawab'] ?? ''),
+            'email_penanggung_jawab'  => trim($_POST['email_penanggung_jawab'] ?? ''),
+        ];
+
+        foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
+            if (empty($payload[$key])) {
+                Session::set('flash_error', 'Lengkapi semua field.');
+                header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+                exit;
+            }
+        }
+
+        // Minimal 1 anggota
+        if (count($anggota) === 0) {
+            Session::set('flash_error', 'Tambahkan minimal 1 NIM/NIP anggota.');
+            header('Location: ?route=Booking/step1/' . $payload['room_id']);
+            exit;
+        }
+
+        $room = $roomModel->findById($payload['room_id']);
+        if (!$room) {
+            http_response_code(404);
+            exit('Ruangan tidak ditemukan.');
+        }
+
+        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
+            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            exit;
+        }
+
+        // Cek setiap NIM (penanggung + semua anggota) supaya tidak double-book tanggal & ruangan yang sama
+        $nimsToCheck   = $anggota;
+        $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
+
+        foreach ($nimsToCheck as $nimCheck) {
+            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['room_id'], $payload['tanggal'])) {
+                Session::set('flash_error', 'NIM/NIP ' . $nimCheck . ' sudah terdaftar di ruangan ini pada tanggal tersebut.');
+                header('Location: ?route=Booking/step1/' . $payload['room_id']);
+                exit;
+            }
+        }
+
+        // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
+        $payload['nimnip_peminjam'] = implode(',', $anggota);
+        
+        $payload['user_id']        = Session::get('user_id');
+        $payload['status_booking'] = 'Disetujui';
+        $payload['waktu_booking']  = date('Y-m-d H:i:s');
+        $payload['kode_booking']   = generateBookingCode();
+
+        $bookingModel->createUserBooking($payload);
+
+        Session::set('flash_success', 'Booking berhasil dibuat.');
+        header('Location: ?route=Admin/dashboard');
+        exit;
+    }
+
+    // Method handler buat nyimpen semua form booking user 
     public function store()
     {
         Session::checkUserLogin();

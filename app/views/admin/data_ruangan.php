@@ -75,7 +75,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               $statusCls  = (strtolower($status) === 'tersedia') ? 'status-tersedia' : 'status-tidak-tersedia';
             ?>
             
-            <!-- CARD INDIVIDUAL UNTUK SETIAP RUANGAN -->
+            <!-- CARD RUANGAN -->
             <div class="room-card">
               <!-- BAGIAN KIRI: INFORMASI -->
               <div class="room-info">
@@ -102,6 +102,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
                 
                 <div class="action-buttons">
+                  <a class="btn-action btn-edit" href="?route=Booking/adminStep1/<?= $r['room_id'] ?>">Booking</a>
                   <a class="btn-action btn-feedback" href="?route=Admin/feedbackRuangan/<?= $r['room_id'] ?>">Lihat Feedback</a>
                   <a class="btn-action btn-edit" href="?route=Admin/editRuangan/<?= $r['room_id'] ?>">Ubah</a>
                   <button type="button"

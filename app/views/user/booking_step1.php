@@ -16,10 +16,7 @@ if (!function_exists('app_config')) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pilih Tanggal & Jam - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Link ke File CSS Eksternal -->
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css">
-  
 </head>
 <body>
 
@@ -56,13 +53,10 @@ if (!function_exists('app_config')) {
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
-  <main class="main-container">
-    
-    <!-- 1. Room Header (Image + Text) -->
+
+  <main class="main-container">  
     <div class="room-header">
       <div class="room-img-container">
-        <!-- Placeholder image jika data gambar kosong -->
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="<?= htmlspecialchars($room['nama_ruangan']) ?>">
       </div>
       <div class="room-info">
@@ -72,7 +66,7 @@ if (!function_exists('app_config')) {
       </div>
     </div>
 
-    <!-- 2. Badge (Centered Pill) -->
+    <!-- persentase puas -->
     <div class="badge-wrapper">
         <div class="puas-badge">
             <?= htmlspecialchars($badgeText) ?>
@@ -116,7 +110,7 @@ if (!function_exists('app_config')) {
         <!-- Tombol Aksi -->
         <div class="btn-action-row">
             <a href="?route=User/ruangan" class="btn btn-back">Kembali</a>
-            <button type="?route=user/booking_step2" class="btn btn-next">Lanjut</button>
+            <button type="?route=Booking/step2" class="btn btn-next">Lanjut</button>
         </div>
       </form>
     </div>
