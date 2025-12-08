@@ -58,7 +58,7 @@
                     <p><strong>Nama Penanggung Jawab:</strong> <?= htmlspecialchars($r['penanggung']) ?></p>
                     <p><strong>NIM Penanggung Jawab:</strong> <?= htmlspecialchars($r['nim']) ?></p>
                     <p><strong>Email Penanggung Jawab:</strong> <?= htmlspecialchars($r['email']) ?></p>
-                    <p><strong>NIM Peminjam Ruangan:</strong> <?= htmlspecialchars($r['nim_ruangan']) ?></p>
+                    <p><strong>NIM Anggota Peminjam Ruangan:</strong> <?= htmlspecialchars($r['nim_ruangan']) ?></p>
                     <p><strong>Waktu Dibuat:</strong> <?= htmlspecialchars($r['created_at']) ?></p>
                     <p><strong>Status:</strong> 
                         <span class="status <?= htmlspecialchars(strtolower($r['status'])) ?>">

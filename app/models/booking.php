@@ -348,7 +348,17 @@ class Booking extends Model
     #buat cancel booking, bisa juga dipake buat feedback 
     public function findByIdAndUser($bookingId, $userId)
     {
-        $sql = "SELECT * FROM {$this->table} WHERE booking_id = ? AND user_id = ? LIMIT 1";
+        $sql = "SELECT 
+                b.booking_id,
+                b.kode_booking,
+                b.tanggal,
+                b.jam_mulai, 
+                b.jam_selesai,
+                r.room_id,
+                r.nama_ruangan
+                FROM {$this->table} b
+                JOIN room r ON b.room_id = r.room_id
+                WHERE booking_id = ? AND user_id = ? LIMIT 1";
         return $this->query($sql, [$bookingId, $userId])->fetch();
     }
 

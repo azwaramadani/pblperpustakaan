@@ -13,7 +13,7 @@ Class bookingController{
         $userModel     = new User();
         $feedbackModel = new Feedback();
 
-        $room = $roomModel->findById($roomId);
+        $room = $roomModel->findById($roomId);        
 
         if (!$room) {
             http_response_code(404);
