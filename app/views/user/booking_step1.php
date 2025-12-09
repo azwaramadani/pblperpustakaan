@@ -75,6 +75,32 @@ if (!function_exists('app_config')) {
     <div class="booking-card">
       <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
+      <!-- Informasi jadwal terpakai hari ini -->
+      <div class="schedule-box">
+        <h4>Waktu yang sudah dipinjam.</h4>
+        <p>Anda tidak bisa memilih jam pada rentang di bawah ini.</p>
+        <?php if (!empty($todayIntervals)): ?>
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>Jam Mulai</th>
+                <th>Jam Selesai</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($todayIntervals as $ti): ?>
+                <tr>
+                  <td><?= htmlspecialchars(date('H:i', strtotime($ti['jam_mulai']))) ?></td>
+                  <td><?= htmlspecialchars(date('H:i', strtotime($ti['jam_selesai']))) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        <?php else: ?>
+          <p class="schedule-empty">Belum ada peminjaman hari ini.</p>
+        <?php endif; ?>
+      </div>
+
       <?php if ($err): ?>
         <div class="alert-error"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>

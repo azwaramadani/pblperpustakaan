@@ -422,6 +422,18 @@ class Booking extends Model
         return array_map('intval', $rows);
     }
 
+    //Buat tabel informasi interval jam_mulai dan jam_selesai dari booking-an user lain
+    public function getTodayIntervalsByRoom(int $roomId): array
+    {
+        $sql = "SELECT jam_mulai, jam_selesai, nama_penanggung_jawab
+                FROM {$this->table}
+                WHERE room_id = ?
+                  AND status_booking = 'Disetujui'
+                  AND tanggal = CURDATE()
+                ORDER BY jam_mulai ASC";
+        return $this->query($sql, [$roomId])->fetchAll();
+    }
+
     # Ambil riwayat booking per user
     public function getHistoryByUser($user_id)
     {

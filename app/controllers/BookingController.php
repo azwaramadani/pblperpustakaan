@@ -12,21 +12,19 @@ Class bookingController{
         $roomModel     = new Room();
         $userModel     = new User();
         $feedbackModel = new Feedback();
+        $bookingModel  = new Booking();
 
-        $room = $roomModel->findById($roomId);        
-
-        if (!$room) {
-            http_response_code(404);
-            exit('Ruangan tidak ditemukan.');
+        $room = $roomModel->findById($roomId);      
+        if (!$room) { 
+            http_response_code(404); exit('Ruangan tidak ditemukan.'); 
         }
-
         if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
-            header('Location: ?route=User/ruangan');
-            exit;
+            header('Location: ?route=User/ruangan'); exit;
         }
 
-        $user         = $userModel->findById(Session::get('user_id'));
-        $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
+        $user           = $userModel->findById(Session::get('user_id'));
+        $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
+        $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId); 
 
         require __DIR__ . '/../views/user/booking_step1.php';
     }

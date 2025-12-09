@@ -36,6 +36,7 @@ class UserController{
         $rooms       = $roomModel->getAll();
         $busyRoomIds = $bookingModel->getBusyRoomIdsNow();
         
+        //buat set status ruangan jadi dipinjam kalo jam_mulai <= current_time <= jam_selesai 
         foreach ($rooms as &$room) {
             $statusRaw  =  strtolower($room['status'] ?? '');
             

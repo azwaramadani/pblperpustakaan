@@ -218,6 +218,34 @@ body {
     color: #000;
 }
 
+.schedule-box {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+.schedule-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.schedule-table th,
+.schedule-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+.schedule-empty {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
 .form-grid {
     display: flex;
     flex-direction: column;
