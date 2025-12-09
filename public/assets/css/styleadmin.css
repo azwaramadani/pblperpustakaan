@@ -20,7 +20,7 @@
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #FFFFFF 0%, #D4F4F3 30%, #68D0C9 100%);
+  background: #f7f9fb;
   color: #1e1f26;
   font-family: 'Poppins', 'Work Sans', sans-serif;
 }
@@ -34,7 +34,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: #f4f6f9; /* Background utama abu sangat muda */
+  background: #f7f9fb;
 }
 
 .main-area {
@@ -71,120 +71,106 @@ body {
 
 .sidebar {
   width: 260px;
-  background: #ffffff; /* Ubah jadi Putih */
-  color: #333; /* Teks jadi gelap */
+  background: #ffffff !important;      /* putih */
+  color: #000 !important;
   padding: 30px 25px;
+  border-right: 1px solid #e5e5e5;     /* garis halus */
   display: flex;
   flex-direction: column;
-  gap: 40px;
-  /* Garis biru di sebelah kanan sesuai gambar */
-  border-right: 4px solid #2db6f5; 
-  box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+  gap: 35px;
 }
 
-/* Logo di Sidebar */
-.brand {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center; /* Logo di tengah */
-  margin-bottom: 20px;
-}
-
-/* =========================================
-   2. GANTI BAGIAN NAVIGASI SIDEBAR (MENU)
-   Agar teks hitam, icon berwarna, dan aktif kuning
-   ========================================= */
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-weight: 600;
-  font-size: 15px;
+.brand img {
+  max-width: 150px;
 }
 
 .sidebar-nav a {
-  color: #1e1f26; /* Warna teks menu hitam/gelap */
-  text-decoration: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 12px; /* Jarak antara icon dan teks */
+  gap: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333 !important;               /* teks gelap */
+  border-radius: 10px;
+  transition: 0.2s ease;
 }
 
-/* Warna Icon (Teal/Biru laut) */
-.sidebar-nav a i, 
-.sidebar-nav a svg,
-.sidebar-nav a img { 
-  color: #22b6b3; /* Sesuaikan warna icon dengan tema */
-  width: 20px;
-  text-align: center;
+.sidebar-nav a i,
+.sidebar-nav a svg {
+  font-size: 20px;
+  width: 22px;
+  color: #1bbab3 !important;            /* icon warna teal */
 }
 
-/* Efek Hover: Background abu tipis */
-.sidebar-nav a:hover {
-  background: #f0f2f5;
-  color: #000;
-}
+/* .sidebar-nav a:hover {
+  background: #f4f4f4 !important;       
+  color: #000 !important;
+} */
 
-/* MENU AKTIF (Dashboard): Teks Kuning */
 .sidebar-nav a.active {
-  background: transparent; /* Tidak ada background kotak */
-  color: #f7c825; /* Warna teks jadi KUNING EMAS */
+  background: transparent !important;
+  color: #f7c825 !important;            /* kuning sesuai desain */
 }
 
-.sidebar-nav a.active i,
-.sidebar-nav a.active svg {
-  color: #f7c825; /* Icon juga ikut kuning */
+.sidebar-nav a.active i {
+  color: #f7c825 !important;
 }
 
-/* =========================================
-   3. GANTI BAGIAN TOP NAVBAR (ATAS)
-   Agar selaras menjadi putih/bersih
-   ========================================= */
+/* Profil kecil di sidebar (Admin) */
+/* Mengubah ukuran gambar avatar di sidebar */
+.sidebar-footer .avatar-img {
+    width: 30px;  /* Ubah ukuran gambar menjadi lebih kecil */
+    height: 30px; /* Ubah ukuran gambar menjadi lebih kecil */
+    object-fit: cover;
+}
 
+/* Menghilangkan tombol Buat Laporan di samping avatar */
+.top-nav .header-actions {
+    display: none; /* Menyembunyikan tombol Buat Laporan yang ada di samping avatar */
+}
+
+
+/* Menghilangkan avatar besar (jika ada elemen default) */
+.big-profile,
+.profile-large,
+.user-avatar-large {
+  display: none !important;
+}
+
+
+   /* HEADER BAR (TOP NAV) */
+
+/* Header */
 .top-nav {
   width: 100%;
-  background: #ffffff; /* Jadi Putih */
-  color: #333; /* Teks jadi gelap */
-  padding: 15px 40px;
+  background: #ffffff !important;        /* Putih bersih */
+  color: #000 !important;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e5e5;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); /* Bayangan halus */
-  border-bottom: 1px solid #eee;
-}
-
-/* Profil User di Pojok Kanan Atas */
-.top-nav .profile-summary {
-  background: transparent; /* Hapus kotak background */
-  border: none;
-  color: #333;
-  box-shadow: none;
-  padding: 0;
-}
-
-.top-nav .profile-summary p {
-  color: #333; /* Nama user jadi hitam */
-}
-
-.top-nav .profile-summary span {
-  color: #888; /* Role user jadi abu */
-}
-
-/* Profil User di Bawah Sidebar (Opsional sesuai gambar) */
-.sidebar-footer {
-  margin-top: auto;
-  display: flex;
   align-items: center;
-  gap: 10px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+}
+
+/* Menghilangkan header title "Dashboard" */
+.top-nav h1 {
+  display: none !important;
+}
+
+/* Tombol kuning "Buat Laporan" */
+.top-nav .btn-laporan {
+  background: #f7c825 !important;
+  color: #000 !important;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.top-nav .btn-laporan:hover {
+  background: #ffd944 !important;
 }
 
 .content {
