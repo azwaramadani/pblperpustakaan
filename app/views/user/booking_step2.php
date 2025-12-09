@@ -1,9 +1,16 @@
 <?php
-$err     = Session::get('flash_error');
+$err  = Session::get('flash_error');
 Session::set('flash_error', null);
 
-// Data dummy member jika kosong
-$initialMembers = [''];
+$isEdit = !empty($payload['booking_id'] ?? null);
+
+// Isi anggota awal
+if (!isset($initialMembers) || !is_array($initialMembers)) {
+    $initialMembers = [''];
+}
+
+// Jumlah peminjam default: data lama jika ada, else 1 penanggung + anggota
+$defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMembers)));
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +18,7 @@ $initialMembers = [''];
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lengkapi Data Peminjaman - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
+  <title><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
 </head>
@@ -20,7 +27,6 @@ $initialMembers = [''];
   <!-- Navbar -->
   <header class="navbar">
     <div class="nav-left">
-      <!-- Pastikan path logo benar -->
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
     </div>
@@ -51,10 +57,8 @@ $initialMembers = [''];
   </header>
 
   <main>
-    <!-- Header Ruangan & Gambar -->
     <div class="room-header">
       <div class="room-image-container">
-        <!-- Gambar Ruangan -->
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan" class="room-image">
       </div>
       <div class="room-details">
@@ -64,21 +68,22 @@ $initialMembers = [''];
       </div>
     </div>
 
-    <!-- Form Card -->
     <div class="card">
-      <h1>Lengkapi Data Peminjaman</h1>
+      <h1><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?></h1>
 
       <?php if ($err): ?>
         <div class="alert-error"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>
 
-      <form action="?route=Booking/store" method="POST" id="bookingForm">
-        <!-- Hidden Inputs dari step1 -->
-        <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>">
+      <form action="<?= $isEdit ? '?route=Booking/update' : '?route=Booking/store' ?>" method="POST" id="bookingForm">
+        <?php if ($isEdit): ?>
+          <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
+        <?php endif; ?>
+        <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>"> <!-- ruangan tetap -->
         <input type="hidden" name="tanggal" value="<?= htmlspecialchars($payload['tanggal']) ?>">
         <input type="hidden" name="jam_mulai" value="<?= htmlspecialchars($payload['jam_mulai']) ?>">
         <input type="hidden" name="jam_selesai" value="<?= htmlspecialchars($payload['jam_selesai']) ?>">
-        <input type="hidden" name="jumlah_peminjam" id="jumlahPeminjam" value="">
+        <input type="hidden" name="jumlah_peminjam" id="jumlahPeminjam" value="<?= htmlspecialchars($defaultJumlah) ?>">
 
         <div class="form-group">
           <label>Nama penanggung jawab</label>
@@ -91,19 +96,16 @@ $initialMembers = [''];
         </div>
 
         <div class="form-group">
-          <label>Email penanggung jawab</label>
+          <label>Email penanggung jawab (boleh diubah)</label>
           <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
         </div>
 
         <div class="form-group">
-          <label>Jumlah Peminjam</label>
-          <input class="input-line" type="number" name="jumlah_peminjam" min="2" value="2" required>
+          <label>Jumlah Peminjam (auto, 1 PJ + anggota)</label>
+          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" readonly>
         </div>
 
         <div class="anggota-wrap" id="anggotaList">
-
-        <!-- List Anggota -->
-        <div id="anggotaList">
           <?php $idx = 1; foreach ($initialMembers as $val): ?>
             <div class="form-group anggota-item">
               <label>NIM Anggota <?= $idx ?></label>
@@ -112,19 +114,16 @@ $initialMembers = [''];
           <?php $idx++; endforeach; ?>
         </div>
 
-        <!-- Tombol Tambah Anggota -->
         <button type="button" class="add-btn" id="addAnggota">+ Tambah Anggota</button>
 
-        <!-- Tombol Aksi -->
         <div class="actions">
-          <a href="?route=Booking/step1/<?= urlencode($payload['room_id']) ?>" class="btn-back">Kembali</a>
-          <button type="submit" class="btn-save">Simpan</button>
+          <a href="?route=<?= $isEdit ? ('Booking/editForm/' . urlencode($payload['booking_id'])) : ('Booking/step1/' . urlencode($payload['room_id'])) ?>" class="btn-back">Kembali</a>
+          <button type="submit" class="btn-save"><?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?></button>
         </div>
       </form>
     </div>
   </main>
 
-  <!-- Footer -->
   <footer>
       <div class="footer-content">
           <div class="footer-brand">
@@ -163,12 +162,13 @@ $initialMembers = [''];
           </div>
       </div>
   </footer>
+
   <script>
-    // JS Logic Original Anda + Update Tampilan
     const anggotaList = document.getElementById('anggotaList');
     const addBtn = document.getElementById('addAnggota');
-    const jumlahInput = document.getElementById('jumlahPeminjam');
-    let anggotaCount = <?= $idx - 1 ?>; // Ambil jumlah awal dari PHP
+    const jumlahHidden = document.getElementById('jumlahPeminjam');
+    const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
+    let anggotaCount = <?= $idx - 1 ?>; // jumlah awal dari PHP
 
     function addAnggotaField(value = '') {
       anggotaCount += 1;
@@ -188,7 +188,9 @@ $initialMembers = [''];
       const filledMembers = Array.from(document.querySelectorAll('.anggota-input'))
         .map(i => i.value.trim())
         .filter(v => v !== '');
-      jumlahInput.value = 1 + filledMembers.length; // 1 Penanggung jawab + anggota
+      const total = 1 + filledMembers.length; // 1 penanggung + anggota
+      jumlahHidden.value  = total;
+      jumlahDisplay.value = total;
     });
   </script>
 </body>

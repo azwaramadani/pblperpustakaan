@@ -161,7 +161,7 @@ class Booking extends Model
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
             $where[]  = "(b.nama_penanggung_jawab LIKE ?)";
-            $like     = '%' . $searchName;
+            $like     = '%' . $searchName . '%';
             $params[] = $like;
 
         }
@@ -176,6 +176,7 @@ class Booking extends Model
                      {$whereSql}";
         $totalRow = $this->query($countSql, $params)->fetch();
         $total    = (int)($totalRow['total'] ?? 0);
+
         if ($total === 0) {
             return [
                 'data'         => [],
@@ -445,6 +446,8 @@ class Booking extends Model
                 b.tanggal,
                 b.jam_mulai, 
                 b.jam_selesai,
+                b.status_booking,
+                b.user_id,
                 r.room_id,
                 r.nama_ruangan
                 FROM {$this->table} b
@@ -486,6 +489,56 @@ class Booking extends Model
             $data['kode_booking'],
             $data['status_booking']
         ]);
+    }
+
+    // Ambil data lengkap booking + ruangan (untuk preload edit)
+    public function findForEdit(int $bookingId, int $userId)
+    {
+        $sql = "SELECT 
+                    b.*,
+                    r.nama_ruangan,
+                    r.deskripsi,
+                    r.kapasitas_min,
+                    r.kapasitas_max,
+                    r.status AS status_ruangan
+                FROM {$this->table} b
+                JOIN room r ON b.room_id = r.room_id
+                WHERE b.booking_id = ? AND b.user_id = ?
+                LIMIT 1";
+        return $this->query($sql, [$bookingId, $userId])->fetch();
+    }
+
+     // Update booking oleh user (hanya jika masih Disetujui)
+    public function updateByUser(int $bookingId, int $userId, array $data)
+    {
+        $sql = "UPDATE {$this->table}
+                SET room_id = ?,
+                    tanggal = ?,
+                    jam_mulai = ?,
+                    jam_selesai = ?,
+                    jumlah_peminjam = ?,
+                    nimnip_peminjam = ?,
+                    email_penanggung_jawab = ?,
+                    status_booking = 'Disetujui'
+                WHERE booking_id = ? AND user_id = ? AND status_booking = 'Disetujui'";
+        return $this->query($sql, [
+            $data['room_id'],
+            $data['tanggal'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['jumlah_peminjam'],
+            $data['nimnip_peminjam'],
+            $data['email_penanggung_jawab'],
+            $bookingId,
+            $userId
+        ]);
+    }
+
+    // Buat user edit booking, Pecah string "nim1,nim2" jadi array rapi
+    public function splitMembers(string $nimList): array
+    {
+        $parts = array_map('trim', explode(',', $nimList));
+        return array_values(array_filter($parts, fn($v) => $v !== ''));
     }
 
     public function createAdminBooking($data)

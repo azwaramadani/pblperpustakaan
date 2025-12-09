@@ -236,6 +236,10 @@ body {
     box-shadow: var(--shadow);
 }
 
+.panel a{
+  text-decoration: none;
+}
+
 .panel h3 {
     margin: 0;
     font-size: 18px;

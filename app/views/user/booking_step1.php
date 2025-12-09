@@ -1,9 +1,11 @@
 <?php
-$badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
-$err  = Session::get('flash_error');
+$badgeText = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
+$err       = Session::get('flash_error');
 Session::set('flash_error', null);
 
-// Helper function untuk base_url jika belum didefinisikan (untuk preview)
+$isEdit = !empty($payload['booking_id'] ?? null);
+
+// Helper base_url untuk preview
 if (!function_exists('app_config')) {
     function app_config() { return ['base_url' => '']; }
 }
@@ -14,7 +16,7 @@ if (!function_exists('app_config')) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pilih Tanggal & Jam - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
+  <title><?= $isEdit ? 'Ubah Peminjaman' : 'Pilih Tanggal & Jam' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css">
 </head>
@@ -23,7 +25,6 @@ if (!function_exists('app_config')) {
   <!-- NAVBAR -->
   <header class="navbar">
     <div class="nav-left">
-      <!-- Pastikan path logo benar -->
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
     </div>
@@ -53,7 +54,6 @@ if (!function_exists('app_config')) {
     </div>
   </header>
 
-
   <main class="main-container">  
     <div class="room-header">
       <div class="room-img-container">
@@ -66,58 +66,57 @@ if (!function_exists('app_config')) {
       </div>
     </div>
 
-    <!-- persentase puas -->
     <div class="badge-wrapper">
         <div class="puas-badge">
             <?= htmlspecialchars($badgeText) ?>
         </div>
     </div>
 
-    <!-- 3. Form Card (White Box) -->
     <div class="booking-card">
-      <h3>Pilih tanggal dan jam peminjaman</h3>
+      <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
       <?php if ($err): ?>
         <div class="alert-error"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>
 
-      <form action="?route=Booking/step2" method="POST">
-        <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
-        
+      <form action="<?= $isEdit ? '?route=Booking/editStep2' : '?route=Booking/step2' ?>" method="POST">
+        <?php if ($isEdit): ?>
+          <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
+        <?php endif; ?>
+        <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>"> <!-- ruangan tidak diubah -->
+
         <div class="form-grid">
-            <!-- Tanggal -->
             <div class="form-group">
                 <label>Pilih tanggal</label>
-                <input type="date" name="tanggal" class="input-line" required>
+                <input type="date" name="tanggal" class="input-line" required
+                       value="<?= htmlspecialchars($payload['tanggal'] ?? '') ?>">
             </div>
 
-            <!-- Jam Mulai & Selesai -->
             <div class="time-wrapper">
                 <div class="form-group time-box">
-                    <label>Pilih jam</label>
-                    <input type="time" name="jam_mulai" class="input-line" required>
+                    <label>Jam mulai</label>
+                    <input type="time" name="jam_mulai" class="input-line" required
+                           value="<?= htmlspecialchars($payload['jam_mulai'] ?? '') ?>">
                 </div>
                 
                 <span class="sampai-text">Sampai</span>
 
                 <div class="form-group time-box">
-                    <label>Pilih jam</label>
-                    <input type="time" name="jam_selesai" class="input-line" required>
+                    <label>Jam selesai</label>
+                    <input type="time" name="jam_selesai" class="input-line" required
+                           value="<?= htmlspecialchars($payload['jam_selesai'] ?? '') ?>">
                 </div>
             </div>
         </div>
 
-        <!-- Tombol Aksi -->
         <div class="btn-action-row">
-            <a href="?route=User/ruangan" class="btn btn-back">Kembali</a>
-            <button type="?route=Booking/step2" class="btn btn-next">Lanjut</button>
+            <a href="?route=<?= $isEdit ? 'User/riwayat' : 'User/ruangan' ?>" class="btn btn-back">Kembali</a>
+            <button type="submit" class="btn btn-next"><?= $isEdit ? 'Lanjut Ubah' : 'Lanjut' ?></button>
         </div>
       </form>
     </div>
-
   </main>
 
-  <!-- FOOTER (Hitam) -->
   <footer>
       <div class="footer-content">
           <div class="footer-brand">
@@ -156,6 +155,5 @@ if (!function_exists('app_config')) {
           </div>
       </div>
   </footer>
-
 </body>
 </html>
