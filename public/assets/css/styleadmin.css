@@ -20,7 +20,7 @@
 
 body {
   margin: 0;
-  background: #f7f9fb;
+  background: linear-gradient(180deg, #FFFFFF 0%, #D4F4F3 30%, #68D0C9 100%);
   color: #1e1f26;
   font-family: 'Poppins', 'Work Sans', sans-serif;
 }
@@ -34,7 +34,7 @@ body {
   display: flex;
   width: 100%;
   min-height: 100vh;
-  background: #f7f9fb;
+  background: #f4f6f9; /* Background utama abu sangat muda */
 }
 
 .main-area {
@@ -70,60 +70,121 @@ body {
 }
 
 .sidebar {
-  width: 240px;
-  background: linear-gradient(180deg, #1bbab3 0%, #0f8f8c 100%);
-  color: #fff;
-  padding: 40px 30px;
+  width: 260px;
+  background: #ffffff; /* Ubah jadi Putih */
+  color: #333; /* Teks jadi gelap */
+  padding: 30px 25px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  /* Garis biru di sebelah kanan sesuai gambar */
+  border-right: 4px solid #2db6f5; 
+  box-shadow: 2px 0 10px rgba(0,0,0,0.03);
 }
 
+/* Logo di Sidebar */
 .brand {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center; /* Logo di tengah */
+  margin-bottom: 20px;
 }
 
-.brand img {
-  max-width: 140px;
-}
+/* =========================================
+   2. GANTI BAGIAN NAVIGASI SIDEBAR (MENU)
+   Agar teks hitam, icon berwarna, dan aktif kuning
+   ========================================= */
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
   font-weight: 600;
+  font-size: 15px;
 }
 
 .sidebar-nav a {
-  color: rgba(255, 255, 255, 0.85);
+  color: #1e1f26; /* Warna teks menu hitam/gelap */
   text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Jarak antara icon dan teks */
 }
 
-.sidebar-nav a:hover,
+/* Warna Icon (Teal/Biru laut) */
+.sidebar-nav a i, 
+.sidebar-nav a svg,
+.sidebar-nav a img { 
+  color: #22b6b3; /* Sesuaikan warna icon dengan tema */
+  width: 20px;
+  text-align: center;
+}
+
+/* Efek Hover: Background abu tipis */
+.sidebar-nav a:hover {
+  background: #f0f2f5;
+  color: #000;
+}
+
+/* MENU AKTIF (Dashboard): Teks Kuning */
 .sidebar-nav a.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: transparent; /* Tidak ada background kotak */
+  color: #f7c825; /* Warna teks jadi KUNING EMAS */
 }
 
+.sidebar-nav a.active i,
+.sidebar-nav a.active svg {
+  color: #f7c825; /* Icon juga ikut kuning */
+}
+
+/* =========================================
+   3. GANTI BAGIAN TOP NAVBAR (ATAS)
+   Agar selaras menjadi putih/bersih
+   ========================================= */
+
+.top-nav {
+  width: 100%;
+  background: #ffffff; /* Jadi Putih */
+  color: #333; /* Teks jadi gelap */
+  padding: 15px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05); /* Bayangan halus */
+  border-bottom: 1px solid #eee;
+}
+
+/* Profil User di Pojok Kanan Atas */
 .top-nav .profile-summary {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: transparent; /* Hapus kotak background */
+  border: none;
+  color: #333;
   box-shadow: none;
+  padding: 0;
 }
 
 .top-nav .profile-summary p {
-  color: #fff;
+  color: #333; /* Nama user jadi hitam */
 }
 
 .top-nav .profile-summary span {
-  color: #e0f7f6;
+  color: #888; /* Role user jadi abu */
+}
+
+/* Profil User di Bawah Sidebar (Opsional sesuai gambar) */
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 }
 
 .content {

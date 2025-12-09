@@ -54,8 +54,8 @@ Session::set('flash_success', null);
 
     <p>
       <strong>Ruangan:</strong> <?= htmlspecialchars($booking['nama_ruangan']) ?> | 
-      <strong>Tanggal:</strong> <?= htmlspecialchars($booking['tanggal']) ?> | 
-      <strong>Jam:</strong> <?= htmlspecialchars($booking['jam_mulai']) ?> - <?= htmlspecialchars($booking['jam_selesai']) ?>
+      <strong>Tanggal Booking:</strong> <?= htmlspecialchars($booking['tanggal']) ?> | 
+      <strong>Jam Booking:</strong> <?= htmlspecialchars($booking['jam_mulai']) ?> - <?= htmlspecialchars($booking['jam_selesai']) ?>
     </p>
 
     <?php if ($feedback): ?>
@@ -88,5 +88,31 @@ Session::set('flash_success', null);
     <?php endif; ?>
   </div>
 </main>
+
+<footer class="footer">
+        <div class="footer-brand">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study"class="footer-logo">
+            </div>
+            <p class="footer-description">
+                Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
+            </p>
+        </div>
+
+        <!-- Footer Links -->
+        <div class="footer-nav">
+            <div>
+                <h4>Navigasi</h4>
+                    <a href="?route=user/home">Beranda</a>
+                    <a href="?route=user/ruangan">Ruangan</a>
+                    <a id="navigasipanduan"href="#">Panduan</a>
+            </div>
+            <div>
+                <h4>Kontak</h4>
+                <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
+                <a href="tel:0822123456780">0822123456780</a>
+                <p>Kampus PNJ, Depok</p>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

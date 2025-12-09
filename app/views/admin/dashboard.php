@@ -42,7 +42,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Admin - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.0">
 </head>
 
 <body class="admin-body">
