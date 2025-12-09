@@ -65,6 +65,8 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
         <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+        <h3>Waktu Peminjaman:</h3>
+        <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
       </div>
     </div>
 
@@ -96,13 +98,13 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         </div>
 
         <div class="form-group">
-          <label>Email penanggung jawab (boleh diubah)</label>
+          <label>Email penanggung jawab</label>
           <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
         </div>
 
         <div class="form-group">
-          <label>Jumlah Peminjam (auto, 1 PJ + anggota)</label>
-          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" readonly>
+          <label>Jumlah Peminjam (1 PJ + anggota)</label>
+          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" required>
         </div>
 
         <div class="anggota-wrap" id="anggotaList">

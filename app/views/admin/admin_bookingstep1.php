@@ -1,4 +1,6 @@
 <?php
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+
 $badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err  = Session::get('flash_error');
 Session::set('flash_error', null);
@@ -17,9 +19,24 @@ if (!function_exists('app_config')) {
   <title>Pilih Tanggal & Jam - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css">
-  
 </head>
 <body>
+
+<header class="navbar">
+    <div class="logo">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
+    </div>
+
+    <div class="profile-dropdown">
+      <div class="profile-trigger">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
+        <div class="user-name">
+          <a href="?route=Admin/dataRuangan" style="text-decoration: none; color: black;"><p><?= htmlspecialchars($adminName) ?></p></a>
+        </div>
+      </div>
+    </div>
+  </header>
 
   <main class="main-container">    
     <div class="room-header">

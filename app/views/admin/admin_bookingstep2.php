@@ -1,4 +1,6 @@
 <?php
+$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+
 $err     = Session::get('flash_error');
 Session::set('flash_error', null);
 
@@ -10,23 +12,36 @@ $initialMembers = [''];
 <head>
   <meta charset="UTF-8">
   <title>Lengkapi Data Peminjaman - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleriwayat.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
 </head>
 <body>
+
   <header class="navbar">
     <div class="logo">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
     </div>
+
+    <div class="profile-dropdown">
+      <div class="profile-trigger">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
+        <div class="user-name">
+          <a href="?route=Admin/dataRuangan" style="text-decoration: none; color: black;"><p><?= htmlspecialchars($adminName) ?></p></a>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <main style="max-width:900px;margin:40px auto;">
-    <div style="display:flex;gap:24px;align-items:center;">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan" style="width:250px;border-radius:10px;">
-      <div>
+  <main>
+    <div class="room-header">
+      <div class="room-image-container">
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan" class="room-image">
+      </div>
+      <div class="room-details">
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
-        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan study') ?></p>
-        <p>Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
+        <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
         <h3>Waktu Peminjaman:</h3>
         <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
       </div>

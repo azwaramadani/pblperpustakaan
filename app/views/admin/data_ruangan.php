@@ -31,7 +31,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Data Ruangan</h2>
-          <p style="margin:4px 0 0;">Kelola data ruangan, feedback, serta aksi ubah/hapus.</p>
+          <p style="margin:4px 0 0;">Kelola data ruangan.</p>
         </div>
       </div>
       <div class="profile-summary top">
@@ -54,7 +54,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <div class="section-head" style="align-items:center; justify-content:space-between; margin-bottom: 20px;">
         <div>
           <h3>Daftar Ruangan</h3>
-          <p class="subtitle">Klik tombol aksi untuk lihat feedback, ubah, atau hapus ruangan.</p>
+          <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
         </div>
         <button class="btn-add" type="button" onclick="window.location='?route=Admin/addRuangan'">Tambah Ruangan</button>
       </div>

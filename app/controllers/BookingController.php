@@ -88,8 +88,13 @@ Class bookingController{
 
         $roomModel     = new Room();
         $feedbackModel = new Feedback();
+        $adminModel    = new Admin();
 
-        $room = $roomModel->findById($roomId);        
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
+        
+        $room    = $roomModel->findById($roomId);        
+
 
         if (!$room) {
             http_response_code(404);
@@ -137,6 +142,8 @@ Class bookingController{
         $bookingModel = new Booking();
         $adminModel   = new Admin();
 
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
 
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
@@ -158,6 +165,7 @@ Class bookingController{
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
+    // method handler admin create booking
     public function adminStore()
     {
         Session::checkAdminLogin();
@@ -224,6 +232,7 @@ Class bookingController{
             }
         }
 
+        $payload['jumlah_peminjam'] = 1 + count($anggota);
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         
@@ -239,7 +248,7 @@ Class bookingController{
         exit;
     }
 
-    // Method handler buat nyimpen semua form booking user 
+    // Method handler user create booking
     public function store()
     {
         Session::checkUserLogin();
@@ -305,13 +314,15 @@ Class bookingController{
             }
         }
 
+        // buat count otomatis jumlah_peminjam walaupun NIM anggota yang diinput user ga sesuai sama jumlah peminjam yang dia input
+        $payload['jumlah_peminjam'] = 1 + count($anggota);
+
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
-        
-        $payload['user_id']        = Session::get('user_id');
-        $payload['status_booking'] = 'Disetujui';
-        $payload['waktu_booking']  = date('Y-m-d H:i:s');
-        $payload['kode_booking']   = generateBookingCode();
+        $payload['user_id']         = Session::get('user_id');
+        $payload['status_booking']  = 'Disetujui';
+        $payload['waktu_booking']   = date('Y-m-d H:i:s');
+        $payload['kode_booking']    = generateBookingCode();
 
         $bookingModel->createUserBooking($payload);
 
