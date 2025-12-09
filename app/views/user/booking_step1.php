@@ -75,6 +75,10 @@ if (!function_exists('app_config')) {
     <div class="booking-card">
       <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
+      <?php if ($err): ?>
+        <div class="alert-error"><?= htmlspecialchars($err) ?></div>
+      <?php endif; ?>
+      
       <!-- Informasi jadwal terpakai hari ini -->
       <div class="schedule-box">
         <h4>Waktu yang sudah dipinjam.</h4>
@@ -100,10 +104,6 @@ if (!function_exists('app_config')) {
           <p class="schedule-empty">Belum ada peminjaman hari ini.</p>
         <?php endif; ?>
       </div>
-
-      <?php if ($err): ?>
-        <div class="alert-error"><?= htmlspecialchars($err) ?></div>
-      <?php endif; ?>
 
       <form action="<?= $isEdit ? '?route=Booking/editStep2' : '?route=Booking/step2' ?>" method="POST">
         <?php if ($isEdit): ?>

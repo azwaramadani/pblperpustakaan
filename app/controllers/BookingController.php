@@ -87,26 +87,22 @@ Class bookingController{
         $roomModel     = new Room();
         $feedbackModel = new Feedback();
         $adminModel    = new Admin();
+        $bookingModel  = new Booking();
 
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
         
         $room    = $roomModel->findById($roomId);        
-
-
-        if (!$room) {
-            http_response_code(404);
-            exit('Ruangan tidak ditemukan.');
+        if (!$room) { 
+            http_response_code(404); exit('Ruangan tidak ditemukan.'); 
         }
-
         if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
-            Session::set('flash_error', null);
-            header('Location: ?route=Admin/dataRuangan');
-            exit;
+            header('Location: ?route=User/ruangan'); exit;
         }
 
-        $adminId = Session::get('admin_id');
-        $puasPercent  = $feedbackModel->puasPercent($room['room_id']);
+        $adminId        = Session::get('admin_id');
+        $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
+        $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId);
 
         require __DIR__ . '/../views/admin/admin_bookingstep1.php';
     }
