@@ -28,12 +28,27 @@ class UserController{
         Session::checkUserLogin();
         Session::preventCache();
     
-        $userModel = new User();
-        $roomModel = new Room();
+        $userModel    = new User();
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
 
-        $user  = $userModel->findById(Session::get('user_id'));
-        $rooms = $roomModel->getAll();
+        $user        = $userModel->findById(Session::get('user_id'));
+        $rooms       = $roomModel->getAll();
+        $busyRoomIds = $bookingModel->getBusyRoomIdsNow();
         
+        foreach ($rooms as &$room) {
+            $statusRaw  =  strtolower($room['status'] ?? '');
+            
+            // Jika ruangan available dan sedang ada booking aktif, tunjukkan "Sedang Dipinjam"
+            if (in_array((int)$room['room_id'], $busyRoomIds, true) && $statusRaw === 'tersedia') {
+                $room['status_display'] = 'Sedang Dipinjam';
+                $room['status_class']   = 'borrowed';
+            } else {
+                $room['status_display'] = $room['status'] ?? 'Tidak Diketahui';
+                $room['status_class']   = ($statusRaw === 'tersedia') ? 'available' : 'unavailable';
+            }
+        }
+        unset($room); // hindari reference leak
 
         require __DIR__ . '/../views/user/ruangan.php';
     }

@@ -189,7 +189,7 @@ img {
   display: flex;
   align-items: center;
   gap: 6px;
-  background-color: transparent !important; /* Hapus background warna lama */
+  background-color: transparent;
 }
 
 /* Membuat titik warna menggunakan pseudo-element */
@@ -216,6 +216,15 @@ img {
 .status.unavailable::before {
   background-color: var(--red);
 }
+
+/* Status ruangan saat sedang dipinjam */
+/* Warna Status Sedang Dipinjam */
+.status.borrowed { 
+  color: #f59e0b; 
+}          /* teks oranye */
+.status.borrowed::before { 
+  background-color: #f59e0b; 
+} /* titik oranye */
 
 /* Details (Kapasitas) */
 .room-details {

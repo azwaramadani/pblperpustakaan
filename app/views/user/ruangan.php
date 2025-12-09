@@ -56,8 +56,8 @@
                 <div class="room-info">
                     <div class="room-header">
                         <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
-                        <span class="status <?= ($r['status'] == 'Tersedia') ? 'available' : 'unavailable' ?>">
-                            <?= $r['status'] ?>
+                        <span class="status <?= htmlspecialchars($r['status_class'] ?? (($r['status'] == 'Tersedia') ? 'available' : 'unavailable')) ?>">
+                            <?= htmlspecialchars($r['status_display'] ?? $r['status']) ?>
                         </span>
                     </div>
                     <div class="room-details">

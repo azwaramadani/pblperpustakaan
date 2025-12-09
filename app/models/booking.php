@@ -409,6 +409,19 @@ class Booking extends Model
         return $rows;
     }
 
+    // method buat set status ruangan jadi Sedang Dipinjam
+    public function getBusyRoomIdsNow(): array
+    {
+        $sql = "SELECT DISTINCT room_id
+                FROM {$this->table}
+                WHERE status_booking = 'Disetujui'
+                  AND tanggal = CURDATE()
+                  AND jam_mulai <= CURTIME()
+                  AND jam_selesai > CURTIME()";
+        $rows = $this->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows);
+    }
+
     # Ambil riwayat booking per user
     public function getHistoryByUser($user_id)
     {
