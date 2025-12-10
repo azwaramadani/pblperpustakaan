@@ -277,7 +277,7 @@ Class bookingController{
             }
         }
 
-        // Minimal 1 anggota
+        // Buat validasi minimal input 1 anggota
         if (count($anggota) === 0) {
             Session::set('flash_error', 'Tambahkan minimal 1 NIM/NIP anggota.');
             header('Location: ?route=Booking/step1/' . $payload['room_id']);

@@ -84,7 +84,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Dashboard Admin</h2>
-          <p style="margin:4px 0 0;">Ringkasan peminjaman ruangan dan feedback.</p>
+          <p style="margin:4px 0 0;">Ringkasan statistik dan peminjaman hari ini.</p>
         </div>
       </div>
       <div class="profile-summary top">

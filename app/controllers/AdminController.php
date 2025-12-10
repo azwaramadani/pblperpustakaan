@@ -2,22 +2,25 @@
 require_once __DIR__ . '/../../core/Session.php';
 
 class AdminController {
+
     #method handler buat dashboard admin
     public function dashboard()
     {
+        // buat memastikan kalau admin udah login dan kalau admin logout, halamannya tidak di cache oleh sistem.
         Session::checkAdminLogin();
         Session::preventCache();
 
+        // buat objek baru dari class-class yang dibutuhkan di folder Model
         $adminModel    = new Admin();
         $bookingModel  = new Booking();
-        $feedbackModel = new Feedback();
         $userModel     = new User();
         $roomModel     = new Room();
 
+        // buat nampilin icon profile admin 
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
 
-        #ini buat card paling atas
+        // ini buat nampilin card-card statistik di bagian atas, tapi khusus hari ini
         $today = date('Y-m-d');
         $stats = [
             'user_today'        => $userModel->countRegisteredToday($today),
@@ -27,10 +30,10 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
-        #buat set auto selesai kalo jam booking udah nyentuh jam selesai
+        // buat set auto selesai kalo jam booking udah nyentuh jam selesai
         $bookingModel->markFinishedBookings();
 
-        #filter dashboard data booking + feedback
+        // ini semua buat sorting + searching di tabel admin today bookings
         $sortCreate  = strtolower($_GET['sort_create'] ?? 'desc');
         $sortDate    = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate    = $_GET['from_date'] ?? '';
@@ -40,15 +43,14 @@ class AdminController {
         $jurusanSel  = $_GET['jurusan'] ?? '';
         $prodiSel    = $_GET['program_studi'] ?? '';
         $feedbackSel = $_GET['feedback'] ?? '';
-        $keyword     = trim($_GET['keyword'] ?? '');
-
-        
-        # pagination setup
+        $keyword     = trim($_GET['keyword'] ?? ''); // kata kuncinya pakai nama penanggung jawab
+    
+        // ini buat setup pagination
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
 
-        # ambil data + total sesuai filter + halaman
+        // nah, ini dia untuk mengambil semua data tabel today bookings
         $pagination = $bookingModel->getAllSortedPaginatedToday(
                         $sortCreate,
                         $roleSel ?: null,
@@ -59,26 +61,16 @@ class AdminController {
                         $perPage,
                         $page);
         
-        $feedbackpagination = $feedbackModel->feedbackgetAllSortedPaginated(
-                        $sortDate,
-                        $roleSel ?: null,
-                        $unitSel ?: null,
-                        $jurusanSel ?: null,
-                        $prodiSel ?: null,
-                        $feedbackSel ?: null,
-                        $keyword ?: null,
-                        $perPage,
-                        $page);
-        
+        // nah, variabel ini fungsinya nyimpen semua data, lalu dipanggil di views/dashboard                
         $todayBookings = $pagination['data'];    
-        $feedbacks     = $feedbackpagination['data'];
 
+        // ini opsi-opsi buat sorting role, unit tendik, jurusan, dan prodi
         $roleList     = $this->roleOptions();
         $unitList     = $this->unitOptions();
         $jurusanList  = $this->jurusanOptions();
         $prodiList    = $this->prodiOptions();
-        $feedbackList = $this->feedbackOptions();
 
+        // ini variabel yang nyimpan semua sorting-nya, supaya bisa dipanggil di views/dashboard
         $filters = [
             'sort_create'   => $sortCreate,
             'role'          => $roleSel,
@@ -88,26 +80,16 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        #Ruangan dengan Booking terbanyak
+        // variabel ini buat nyimpen ruangan + total udah dibooking berapa kali
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
 
-        $fbFilters = [
-            'sort_date'     => $sortDate,
-            'from_date'     => $fromDate,
-            'to_date'       => $toDate,
-            'role'          => $roleSel,
-            'unit'          => $unitSel,
-            'jurusan'       => $jurusanSel,
-            'program_studi' => $prodiSel,
-            'feedback'      => $feedbackSel,
-            'keyword'       => $keyword,
-        ];
-
+        // buat flash error atau success
         $success = Session::get('flash_success');
         $error   = Session::get('flash_error');
         Session::set('flash_success', null);
         Session::set('flash_error', null);
 
+        // jangan lupa pakai require, karena kalau tidak, semua variabel controller yang dipanggil di views, gaakan bekerja.
         require __DIR__ . '/../views/admin/dashboard.php';
     }
 
@@ -123,7 +105,7 @@ class AdminController {
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
         
-        #filter dashboard data booking
+        // ini semua deklarasi variabel buat sorting + searching di tabel peminjaman
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate   = $_GET['from_date'] ?? '';
         $toDate     = $_GET['to_date'] ?? '';
@@ -133,7 +115,7 @@ class AdminController {
         $prodiSel   = $_GET['program_studi'] ?? '';
         $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
-        # pagination setup
+        // pagination setup
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
@@ -177,6 +159,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_peminjaman.php';
     }
 
+    // method handler buat nampilin semua data booking yang dibuat oleh aktor admin (misal karena ada tamu eksternal)
     public function dataFromAdminCreateBooking()
     {
         Session::checkAdminLogin();
@@ -188,33 +171,31 @@ class AdminController {
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
         
+        // objek class booking akses method ini supaya set status jadi 'Selesai' ketika jam sudah melewat jam_selesai 
         $bookingModel->markFinishedBookings();
 
-        #filter dashboard data admin create booking
+        // ini buat sorting + searching
         $sortDate   = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate   = $_GET['from_date'] ?? '';
         $toDate     = $_GET['to_date'] ?? '';
         $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
-        # pagination setup
+        // pagination setup
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
 
-        # ambil data + total sesuai filter + halaman
+        // ambil data + total sesuai filter + halaman
         $pagination = $bookingModel->adminCreateGetAllSortedPaginated(
                         $sortDate, 
                         $fromDate ?: null, 
                         $toDate ?: null,
                         $keyword ?: null);
 
+        // ini dia varibel yang nyimpan semua data dan nantinya bakal dipanggil di views
         $bookings  = $pagination['data'];
-
-        $roleList    = $this->roleOptions();
-        $unitList    = $this->unitOptions();
-        $jurusanList = $this->jurusanOptions();
-        $prodiList   = $this->prodiOptions();
         
+        // variabel sorting yang nantinya dipanggil di views
         $filters = [
             'sort_date'     => $sortDate,
             'from_date'     => $fromDate,
@@ -230,7 +211,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_admincreatebooking.php';
     }
 
-    #method handler buat admin update status bookingan user
+    #method handler buat update status bookingan user
     public function updateStatus()
     {
         Session::checkAdminLogin();
@@ -279,7 +260,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
 
-    # Form tambah ruangan
+    # method handler buat admin bikin ruangan baru, jadi di redirect ke add_ruangan.php
     public function addRuangan()
     {
         Session::checkAdminLogin();
@@ -297,7 +278,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/add_ruangan.php';
     }
 
-    #method handler buat nambah ruangan baru
+    #ini baru method yang menghandle data ruangan baru yang dinput sama admin disimpan ke database
     public function storeRuangan()
     {
         Session::checkAdminLogin();
@@ -344,7 +325,7 @@ class AdminController {
         exit;
     }
 
-    # method handler buat redirect admin ke form edit ruangan
+    // method handler buat redirect admin ke form edit ruangan
     public function editRuangan($roomId)
     {
         Session::checkAdminLogin();
@@ -371,7 +352,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/edit_ruangan.php';
     }
 
-    # ini baru method handler utama buat edit ruangan
+    # ini baru method yang menghandle semua data ruangan yang diupdate, untuk diupdate ke database
     public function updateRuangan()
     {
         Session::checkAdminLogin();
@@ -427,7 +408,7 @@ class AdminController {
         exit;
     }
 
-    # Hapus ruangan (dengan konfirmasi modal di view)
+    # method untuk hapus ruangan di data ruangan admin
     public function deleteRuangan()
     {
         Session::checkAdminLogin();
@@ -469,7 +450,7 @@ class AdminController {
         exit;
     }
 
-     # Tampilkan feedback per ruangan
+    // ini method buat menampilkan feedback dari setiap ruangan, makanya disini menggunakan parameter room id, supaya menampilkan feedback dari ruangan yang dipilih saja
     public function feedbackRuangan($roomId)
     {
         Session::checkAdminLogin();
@@ -507,7 +488,7 @@ class AdminController {
         require __DIR__ . '/../views/admin/feedback_ruangan.php';
     }
 
-    //method handler buat admin kelola data akun user 
+    // method handler buat admin kelola data akun user 
     public function dataAkun()
     {
         Session::checkAdminLogin();
@@ -644,7 +625,7 @@ class AdminController {
         exit;
     }
 
-    #redirect helper setelah update status booking (bisa kembali ke dashboard)
+    #method helper buat redirect admin setelah update status booking (bisa kembali ke dashboard)
     private function redirectAfterBookingUpdate(string $redirect = ''): void
     {
         $allowed = ['Admin/dataPeminjaman','Admin/dashboard', 'Admin/dataFromAdminCreateBooking'];
@@ -653,7 +634,7 @@ class AdminController {
         exit;
     }
     
-     # Helper upload gambar ruangan (opsional)
+    // method helper buat add image ruangan baru, misal pas edit ruangan atau pass tambah ruangan baru
     private function handleRoomImageUpload(array $file, ?string $currentPath = null): ?string
     {
         // Jika tidak ada file baru, tetap pakai path lama
@@ -666,7 +647,7 @@ class AdminController {
         $uploaded  = uploadFile($file, $uploadDir);
 
         if ($uploaded === false) {
-            return $currentPath; // gagal upload, jangan kosongkan gambar lama
+            return $currentPath; // kalau gagal upload, jangan kosongkan gambar lama
         }
 
         $newPath = 'public/assets/image/ruangan/' . $uploaded;
@@ -680,14 +661,6 @@ class AdminController {
         }
 
         return $newPath;
-    }
-    
-    private function feedbackOptions(): array
-    {
-        return[
-            'Puas',
-            'Tidak Puas',
-        ];
     }
 
     private function roleOptions(): array
