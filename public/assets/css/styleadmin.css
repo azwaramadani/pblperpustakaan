@@ -70,60 +70,107 @@ body {
 }
 
 .sidebar {
-  width: 240px;
-  background: linear-gradient(180deg, #1bbab3 0%, #0f8f8c 100%);
-  color: #fff;
-  padding: 40px 30px;
+  width: 260px;
+  background: #ffffff !important;      /* putih */
+  color: #000 !important;
+  padding: 30px 25px;
+  border-right: 1px solid #e5e5e5;     /* garis halus */
   display: flex;
   flex-direction: column;
-  gap: 40px;
-}
-
-.brand {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 35px;
 }
 
 .brand img {
-  max-width: 140px;
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  font-weight: 600;
+  max-width: 150px;
 }
 
 .sidebar-nav a {
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: none;
-  padding: 10px 14px;
-  border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333 !important;               /* teks gelap */
+  border-radius: 10px;
+  transition: 0.2s ease;
 }
 
-.sidebar-nav a:hover,
+.sidebar-nav a i,
+.sidebar-nav a svg {
+  font-size: 20px;
+  width: 22px;
+  color: #1bbab3 !important;            /* icon warna teal */
+}
+
+/* .sidebar-nav a:hover {
+  background: #f4f4f4 !important;       
+  color: #000 !important;
+} */
+
 .sidebar-nav a.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: transparent !important;
+  color: #f7c825 !important;            /* kuning sesuai desain */
 }
 
-.top-nav .profile-summary {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  box-shadow: none;
+.sidebar-nav a.active i {
+  color: #f7c825 !important;
 }
 
-.top-nav .profile-summary p {
-  color: #fff;
+/* Profil kecil di sidebar (Admin) */
+/* Mengubah ukuran gambar avatar di sidebar */
+.sidebar-footer .avatar-img {
+    width: 30px;  /* Ubah ukuran gambar menjadi lebih kecil */
+    height: 30px; /* Ubah ukuran gambar menjadi lebih kecil */
+    object-fit: cover;
 }
 
-.top-nav .profile-summary span {
-  color: #e0f7f6;
+/* Menghilangkan tombol Buat Laporan di samping avatar */
+.top-nav .header-actions {
+    display: none; /* Menyembunyikan tombol Buat Laporan yang ada di samping avatar */
+}
+
+
+/* Menghilangkan avatar besar (jika ada elemen default) */
+.big-profile,
+.profile-large,
+.user-avatar-large {
+  display: none !important;
+}
+
+
+   /* HEADER BAR (TOP NAV) */
+
+/* Header */
+.top-nav {
+  width: 100%;
+  background: #ffffff !important;        /* Putih bersih */
+  color: #000 !important;
+  padding: 20px 40px;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Menghilangkan header title "Dashboard" */
+.top-nav h1 {
+  display: none !important;
+}
+
+/* Tombol kuning "Buat Laporan" */
+.top-nav .btn-laporan {
+  background: #f7c825 !important;
+  color: #000 !important;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.top-nav .btn-laporan:hover {
+  background: #ffd944 !important;
 }
 
 .content {

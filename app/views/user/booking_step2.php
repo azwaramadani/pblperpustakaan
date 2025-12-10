@@ -20,7 +20,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css?v=1.0">
 </head>
 <body>
 

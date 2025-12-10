@@ -42,7 +42,15 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Admin - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.0">
+
+    <header class="top-nav">
+      <div class="header-actions">
+            <a href="?route=Admin/buatLaporan" class="btn-laporan">
+                <i class="fa-solid fa-plus"></i> Buat Laporan
+            </a>
+        </div>
+    </header>
 </head>
 
 <body class="admin-body">
@@ -59,6 +67,16 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <a href="?route=Admin/dataAkun">Data Akun</a>
       <a href="?route=Auth/logout">Keluar</a>
     </nav>
+    <div class="sidebar-footer bottom-profile">
+    <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin Photo">
+    <div class="user-info">
+        <span class="name">adminrudy1</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
   </aside>
 
   <div class="main-area">

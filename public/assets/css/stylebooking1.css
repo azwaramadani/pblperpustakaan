@@ -49,9 +49,19 @@ body {
     transform: translateX(-50%);
 }
 
-.nav-menu a.active, .nav-menu a:hover {
+.nav-menu a.active {
     color: #007777;
     font-weight: 600;
+}
+.nav-menu a.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 3px;
+  background: #007777;
+  border-radius: 999px;
 }
 
 .profile-dropdown {
