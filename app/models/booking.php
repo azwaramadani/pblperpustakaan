@@ -65,7 +65,7 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
             $like     = '%' . $searchName . '%';
             $params[] = $like;
             $params[] = $like;
@@ -261,7 +261,7 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
             $like     = '%' . $searchName . '%';
             $params[] = $like;
             $params[] = $like;
