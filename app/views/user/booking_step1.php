@@ -81,7 +81,7 @@ if (!function_exists('app_config')) {
       
       <!-- Informasi jadwal terpakai hari ini -->
       <div class="schedule-box">
-        <h4>Waktu yang sudah dipinjam.</h4>
+        <h4>Waktu yang sudah dipinjam:</h4>
         <p>Anda tidak bisa memilih jam pada rentang di bawah ini.</p>
         <?php if (!empty($todayIntervals)): ?>
           <table class="schedule-table">
