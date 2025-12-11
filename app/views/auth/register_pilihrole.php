@@ -34,7 +34,8 @@ Session::set('flash_error', null);
             <select id="role" name="role" class="select-input" required>
                 <option value="">-- Pilih role --</option>
                 <option value="mahasiswa">Mahasiswa</option>
-                <option value="dosen">Dosen / Tenaga Pendidik</option>
+                <option value="dosen">Dosen </option>
+                <option value="tenaga kependidikan">Tenaga Kependidikan </option>
             </select>
             <button type="submit" class="btn-login">Lanjut</button>
         </form>

@@ -107,12 +107,6 @@
             </div>         
 
             <div>
-                <h4>Bantuan</h4>
-                    <a href="#">FAQ</a>
-                    <a href="#">Aturan ruangan</a>
-            </div>
-
-            <div>
                 <h4>Kontak</h4>
                 <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
                 <a href="tel:0822123456780">0822123456780</a>

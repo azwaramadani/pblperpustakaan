@@ -24,8 +24,8 @@ $jurusanList = $jurusanList ?? [];
 
     <section class="auth-card form-panel">
         <div class="form-header">
-            <h2>Daftar (Dosen/Tendik)</h2>
-            <p>Isi data dosen atau tenaga pendidik sesuai identitas.</p>
+            <h2>Daftar Dosen</h2>
+            <p>Isi data sesuai identitas.</p>
         </div>
 
         <?php if (!empty($errors)): ?>
@@ -43,8 +43,8 @@ $jurusanList = $jurusanList ?? [];
         <?php endif; ?>
 
         <form class="login-form" method="POST" action="?route=Auth/registerDosen">
-            <label for="nim_nip">NIM/NIP</label>
-            <input id="nim_nip" type="text" name="nim_nip" placeholder="Masukkan NIM/NIP" value="<?= htmlspecialchars($old['nim_nip']) ?>" required>
+            <label for="nim_nip">NIP</label>
+            <input id="nim_nip" type="text" name="nim_nip" placeholder="Masukkan NIP " value="<?= htmlspecialchars($old['nim_nip']) ?>" required>
 
             <label for="jurusan">Jurusan</label>
             <select id="jurusan" name="jurusan" class="select-input" required>

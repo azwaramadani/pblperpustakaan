@@ -82,7 +82,7 @@ class FeedbackController
         $feedbackModel->create($payload);
 
         Session::set('flash_success', 'Feedback terkirim. Terima kasih!');
-        header('Location: ?route=User/riwayat');
+        header('Location: ?route=Feedback/store');
         exit;
     }
 

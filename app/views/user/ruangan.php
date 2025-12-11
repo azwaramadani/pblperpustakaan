@@ -90,13 +90,7 @@
                     <a href="?route=user/ruangan">Ruangan</a>
                     <a id="navigasipanduan"href="#">Panduan</a>
             </div>         
-
-            <div>
-                <h4>Bantuan</h4>
-                    <a href="#">FAQ</a>
-                    <a href="#">Aturan ruangan</a>
-            </div>
-
+            
             <div>
                 <h4>Kontak</h4>
                 <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
