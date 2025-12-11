@@ -26,7 +26,7 @@
     </div>
     <div class="profile-card">
       <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
-      <p><?= htmlspecialchars($user['role']) ?></p>
+      <p><strong><?= htmlspecialchars($user['role']) ?></strong></p>
       <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>

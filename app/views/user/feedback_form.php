@@ -34,6 +34,10 @@ Session::set('flash_success', null);
     </div>
     <div class="profile-card">
       <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+      <p><strong><?= htmlspecialchars($user['role']) ?></strong></p>
+      <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['nim_nip']) ?></p>
       <p><?= htmlspecialchars($user['no_hp']) ?></p>
       <p><?= htmlspecialchars($user['email']) ?></p>

@@ -69,7 +69,7 @@ Class bookingController{
                 $payload['jam_mulai'], 
                 $payload['jam_selesai']
         )){
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']); 
             exit;
         }
@@ -149,7 +149,7 @@ Class bookingController{
                 $payload['jam_mulai'], 
                 $payload['jam_selesai']
         )){
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
             exit;
         }
@@ -209,7 +209,7 @@ Class bookingController{
         }
 
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
             exit;
         }
@@ -291,7 +291,7 @@ Class bookingController{
         }
 
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
             exit;
         }
@@ -425,7 +425,7 @@ Class bookingController{
 
         // Cek bentrok jadwal; exclude booking ini sendiri
         if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
@@ -494,7 +494,7 @@ Class bookingController{
         }
 
         if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
-            Session::set('flash_error', 'Waktu bentrok dengan booking lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 

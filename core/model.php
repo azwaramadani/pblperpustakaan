@@ -7,6 +7,7 @@ class Model
 {
     protected $db;
 
+    // method atau function utama buat koneksi ke database
     public function __construct()
     {
         $cfg = app_config()['database'];

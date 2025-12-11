@@ -45,7 +45,7 @@ function generateBookingCode(): string
     return "BK-{$date}-{$rand}";
 }
 
-# Upload file (contoh: bukti aktivasi, surat peminjaman)
+// method helper buat upload image (misal bukti aktivasi)
 function uploadFile($file, $targetDir)
 {
     if (!isset($file) || $file['error'] !== 0) {
