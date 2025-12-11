@@ -40,7 +40,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Peminjaman - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.3">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="admin-body">
@@ -49,14 +50,38 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     </div>
+    
     <nav class="sidebar-nav">
-      <a href="?route=Admin/dashboard">Dashboard</a>
-      <a href="?route=Admin/dataPeminjaman" class="active">Data Peminjaman</a>
-      <a href="?route=Admin/dataRuangan">Data Ruangan</a>
-      <a href="?route=Admin/dataFromAdminCreateBooking">Data Pinjam Admin</a>
-      <a href="?route=Admin/dataAkun">Data Akun</a>
-      <a href="?route=Auth/logout">Keluar</a>
+      <!-- Menambahkan Icon <i> pada setiap menu -->
+      <a href="?route=Admin/dashboard">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="?route=Admin/dataPeminjaman"class="active">
+        <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
+      </a>
+      <a href="?route=Admin/dataRuangan">
+        <i class="fa-solid fa-door-open"></i> Data Ruangan
+      </a>
+      <a href="?route=Admin/dataFromAdminCreateBooking">
+        <i class="fa-solid fa-user-tag"></i> Data Pinjam Admin
+      </a>
+      <a href="?route=Admin/dataAkun">
+        <i class="fa-solid fa-users"></i> Data Akun
+      </a>
+      <!-- Menu Keluar -->
+      <a href="?route=Auth/logout" style="color: var(--danger) !important;">
+        <i class="fa-solid fa-right-from-bracket" style="color: var(--danger) !important;"></i> Keluar
+      </a>
     </nav>
+
+    <!-- PROFIL (Otomatis di paling bawah karena CSS margin-top: auto) -->
+    <div class="sidebar-footer">
+      <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
+      <div class="user-info">
+        <span class="name">adminrudy1</span>
+        <span style="font-size:11px; color:#6b7280;">Administrator</span>
+      </div>
+    </div>
   </aside>
 
   <div class="main-area">
@@ -64,15 +89,13 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Data Peminjaman</h2>
-          <p>Semua data peminjaman oleh user.</p>
+          <p style="margin:4px 0 0;">Semua data peminjaman oleh user.</p>
         </div>
       </div>
-      <div class="profile-summary top">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="Admin" class="avatar">
-        <div>
-          <p style="margin:0;"><?= htmlspecialchars($adminName) ?></p>
-          <span>ID: <?= htmlspecialchars($admin['admin_id'] ?? '-') ?></span>
-        </div>
+      <div class="header-actions">
+        <a href="?route=Admin/buatLaporan" class="btn-laporan">
+            <i class="fa-solid fa-plus"></i> Buat Laporan
+        </a>
       </div>
     </header>
 

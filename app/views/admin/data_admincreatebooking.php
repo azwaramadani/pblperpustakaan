@@ -40,7 +40,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Peminjaman - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <!-- Update versi CSS agar browser memuat tampilan terbaru -->
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.6">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="admin-body">
@@ -49,30 +51,54 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     </div>
+    
     <nav class="sidebar-nav">
-      <a href="?route=Admin/dashboard">Dashboard</a>
-      <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
-      <a href="?route=Admin/dataRuangan">Data Ruangan</a>
-      <a href="?route=Admin/dataFromAdminCreateBooking" class="active">Data Pinjam Admin</a>
-      <a href="?route=Admin/dataAkun">Data Akun</a>
-      <a href="?route=Auth/logout">Keluar</a>
+      <a href="?route=Admin/dashboard">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="?route=Admin/dataPeminjaman">
+        <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
+      </a>
+      <a href="?route=Admin/dataRuangan">
+        <i class="fa-solid fa-door-open"></i> Data Ruangan
+      </a>
+      <!-- Menu Aktif -->
+      <a href="?route=Admin/dataFromAdminCreateBooking" class="active">
+        <i class="fa-solid fa-user-tag"></i> Data Pinjam Admin
+      </a>
+      <a href="?route=Admin/dataAkun">
+        <i class="fa-solid fa-users"></i> Data Akun
+      </a>
+      <a href="?route=Auth/logout" style="color: var(--danger) !important;">
+        <i class="fa-solid fa-right-from-bracket" style="color: var(--danger) !important;"></i> Keluar
+      </a>
     </nav>
-  </aside>
 
+    <!-- PROFIL DI SIDEBAR (Footer) -->
+    <div class="sidebar-footer">
+      <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
+      <div class="user-info">
+        <span class="name">adminrudy1</span>
+        <span style="font-size:11px; color:#6b7280;">Administrator</span>
+      </div>
+    </div>
+  </aside>
+  
   <div class="main-area">
+    <!-- HEADER (TOP NAV) -->
     <header class="top-nav">
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Data Peminjaman oleh Admin</h2>
-          <p>Semua data peminjaman yang dibuat oleh admin.</p>
+          <p style="margin:4px 0 0;">Semua data peminjaman yang dibuat oleh admin.</p>
         </div>
       </div>
-      <div class="profile-summary top">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="Admin" class="avatar">
-        <div>
-          <p style="margin:0;"><?= htmlspecialchars($adminName) ?></p>
-          <span>ID: <?= htmlspecialchars($admin['admin_id'] ?? '-') ?></span>
-        </div>
+      
+      <!-- PERBAIKAN: Profil dihapus, diganti tombol Buat Laporan -->
+      <div class="header-actions">
+        <a href="?route=Admin/buatLaporan" class="btn-laporan">
+            <i class="fa-solid fa-plus"></i> Buat Laporan
+        </a>
       </div>
     </header>
 
@@ -116,11 +142,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               placeholder="Cari nama penanggung jawab..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="7"></circle>
-                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
-              </svg>
+              <i class="fa-solid fa-magnifying-glass" style="color:var(--yellow-dark)"></i>
             </button>
           </div>
 
@@ -147,7 +169,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($bookings)): ?>
-                <tr><td colspan="10" class="empty-row">Belum ada data booking.</td></tr>
+                <tr><td colspan="11" class="empty-row" style="text-align:center; padding:20px;">Belum ada data booking.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($bookings as $b): ?>
@@ -176,7 +198,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                       <button class="aksi-btn js-open-status"
                               data-id="<?= $b['booking_id'] ?>"
                               data-status="<?= htmlspecialchars($b['status_booking']) ?>">
-                        Ubah Status
+                        <i class="fa-solid fa-pen-to-square"></i> Ubah
                       </button>
                     </td>
                   </tr>
@@ -210,17 +232,19 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 <!-- Modal ubah status booking -->
 <div class="modal-backdrop" id="modalBookingStatus">
   <div class="modal-card">
-    <h4>Ubah Status Peminjaman</h4>
+    <h4 style="margin-top:0;">Ubah Status Peminjaman</h4>
     <form method="POST" action="?route=Admin/updateStatus" id="bookingStatusForm">
       <input type="hidden" name="booking_id" id="bookingIdInput">
       <input type="hidden" name="redirect" value="Admin/dataFromAdminCreateBooking">
-      <div class="radio-row">
+      
+      <div style="margin:20px 0; display:flex; gap:15px; justify-content:center;">
         <label><input type="radio" name="status_booking" value="Dibatalkan"> Dibatalkan</label>
         <label><input type="radio" name="status_booking" value="Selesai"> Selesai</label>
       </div>
-      <div class="modal-actions">
-        <button type="submit" class="btn-pill btn-save">Simpan</button>
-        <button type="button" class="btn-pill btn-cancel js-close-status">Batal</button>
+      
+      <div style="text-align:right;">
+        <button type="button" class="aksi-btn js-close-status" style="margin-right:10px;">Batal</button>
+        <button type="submit" class="aksi-btn" style="background:#22b6b3; color:white; border-color:#22b6b3;">Simpan</button>
       </div>
     </form>
   </div>
@@ -242,12 +266,10 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       });
     });
 
-    document.querySelectorAll('.js-close-status').forEach(btn => {
-      btn.addEventListener('click', () => modal.style.display = 'none');
-    });
-
+    const closeModal = () => modal.style.display = 'none';
+    document.querySelectorAll('.js-close-status').forEach(btn => btn.addEventListener('click', closeModal));
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.style.display = 'none';
+      if (e.target === modal) closeModal();
     });
   })();
 </script>

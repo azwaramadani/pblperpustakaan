@@ -8,7 +8,8 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tambah Ruangan - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.5">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="admin-body">
@@ -17,13 +18,37 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     </div>
+    
     <nav class="sidebar-nav">
-      <a href="?route=Admin/dashboard">Dashboard</a>
-      <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
-      <a href="?route=Admin/dataRuangan" class="active">Data Ruangan</a>
-      <a href="?route=Admin/dataAkun">Data Akun</a>
-      <a href="?route=Auth/logout">Keluar</a>
+      <a href="?route=Admin/dashboard">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="?route=Admin/dataPeminjaman">
+        <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
+      </a>
+      <!-- CLASS ACTIVE DISINI -->
+      <a href="?route=Admin/dataRuangan" class="active">
+        <i class="fa-solid fa-door-open"></i> Data Ruangan
+      </a>
+      <a href="?route=Admin/dataFromAdminCreateBooking">
+        <i class="fa-solid fa-user-tag"></i> Data Pinjam Admin
+      </a>
+      <a href="?route=Admin/dataAkun">
+        <i class="fa-solid fa-users"></i> Data Akun
+      </a>
+      <a href="?route=Auth/logout" style="color: var(--danger) !important;">
+        <i class="fa-solid fa-right-from-bracket" style="color: var(--danger) !important;"></i> Keluar
+      </a>
     </nav>
+
+    <!-- PROFIL DI SIDEBAR (Footer) -->
+    <div class="sidebar-footer">
+      <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
+      <div class="user-info">
+        <span class="name">adminrudy1</span>
+        <span style="font-size:11px; color:#6b7280;">Administrator</span>
+      </div>
+    </div>
   </aside>
 
   <div class="main-area">
@@ -31,14 +56,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <div class="nav-brand">
         <div>
           <h2 style="margin:0;">Tambah Ruangan</h2>
-          <p class="subtitle">Masukkan data ruangan baru.</p>
-        </div>
-      </div>
-      <div class="profile-summary top">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="Admin" class="avatar">
-        <div>
-          <p style="margin:0;"><?= htmlspecialchars($adminName) ?></p>
-          <span>ID: <?= htmlspecialchars($admin['admin_id'] ?? '-') ?></span>
+          <p class="margin:4px 0 0;">Masukkan data ruangan baru.</p>
         </div>
       </div>
     </header>
@@ -53,7 +71,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 
       <div class="section-head" style="align-items:center; justify-content:space-between;">
         <h3 style="margin:0;">Form Tambah</h3>
-        <a class="btn-add" href="?route=Admin/dataRuangan">Kembali</a>
+        <a class="btn-add"href="?route=Admin/dataRuangan">Kembali</a>
       </div>
 
       <form method="POST" action="?route=Admin/storeRuangan" enctype="multipart/form-data" style="display:grid; gap:12px; max-width:720px;">
