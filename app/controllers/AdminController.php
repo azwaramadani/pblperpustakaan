@@ -220,7 +220,7 @@ class AdminController {
         }
         
          // OUTPUT
-        $filename = 'Laporan_Data_Peminjaman_' . date('Ymd_His') . '.xlsx';
+        $filename = 'Laporan Data Peminjaman ' . date('Ymd_His') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"$filename\"");
