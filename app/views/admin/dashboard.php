@@ -46,6 +46,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
 <body class="admin-body">
 <div class="admin-layout">
+  
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
@@ -91,14 +93,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <header class="top-nav">
       <div class="nav-brand">
         <div>
-          <h2 style="margin:0;">Dashboard Admin</h2>
-          <p style="margin:4px 0 0;">Ringkasan statistik dan peminjaman hari ini.</p>
+          <h2>Dashboard Admin</h2>
+          <p>Ringkasan statistik dan peminjaman hari ini.</p>
         </div>
-      </div>
-      <div class="header-actions">
-        <a href="?route=Admin/add_ruangan" class="btn-laporan">
-            <i class="fa-solid fa-plus"></i> Buat Laporan
-        </a>
       </div>
     </header>
 
@@ -157,20 +154,47 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dashboard">
 
-          <div class="search-bar">
+          <!-- Search Bar -->
+          <div class="search-bar" style="flex: 1; min-width: 250px;">
             <input type="text" name="keyword" placeholder="Cari nama/NIM..." value="<?= htmlspecialchars($filters['keyword'] ?? '') ?>">
             <button type="submit" style="background:none; border:none; cursor:pointer;"><i class="fa-solid fa-magnifying-glass" style="color:var(--yellow-dark)"></i></button>
           </div>
 
+          <!-- Sort -->
           <select name="sort_create">
             <option value="desc" <?= ($filters['sort_create'] === 'desc') ? 'selected' : '' ?>>Terbaru</option>
             <option value="asc"  <?= ($filters['sort_create'] === 'asc')  ? 'selected' : '' ?>>Terlama</option>
           </select>
 
+          <!-- Filter Role -->
           <select name="role">
             <option value="">- Role -</option>
             <?php foreach ($roleList as $rl): ?>
               <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <!-- Filter Unit (Dikembalikan) -->
+          <select name="unit">
+            <option value="">- Unit -</option>
+            <?php foreach ($unitList as $unl): ?>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <!-- Filter Jurusan (Dikembalikan) -->
+          <select name="jurusan">
+            <option value="">- Jurusan -</option>
+            <?php foreach ($jurusanList as $jrl): ?>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php endforeach; ?>
+          </select>
+
+          <!-- Filter Prodi (Dikembalikan) -->
+          <select name="program_studi">
+            <option value="">- Prodi -</option>
+            <?php foreach ($prodiList as $prl): ?>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -185,6 +209,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>No</th>
                 <th>Kode</th>
                 <th>Peminjam</th>
+                <th>Detail Akademik</th> <!-- Kolom Baru agar info Unit/Jurusan terlihat -->
                 <th>Ruangan</th>
                 <th>Waktu</th>
                 <th>Status</th>
@@ -193,7 +218,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($todayBookings)): ?>
-                <tr><td colspan="7" class="empty-row" style="text-align:center; padding:20px;">Belum ada booking hari ini.</td></tr>
+                <tr><td colspan="8" class="empty-row" style="text-align:center; padding:20px;">Belum ada booking hari ini.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($todayBookings as $tb): ?>
@@ -207,7 +232,12 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($tb['kode_booking']?? '-') ?></td>
                     <td>
                         <strong><?= htmlspecialchars($tb['nama_penanggung_jawab'] ?? '-') ?></strong><br>
-                        <small style="color:gray;"><?= htmlspecialchars($tb['unit'] ?? '-') ?></small>
+                        <small style="color:gray;">NIM: <?= htmlspecialchars($tb['nimnip_penanggung_jawab'] ?? '-') ?></small>
+                    </td>
+                    <!-- Menampilkan info filter di tabel -->
+                    <td>
+                        <small>Unit: <?= htmlspecialchars($tb['unit'] ?? '-') ?></small><br>
+                        <small>Jurusan: <?= htmlspecialchars($tb['jurusan'] ?? '-') ?></small>
                     </td>
                     <td><?= htmlspecialchars($tb['nama_ruangan'] ?? '-') ?></td>
                     <td><?= $jamMulai ?> - <?= $jamSelesai ?></td>

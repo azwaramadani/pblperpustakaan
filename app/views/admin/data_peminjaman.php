@@ -93,7 +93,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         </div>
       </div>
       <div class="header-actions">
-        <a href="?route=Admin/buatLaporan" class="btn-laporan">
+        <a href="?route=Admin/exportPeminjaman" class="btn-laporan">
             <i class="fa-solid fa-plus"></i> Buat Laporan
         </a>
       </div>
@@ -176,9 +176,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
         </form>
-
-        <a href="?route=Admin/exportPeminjaman"> Buat Laporan </a>
-
+        
         <div class="table-wrap">
           <table class="data-table">
             <thead>

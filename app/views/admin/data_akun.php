@@ -40,7 +40,65 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Akun User - Rudy</title>
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.9">
+  <!-- FontAwesome Regular & Solid -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Style Khusus untuk Modal Hapus Baru -->
+  <style>
+    .modal-delete-custom {
+      text-align: center;
+      max-width: 340px !important; /* Ukuran lebih kecil sesuai desain */
+      border-radius: 24px !important;
+      padding: 32px 24px !important;
+    }
+    .modal-delete-icon {
+      font-size: 48px;
+      color: #ff4d4f; /* Warna merah icon */
+      margin-bottom: 20px;
+      display: inline-block;
+      padding: 10px;
+      border: 2px solid #fff; /* Opsional: memberi kesan rapi */
+    }
+    .modal-delete-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 24px 0;
+      line-height: 1.4;
+    }
+    .btn-delete-confirm {
+      width: 100%;
+      background: #ff4d4f;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
+    }
+    .btn-delete-confirm:hover {
+      background: #e04345;
+    }
+    .btn-delete-cancel {
+      width: 100%;
+      background: #ffffff;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-delete-cancel:hover {
+      background: #f9fafb;
+    }
+  </style>
 </head>
 
 <body class="admin-body">
@@ -89,7 +147,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         </div>
       </div>
       <div class="header-actions">
-        <a href="?route=Admin/buatLaporan" class="btn-laporan">
+        <a href="?route=Admin/exportPeminjaman" class="btn-laporan">
             <i class="fa-solid fa-plus"></i> Buat Laporan
         </a>
       </div>
@@ -333,6 +391,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                           <img src="<?= $imgUrl ?>" alt="Bukti" class="img-thumb">
                         </a>
                       <?php else: ?>
+                        -
                       <?php endif; ?>
                     </td>
                     <td><?= $u['created_at'] ? date('d M Y H:i', strtotime($u['created_at'])) : '-' ?></td>
@@ -381,6 +440,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   </div>
 </div>
 
+<!-- Modal Ubah Status (Tetap Sama) -->
 <div class="modal-backdrop" id="modalStatus">
   <div class="modal-card">
     <h4 style="margin-top:0;">Ubah Status Akun</h4>
@@ -398,16 +458,32 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   </div>
 </div>
 
+<!-- MODAL HAPUS AKUN (DESAIN BARU) -->
 <div class="modal-backdrop" id="modalDelete">
-  <div class="modal-card">
-    <h4 style="margin-top:0; color:#ef4444;">Hapus Akun User</h4>
-    <p>Apakah Anda yakin ingin menghapus akun user ini? <br>Data yang dihapus tidak dapat dikembalikan.</p>
+  <div class="modal-card modal-delete-custom">
+    
+    <!-- Icon Tong Sampah -->
+    <div class="modal-delete-icon">
+        <i class="fa-regular fa-trash-can"></i>
+    </div>
+
+    <!-- Judul -->
+    <h4 class="modal-delete-title">
+        Apakah anda yakin<br>ingin menghapus?
+    </h4>
+
     <form method="POST" action="?route=Admin/deleteUser" id="deleteForm">
       <input type="hidden" name="user_id" id="deleteUserIdInput">
-      <div class="modal-actions" style="text-align:right; margin-top:20px;">
-        <button type="button" class="btn-pill btn-cancel js-close-delete" style="margin-right:10px;">Batal</button>
-        <button type="submit" class="btn-pill btn-save" style="background:#ef4444; color:white;">Hapus</button>
-      </div>
+      
+      <!-- Tombol Hapus (Merah) -->
+      <button type="submit" class="btn-delete-confirm">
+        Hapus
+      </button>
+
+      <!-- Tombol Batal (Putih/Border) -->
+      <button type="button" class="btn-delete-cancel js-close-delete">
+        Batal
+      </button>
     </form>
   </div>
 </div>

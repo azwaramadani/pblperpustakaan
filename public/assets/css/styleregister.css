@@ -1,317 +1,21 @@
 :root {
   --teal-dark: #0b8e8a;
   --teal: #19b4af;
-  --yellow: #f9d134;
+  --yellow: #FFC107;
   --text-dark: #1f2a37;
   --text-muted: #6b7280;
-  --card-shadow: 0 20px 40px rgba(15, 36, 57, 0.12);
+  --image-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-body {
-  margin: 0 64px;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #ffffff;
-}
-.right-section h2 {
-  text-align: center;
+/* Reset & Global Font */
+* {
+  box-sizing: border-box;
 }
 
-/* CARD UTAMA */
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 35px; /* jarak antar card */
-  padding: 40px;
-  width: 100%;
-}
-
-.card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-
-.logo-box {
-  width: 280px;
-  height: 320px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 20px;
-  overflow: hidden;
-  background: url("../pages/Logo 2.png");
-  background-size: cover;
-  background-position: center;
-  position: relative;
-}
-.logo-box::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.55);
-}
-.logo-box img {
-  position: relative;
-  z-index: 2;
-  width: 200px; /* dikecilkan */
-}
-
-.right-section {
-  width: 380px;
-}
-
-h2 {
-  font-family: "Work Sans";
-  font-size: 24px;
-  color: black;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 10px;
-  background: #ffd633;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-/* Efek hover & klik */
-.btn-login:hover {
-  background: #ffcc00;
-}
-.btn-login:active {
-  background: #e6b800;
-  transform: scale(0.98);
-}
-
-.select-input,
-select {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border: 1.5px solid #cfd8e3;
-  font-size: 15px;
-  font-family: inherit;
-  background: #fdfdfd;
-}
-
-.auth-error {
-  background: #fdecec;
-  color: #b91c1c;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-
-.select-input,
-select {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border: 1.5px solid #cfd8e3;
-  font-size: 15px;
-  font-family: inherit;
-  background: #fdfdfd;
-}
-.auth-error {
-  background: #fdecec;
-  color: #b91c1c;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.auth-success {
-  background: #ecfdf3;
-  color: #15803d;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99;
-}
-.modal-card {
-  background: #fff;
-  padding: 26px;
-  border-radius: 16px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-.modal-card h3 {
-  margin: 0 0 10px;
-}
-.modal-card p {
-  margin: 0 0 16px;
-}
-.modal-card .btn-login {
-  display: block;
-  text-decoration: none;
-  text-align: center;
-  margin-top: 6px;
-}
-
-.select-input,
-select {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border: 1.5px solid #cfd8e3;
-  font-size: 15px;
-  font-family: inherit;
-  background: #fdfdfd;
-}
-.auth-error {
-  background: #fdecec;
-  color: #b91c1c;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.auth-success {
-  background: #ecfdf3;
-  color: #15803d;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-}
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99;
-}
-.modal-card {
-  background: #fff;
-  padding: 26px;
-  border-radius: 16px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-.modal-card h3 {
-  margin: 0 0 10px;
-}
-.modal-card p {
-  margin: 0 0 16px;
-}
-.modal-card .btn-login {
-  display: block;
-  text-decoration: none;
-  text-align: center;
-  margin-top: 6px;
-}
-
-.register-text {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.register-text a {
-  color: teal;
-  text-decoration: none;
-}
-
-.register-text a:hover {
-  text-decoration: underline;
-}
-
-.file-label {
-  display: inline-block;
-  padding: 8px 15px;
-  background: #ffd633; /* Kuning */
-  color: black;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 6px;
-  transition: 0.2s;
-}
-
-.file-label:hover {
-  background: #f4c400;
-}
-
-#file-chosen {
-  font-size: 14px;
-  margin-left: 10px;
-  color: #333;
-}
-
-/* Membentuk dua card */
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 35px;
-  padding: 40px;
-  width: 100%;
-}
-
-/* Efek card */
-.card {
-  background: #fff;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Ukuran logo lebih kecil */
-.logo-box {
-  width: 260px;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Form card */
-.right-section {
-  width: 380px;
-}
-
-/* ===============================
-   Login Page Refresh
-   =============================== */
 body.auth-body {
   margin: 0;
-  padding: 40px 24px;
-  background: #f1f4f8;
+  padding: 0;
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -320,35 +24,43 @@ body.auth-body {
   color: var(--text-dark);
 }
 
+/* --- Layout Utama --- */
 .auth-wrapper {
   display: flex;
-  align-items: stretch;
-  gap: 38px;
-  flex-wrap: wrap;
-  max-width: 1000px;
-  width: 100%;
+  align-items: center;
   justify-content: center;
+  gap: 80px; /* Sedikit dirapatkan agar lebih proporsional */
+  width: 100%;
+  max-width: 1100px;
+  padding: 20px;
 }
 
+/* Hapus style kartu lama */
 .auth-card {
-  border-radius: 26px;
-  background: #ffffff;
-  box-shadow: var(--card-shadow);
+  background: transparent;
+  box-shadow: none;
 }
 
+/* --- Bagian Kiri (Gambar Poster) --- */
 .image-panel {
-  width: 360px;
-  height: 460px;
-  background: url("../image/contohrakbuku.png") center/cover no-repeat;
+  width: 420px;
+  height: 580px;
+  background: url("../image/contohrakbuku.png") center/cover no-repeat; 
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px; 
+  box-shadow: var(--image-shadow); 
 }
 
+/* Overlay Putih Pudar */
 .image-panel::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(11, 47, 61, 0.75);
+  background: rgba(255, 255, 255, 0.85); /* Lebih putih agar logo kontras */
 }
 
 .image-overlay {
@@ -362,119 +74,197 @@ body.auth-body {
 }
 
 .panel-logo {
-  width: 220px;
-  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.45));
+  width: 260px;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
+/* --- Bagian Kanan (Form) --- */
 .form-panel {
-  width: 360px;
-  padding: 36px 40px 46px;
-  background: #ffffff;
+  width: 380px;
+  padding: 20px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+/* Judul Masuk - CENTER */
 .form-panel h2 {
-  font-size: 24px;
-  margin: 0 0 28px;
-  font-weight: 600;
-  text-align: center;
+  font-size: 28px;
+  margin: 0 0 30px;
+  font-weight: 700;
+  text-align: center; /* Sesuai design */
+  color: #000;
 }
 
+/* --- Form Styles --- */
 .login-form label {
   display: block;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--text-dark);
+  font-weight: 700; /* Lebih tebal */
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
 }
 
 .login-form input {
   width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border: 1.5px solid #cfd8e3;
-  font-size: 15px;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #777; /* Border lebih gelap sedikit agar tajam */
+  font-size: 16px;
   font-family: inherit;
-  background: #fdfdfd;
+  background: #fff;
+  transition: all 0.2s;
 }
 
 .login-form input:focus {
   outline: none;
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(25, 180, 175, 0.15);
+  box-shadow: 0 0 0 2px rgba(25, 180, 175, 0.2);
 }
 
-.btn-login {
-  width: 100%;
-  padding: 12px;
-  background: var(--yellow);
-  box-shadow: 0 15px 25px rgba(255, 185, 49, 0.35);
-  border: none;
-  border-radius: 12px;
+/* Fitur Lupa Password */
+.forgot-password-link {
+  display: block;
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 30px;
+  font-size: 14px;
+  color: var(--teal);
+  text-decoration: none;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  font-size: 15px;
+}
+.forgot-password-link:hover {
+  text-decoration: underline;
 }
 
-.btn-login:hover {
-  background: #ffd84f;
-}
-
-.btn-login:active {
-  transform: scale(0.98);
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0 18px;
-  color: var(--text-muted);
+.login-form label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #333;
   font-size: 14px;
 }
 
-.btn-guest {
-  display: inline-flex;
-  text-decoration: none;
-  justify-content: center;
-  width: 94%;
-  padding: 12px;
-  background: var(--teal);
-  border: none;
-  border-radius: 12px;
-  font-weight: 600;
+/* Styling Input Text DAN Select Dropdown */
+.login-form input,
+.login-form select.select-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 25px; /* Jarak lebih lega ke tombol */
+  border-radius: 6px;
+  border: 1px solid #777;
+  font-size: 16px;
+  font-family: inherit;
+  background: #fff;
+  transition: all 0.2s;
+  
+  /* Fix untuk dropdown agar tingginya sama dengan input */
+  height: 46px; 
+  appearance: none; /* Menghilangkan panah default browser (opsional, tapi lebih rapi) */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  /* Menambahkan icon panah kustom di background */
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px auto;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.login-form input:focus,
+.login-form select.select-input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px rgba(25, 180, 175, 0.2);
+}
+
+/* Fix Autofill Browser */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #000 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Tombol Login - CENTER */
+.btn-login {
+  width: 140px;
+  padding: 10px;
+  background: var(--yellow);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
   font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+  
+  /* Posisi Center */
+  display: block;
+  margin: 0 auto 25px auto; 
+}
+
+.btn-login:hover {
+  background: #ffca28;
+  transform: translateY(-2px);
+}
+
+.btn-login:active {
+  transform: translateY(0);
+}
+
+/* Footer (Belum punya akun? Daftar) - CENTER & SATU BARIS */
+.register-footer {
+  text-align: center;
+  font-size: 14px;
+  color: #000;
+  font-weight: 600;
+}
+
+.btn-guest {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 4px;
 }
 
 .btn-guest:hover {
-  background: var(--teal-dark);
+  text-decoration: underline;
 }
 
-.btn-guest:active {
-  transform: scale(0.98);
+/* --- Alerts --- */
+.auth-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  text-align: center;
 }
 
-.form-panel .register-text {
-  margin-top: 18px;
-  color: var(--text-dark);
-}
-
-.form-panel .register-text a {
-  color: var(--teal-dark);
-  font-weight: 600;
-}
-
+/* --- Responsiveness --- */
 @media (max-width: 900px) {
   .auth-wrapper {
     flex-direction: column;
-    align-items: center;
+    gap: 30px;
+  }
+  
+  .image-panel {
+    width: 100%;
+    max-width: 350px;
+    height: 400px;
   }
 
-  .image-panel,
   .form-panel {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
+    padding: 0;
   }
 }

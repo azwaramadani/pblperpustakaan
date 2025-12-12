@@ -96,7 +96,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       
       <!-- PERBAIKAN: Profil dihapus, diganti tombol Buat Laporan -->
       <div class="header-actions">
-        <a href="?route=Admin/buatLaporan" class="btn-laporan">
+        <a href="?route=Admin/exportPeminjaman" class="btn-laporan">
             <i class="fa-solid fa-plus"></i> Buat Laporan
         </a>
       </div>
