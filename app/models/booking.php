@@ -144,7 +144,7 @@ class Booking extends Model
                 u.program_studi,
                 u.nama AS nama_penanggung_jawab,
                 u.nim_nip,
-                COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam,
+                b.jumlah_peminjam AS total_peminjam,
                 r.nama_ruangan,
                 CONCAT(
                 DATE_FORMAT(b.tanggal, '%d %b %Y'),
