@@ -11,12 +11,12 @@ unset($_SESSION['flash_error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Rudy Ruang Study</title>
     <!-- Memuat file CSS -->
-    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css?v=1.3">
+    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css?v=1.5">
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Work+Sans:wght@500;600&display=swap" rel="stylesheet">
 </head>
 
-<body class="auth-body">
+<body class="auth-body login-page">
 
 <div class="auth-wrapper">
 
