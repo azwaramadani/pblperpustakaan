@@ -42,9 +42,8 @@
 <div class="container">
     <?php if (empty($riwayat)): ?>
         <div class="empty-state">
-            <h3>Belum Ada Riwayat Peminjaman</h3>
-            <p>Anda belum pernah melakukan peminjaman ruangan.</p>
-            <a href="?route=User/ruangan" class="btn btn-primary">Lihat Ruangan Tersedia</a>
+            <h3>Belum Ada Riwayat Peminjaman.</h3>
+            <a href="?route=User/ruangan" class="btn feedback">Lihat Ruangan</a>
         </div>
     <?php else: ?>
         <?php foreach ($riwayat as $r): ?>
