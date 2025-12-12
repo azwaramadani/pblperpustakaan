@@ -162,7 +162,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <input
               type="text"
               name="keyword"
-              placeholder="Cari nama penanggung jawab..."
+              placeholder="Cari Nama atau NIM/NIP penanggung jawab..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -176,6 +176,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
         </form>
+
+        <a href="?route=Admin/exportPeminjaman"> Buat Laporan </a>
 
         <div class="table-wrap">
           <table class="data-table">
@@ -215,7 +217,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($b['unit'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($b['jurusan']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['program_studi']?? '-') ?></td>
-                    <td><?= htmlspecialchars($b['nama_user']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['nama_penanggung_jawab']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']?? '-') ?></td>
                     <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>

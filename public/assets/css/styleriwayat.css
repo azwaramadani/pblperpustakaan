@@ -292,6 +292,7 @@ footer {
     margin-top: auto; /* Membuat footer selalu berada di bawah */
     position: relative;
 }
+
 .footer {
   background: #000000;
   color: #bdc4d2;

@@ -27,7 +27,7 @@ class User extends Model
     // buat dashboard admin hitung semua akun user yang aktif
     public function countAllusers()
     {
-        $sql = "SELECT COUNT(*) AS total FROM {$this->table}";
+        $sql = "SELECT COUNT(*) AS total FROM {$this->table} WHERE status_akun = 'Disetujui'";
         $row = $this->query($sql)->fetch();
         return (int)($row['total']) ?? 0;
     }

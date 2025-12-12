@@ -65,10 +65,10 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
             $like     = '%' . $searchName . '%';
             $params[] = $like;
-            $params[] = $like;
+            $params[] = $like;      
         }
 
         $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';
@@ -112,7 +112,7 @@ class Booking extends Model
                         u.unit,
                         u.jurusan,
                         u.program_studi,
-                        u.nama AS nama_user,
+                        u.nama AS nama_penanggung_jawab,
                         u.nim_nip,
                         r.nama_ruangan,
                         COALESCE(b.jumlah_peminjam, COUNT(b.nimnip_peminjam)) AS total_peminjam
@@ -133,6 +133,36 @@ class Booking extends Model
             'limit'       => $limit,
         ];
     }
+
+    public function getAllForLaporan()
+    {
+        $sql = " SELECT 
+                b.kode_booking,
+                u.role,
+                u.unit,
+                u.jurusan,
+                u.program_studi,
+                u.nama AS nama_penanggung_jawab,
+                u.nim_nip,
+                b.jumlah_peminjam AS total_peminjam,
+                r.nama_ruangan,
+                CONCAT(
+                DATE_FORMAT(b.tanggal, '%d %b %Y'),
+                ' ',
+                TIME_FORMAT(b.jam_mulai, '%H:%i'),
+                ' - ',
+                TIME_FORMAT(b.jam_selesai, '%H:%i')
+                ) AS waktu_peminjaman,
+                b.created_at,
+                b.status_booking
+                FROM {$this->table} b
+                JOIN user u ON b.user_id = u.user_id
+                JOIN room r ON b.room_id = r.room_id
+                ORDER BY b.created_at DESC";
+
+        return $this->query($sql)->fetchAll();
+    }
+
 
     # method data booking buat admin, pake sorting dan pagination
     public function adminCreateGetAllSortedPaginated(
@@ -261,7 +291,7 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(b.nama_penanggung_jawab LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
             $like     = '%' . $searchName . '%';
             $params[] = $like;
             $params[] = $like;
