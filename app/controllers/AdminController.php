@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../../core/Session.php';
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AdminController {
 
@@ -157,6 +159,76 @@ class AdminController {
         Session::set('flash_error', null);
 
         require __DIR__ . '/../views/admin/data_peminjaman.php';
+    }
+
+    public function exportPeminjaman() 
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+        
+        $bookingModel = new Booking();
+        $data         = $bookingModel->getAllForLaporan();
+
+        $spreadsheet  = new Spreadsheet();
+        $sheet        = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Peminjaman');
+
+        // HEADER
+        $headers = [
+            'Kode Booking',
+            'Role',
+            'Unit',
+            'Jurusan',
+            'Program Studi',
+            'Nama Penanggung Jawab',
+            'NIM / NIP',
+            'Total Peminjam',
+            'Ruangan',
+            'Waktu Peminjaman',
+            'Waktu Dibuat',
+            'Status'
+        ];
+
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $col++;
+        }
+
+        // DATA
+        $row = 2;
+        foreach ($data as $d) {
+            $sheet->setCellValue("A{$row}", $d['kode_booking']);
+            $sheet->setCellValue("B{$row}", $d['role']);
+            $sheet->setCellValue("C{$row}", $d['unit'] ?: '-');
+            $sheet->setCellValue("D{$row}", $d['jurusan']);
+            $sheet->setCellValue("E{$row}", $d['program_studi']);
+            $sheet->setCellValue("F{$row}", $d['nama_penanggung_jawab']);
+            $sheet->setCellValue("G{$row}", $d['nim_nip']);
+            $sheet->setCellValue("H{$row}", $d['total_peminjam']);
+            $sheet->setCellValue("I{$row}", $d['nama_ruangan']);
+            $sheet->setCellValue("J{$row}", $d['waktu_peminjaman']);
+            $sheet->setCellValue("K{$row}", $d['created_at']);
+            $sheet->setCellValue("L{$row}", $d['status_booking']);
+            $row++;
+        }
+
+        // AUTO WIDTH
+        foreach (range('A', 'L') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+        
+         // OUTPUT
+        $filename = 'Laporan_Data_Peminjaman_' . date('Ymd_His') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 
     // method handler buat nampilin semua data booking yang dibuat oleh aktor admin (misal karena ada tamu eksternal)

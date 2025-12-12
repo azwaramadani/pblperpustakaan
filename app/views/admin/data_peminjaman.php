@@ -154,6 +154,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <a class="btn-reset" href="?route=Admin/datapeminjaman">Reset</a>
         </form>
 
+        <a href="?route=Admin/exportPeminjaman"> Buat Laporan </a>
+
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -192,7 +194,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= htmlspecialchars($b['unit'] ?? '-') ?></td>
                     <td><?= htmlspecialchars($b['jurusan']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['program_studi']?? '-') ?></td>
-                    <td><?= htmlspecialchars($b['nama_user']?? '-') ?></td>
+                    <td><?= htmlspecialchars($b['nama_penanggung_jawab']?? '-') ?></td>
                     <td><?= htmlspecialchars($b['nim_nip']?? '-') ?></td>
                     <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
