@@ -202,8 +202,8 @@ class AdminController {
             $sheet->setCellValue("A{$row}", $d['kode_booking']);
             $sheet->setCellValue("B{$row}", $d['role']);
             $sheet->setCellValue("C{$row}", $d['unit'] ?: '-');
-            $sheet->setCellValue("D{$row}", $d['jurusan']);
-            $sheet->setCellValue("E{$row}", $d['program_studi']);
+            $sheet->setCellValue("D{$row}", $d['jurusan'] ?: '-');
+            $sheet->setCellValue("E{$row}", $d['program_studi'] ?: '-');
             $sheet->setCellValue("F{$row}", $d['nama_penanggung_jawab']);
             $sheet->setCellValue("G{$row}", $d['nim_nip']);
             $sheet->setCellValue("H{$row}", $d['total_peminjam']);
@@ -220,7 +220,7 @@ class AdminController {
         }
         
          // OUTPUT
-        $filename = 'Laporan Data Peminjaman ' . date('Ymd_His') . '.xlsx';
+        $filename = 'Laporan Data Peminjaman RUDY ' . date('d F Y') . '.xlsx';
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -696,6 +696,73 @@ class AdminController {
         header('Location: ?route=Admin/dataAkun');
         exit;
     }
+
+    public function exportAkun()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $userModel  = new User();
+        $data       = $userModel->getAllforLaporan();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Akun User');
+
+        // Header Tabel
+        $headers = [
+            'Role',
+            'Nama',
+            'Unit',
+            'Jurusan',
+            'Program Studi',
+            'NIM/NIP',
+            'No HP',
+            'Email',
+            'Waktu Dibuat',
+            'Status Akun'
+        ];
+        
+        $col = 'A';
+        foreach($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $col++;
+        }   
+
+        // Data
+        $row = 2;
+        foreach ($data as $d) {
+            $sheet->setCellValue("A{$row}", $d['role']);
+            $sheet->setCellValue("B{$row}", $d['nama']);
+            $sheet->setCellValue("C{$row}", $d['unit'] ?: '-');
+            $sheet->setCellValue("D{$row}", $d['jurusan'] ?: '-');
+            $sheet->setCellValue("E{$row}", $d['program_studi'] ?: '-');
+            $sheet->setCellValue("F{$row}", $d['nim_nip']);
+            $sheet->setCellValue("G{$row}", $d['no_hp']);
+            $sheet->setCellValue("H{$row}", $d['email']);
+            $sheet->setCellValue("I{$row}", $d['created_at']);
+            $sheet->setCellValue("J{$row}", $d['status_akun']);
+            $row++;
+        }
+
+        // Auto Width
+        foreach (range('A', 'J') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // Output
+        $filename = 'Laporan Data Akun User RUDY ' . date('d F Y') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
+
 
     #method helper buat redirect admin setelah update status booking (bisa kembali ke dashboard)
     private function redirectAfterBookingUpdate(string $redirect = ''): void

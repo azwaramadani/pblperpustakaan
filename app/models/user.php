@@ -227,6 +227,27 @@ class User extends Model
         ];
     }
 
+    public function getAllForLaporan() 
+    {
+        $sql = "SELECT 
+                role,
+                nama,
+                unit,
+                jurusan,
+                program_studi,
+                nim_nip,
+                no_hp,
+                email,
+                created_at,
+                status_akun
+                FROM 
+                {$this->table} 
+                WHERE status_akun = 'Disetujui' 
+                ORDER BY role, created_at DESC";
+        return $this->query($sql)->fetchAll();
+    }
+
+
     // buat admin data akun user dengan urutan akun dibuat terbaru
     public function usergetAllOrdered()
     {
