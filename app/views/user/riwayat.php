@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Peminjaman Ruangan</title>
+    <!-- Link ke CSS Eksternal yang baru -->
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleriwayat.css?v=<?= time() ?>">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- HEADER -->
 <header class="navbar">
   <div class="logo">
     <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ" height="40">
@@ -38,14 +41,29 @@
   </div>
 </header>
 
+<!-- MAIN CONTENT -->
 <h2 class="title">Riwayat Peminjaman Saya</h2>
+
 <div class="container">
     <?php if (empty($riwayat)): ?>
+        <!-- TAMPILAN KETIKA KOSONG (EMPTY STATE) -->
         <div class="empty-state">
-            <h3>Belum Ada Riwayat Peminjaman.</h3>
-            <a href="?route=User/ruangan" class="btn feedback">Lihat Ruangan</a>
+            <!-- Ikon SVG Sederhana untuk Ilustrasi Kosong -->
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 4H5C3.89543 4 3 4.89543 3 6V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V6C21 4.89543 20.1046 4 19 4Z" stroke="#008080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 2V6" stroke="#008080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 2V6" stroke="#008080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3 10H21" stroke="#008080" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 14L12 18" stroke="#FFC107" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 16L14 16" stroke="#FFC107" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            
+            <h3>Belum Ada Riwayat Peminjaman</h3>
+            <p>Anda belum pernah melakukan peminjaman ruangan. Mulai pinjam sekarang!</p>
+            <a href="?route=User/ruangan" class="btn feedback empty-action">Lihat Ruangan</a>
         </div>
     <?php else: ?>
+        <!-- TAMPILAN KETIKA ADA DATA -->
         <?php foreach ($riwayat as $r): ?>
             <div class="card">
                 <div class="info">
@@ -79,7 +97,6 @@
                         <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
                             <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Lihat Feedback Saya</a>
                         <?php endif; ?>
-
                     </div>
                 </div>
             </div>
@@ -87,29 +104,31 @@
     <?php endif; ?>
 </div>
 
+<!-- FOOTER -->
 <footer class="footer">
-        <div class="footer-brand">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study"class="footer-logo">
+    <div class="footer-content-wrapper">
+        <div class="footer-left">
+            <div class="footer-brand">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study" class="footer-logo">
             </div>
             <p class="footer-description">
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
         </div>
 
-        <!-- Footer Links -->
         <div class="footer-nav">
             <div>
                 <h4>Navigasi</h4>
-                    <a href="?route=user/home">Beranda</a>
-                    <a href="?route=user/ruangan">Ruangan</a>
-                    <a id="navigasipanduan"href="#">Panduan</a>
-            </div>         
-
+                <a href="?route=user/home">Beranda</a>
+                <a href="?route=user/ruangan">Ruangan</a>
+                <a id="navigasipanduan" href="#">Panduan</a>
+            </div>        
             <div>
                 <h4>Kontak</h4>
                 <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
                 <a href="tel:0822123456780">0822123456780</a>
                 <p>Kampus PNJ, Depok</p>
+            </div>
         </div>
     </div>
 </footer>

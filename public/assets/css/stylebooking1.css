@@ -357,41 +357,122 @@ body {
 footer {
     background-color: #000;
     color: white;
-    padding: 60px 5%;
-
+    padding: 40px 0;
+    width: 100%;
+    margin-top: auto; /* Sticky footer */
+    position: relative;
 }
 
-.footer-content {
+/* Ini adalah class baru untuk wrapper konten footer agar bisa 1300px */
+.footer-content-wrapper {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
-    max-width: 1200px;
+    align-items: flex-start;
+    max-width: 1300px; /* Lebar diperluas agar konten kiri lebih ke pinggir */
     margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 30px;
 }
 
-.footer-brand { flex: 1; min-width: 500px; }
-
-.footer-brand p { font-size: 13px; line-height: 1.6; color: #ccc; }
-
-.footer-links {
+.footer-left {
     flex: 2;
-    display: flex;
-    justify-content: flex-end;
-    gap: 60px;
+    min-width: 300px;
 }
 
-.link-group h4 { margin-bottom: 20px; font-size: 16px; color: #666; font-weight: 500; }
-.link-group ul { list-style: none; }
-.link-group li { margin-bottom: 10px; }
-.link-group a { color: white; text-decoration: none; font-size: 14px; transition: color 0.2s;}
-.link-group a:hover { color: #FACC15; }
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
 
-/* Responsive */
-@media (max-width: 768px) {
-    .room-header { flex-direction: column; align-items: center; }
-    .room-info { text-align: center; }
-    .room-info p { text-align: center; }
-    .footer-links { flex-direction: column; gap: 30px; }
-    .nav-menu { display: none; } /* Sederhana untuk mobile */
+.footer-logo {
+  width: 150px; /* Disamakan dengan halaman Riwayat agar proporsional */
+  margin-bottom: 10px;
+}
+
+.footer-description {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+    text-align: left;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 40px;
+  flex: 1;
+}
+
+.footer-nav h4 {
+  margin: 0 0 12px;
+  color: #ffffff;
+}
+
+.footer-nav a,
+.footer-nav p {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  text-decoration: none;
+  color: #cdd4df;
+}
+
+.footer-nav a:hover {
+  color: var(--yellow);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 16px 32px;
+  }
+
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-text {
+    max-width: none;
+  }
+
+  .hero-visual img {
+    margin: 0 auto;
+  }
+  
+  /* Footer Responsive */
+  .footer-content-wrapper {
+      flex-direction: column;
+  }
+  .footer-left, .footer-nav {
+      width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .nav-menu {
+    gap: 16px;
+  }
+
+  .hero {
+    padding: 40px 28px;
+  }
+
+  .steps {
+    padding: 30px;
+  }
+
+  .footer-nav {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
 }

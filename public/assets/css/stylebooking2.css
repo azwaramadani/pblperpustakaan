@@ -319,52 +319,227 @@ main {
 footer {
     background-color: #000;
     color: white;
-    padding: 60px 5%;
-    margin-top: auto;
+    padding: 40px 0;
+    width: 100%;
+    margin-top: auto; /* Sticky footer */
+    position: relative;
 }
 
-.footer-content {
+/* Ini adalah class baru untuk wrapper konten footer agar bisa 1300px */
+.footer-content-wrapper {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
-    max-width: 1200px;
+    align-items: flex-start;
+    max-width: 1300px; /* Lebar diperluas agar konten kiri lebih ke pinggir */
     margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 30px;
 }
 
-.footer-brand { flex: 1; min-width: 250px; }
-.footer-brand p { font-size: 13px; line-height: 1.6; color: #ccc; }
-
-.footer-links {
+.footer-left {
     flex: 2;
-    display: flex;
-    justify-content: flex-end;
-    gap: 60px;
+    min-width: 300px;
 }
 
-.link-group h4 { margin-bottom: 20px; font-size: 16px; color: #666; font-weight: 500; }
-.link-group ul { list-style: none; }
-.link-group li { margin-bottom: 10px; }
-.link-group a { color: white; text-decoration: none; font-size: 14px; transition: color 0.2s;}
-.link-group a:hover { color: #FACC15; }
-
-/* Responsive untuk Mobile */
-@media (max-width: 768px) {
-  .room-header {
+.footer-brand {
+    display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-logo {
+  width: 150px; /* Disamakan dengan halaman Riwayat agar proporsional */
+  margin-bottom: 10px;
+}
+
+.footer-description {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+    text-align: left;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 40px;
+  flex: 1;
+}
+
+.footer-nav h4 {
+  margin: 0 0 12px;
+  color: #ffffff;
+}
+
+.footer-nav a,
+.footer-nav p {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  text-decoration: none;
+  color: #cdd4df;
+}
+
+.footer-nav a:hover {
+  color: var(--yellow);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .navbar {
+    padding: 16px 32px;
+  }
+
+  .hero {
+    flex-direction: column;
     text-align: center;
+  }
+
+  .hero-text {
+    max-width: none;
+  }
+
+  .hero-visual img {
+    margin: 0 auto;
   }
   
-  .room-details p {
-    text-align: center;
+  /* Footer Responsive */
+  .footer-content-wrapper {
+      flex-direction: column;
   }
-
-  .card {
-    padding: 30px 20px;
+  .footer-left, .footer-nav {
+      width: 100%;
   }
+}
 
-  .footer-container {
+@media (max-width: 600px) {
+  .navbar {
     flex-direction: column;
+    gap: 18px;
   }
+
+  .nav-menu {
+    gap: 16px;
+  }
+
+  .hero {
+    padding: 40px 28px;
+  }
+
+  .steps {
+    padding: 30px;
+  }
+
+  .footer-nav {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+/* ===== MODAL SUCCESS POPUP ===== */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+    background: none;
+    border: none;
+}
+
+.success-icon-container {
+    width: 80px;
+    height: 80px;
+    background-color: #2dbebb; /* Warna Teal sesuai logo */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.success-icon-container svg {
+    width: 40px;
+    height: 40px;
+    stroke: white;
+    stroke-width: 4;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 25px;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-modal {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    box-sizing: border-box; /* Memastikan padding tidak menambah lebar */
+}
+
+.btn-modal-yellow {
+    background-color: #ffcc00; /* Warna kuning tombol */
+    color: #000;
+    border: none;
+}
+
+.btn-modal-yellow:hover {
+    background-color: #e6b800;
+}
+
+.btn-modal-white {
+    background-color: white;
+    color: #000;
+    border: 1px solid #ddd;
+}
+
+.btn-modal-white:hover {
+    background-color: #f9f9f9;
 }

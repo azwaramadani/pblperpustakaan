@@ -18,7 +18,7 @@ if (!function_exists('app_config')) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $isEdit ? 'Ubah Peminjaman' : 'Pilih Tanggal & Jam' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css?v=1.0">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css?v=1.2">
 </head>
 <body>
 
@@ -143,43 +143,34 @@ if (!function_exists('app_config')) {
     </div>
   </main>
 
-  <footer>
-      <div class="footer-content">
-          <div class="footer-brand">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy" style="height:30px;">
+  <footer class="footer">
+    <div class="footer-content-wrapper">
+        <!-- Bagian Kiri: Logo & Deskripsi -->
+        <div class="footer-left">
+            <div class="footer-brand">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study" class="footer-logo">
             </div>
-            <p>
+            <p class="footer-description">
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
-          </div>
-          <div class="footer-links">
-              <div class="link-group">
-                  <h4>Navigasi</h4>
-                  <ul>
-                      <li><a href="#">Beranda</a></li>
-                      <li><a href="#">Daftar Ruangan</a></li>
-                      <li><a href="#">Panduan</a></li>
-                      <li><a href="#">Masuk</a></li>
-                  </ul>
-              </div>
-              <div class="link-group">
-                  <h4>Bantuan</h4>
-                  <ul>
-                      <li><a href="#">FAQ</a></li>
-                      <li><a href="#">Aturan ruangan</a></li>
-                  </ul>
-              </div>
-              <div class="link-group">
-                  <h4>Kontak</h4>
-                  <ul>
-                      <li><a href="#">PerpusPNJ@email.com</a></li>
-                      <li><a href="#">0822123456780</a></li>
-                      <li><a href="#">Kampus PNJ, Depok</a></li>
-                  </ul>
-              </div>
-          </div>
-      </div>
-  </footer>
+        </div>
+
+        <!-- Bagian Kanan: Navigasi & Kontak -->
+        <div class="footer-nav">
+            <div>
+                <h4>Navigasi</h4>
+                <a href="?route=user/home">Beranda</a>
+                <a href="?route=user/ruangan">Ruangan</a>
+                <a id="navigasipanduan" href="#">Panduan</a>
+            </div>        
+            <div>
+                <h4>Kontak</h4>
+                <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
+                <a href="tel:0822123456780">0822123456780</a>
+                <p>Kampus PNJ, Depok</p>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
