@@ -352,7 +352,7 @@ class AdminController {
             'Status',
             'Total Booking',
             'Total Feedback',
-            'Persentase Puas'
+            'Persentase Puas (%)'
         ];
 
         $col = 'A';

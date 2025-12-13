@@ -167,8 +167,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <a class="btn-reset" href="?route=Admin/dataakun">Reset</a>
         </form>
 
-        <a href="?route=Admin/exportAkun">Buat Laporan</a>
-
         <div class="table-wrap">
           <table class="data-table">
             <thead>
@@ -328,6 +326,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
           <button type="submit" class="btn-filter">Terapkan</button>
           <a class="btn-reset" href="?route=Admin/dataakun">Reset</a>
+          
+          <a href="?route=Admin/exportAkun">Buat Laporan</a>
         </form>
 
         <div class="table-wrap">
