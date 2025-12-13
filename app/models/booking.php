@@ -136,7 +136,7 @@ class Booking extends Model
 
     public function getAllForLaporan()
     {
-        $sql = " SELECT 
+        $sql = "SELECT 
                 b.kode_booking,
                 u.role,
                 u.unit,
@@ -159,7 +159,6 @@ class Booking extends Model
                 JOIN user u ON b.user_id = u.user_id
                 JOIN room r ON b.room_id = r.room_id
                 ORDER BY b.created_at DESC";
-
         return $this->query($sql)->fetchAll();
     }
 
