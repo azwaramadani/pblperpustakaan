@@ -115,9 +115,6 @@ $prodiList = $prodiList ?? [];
         <div class="register-footer">
             Sudah punya akun? <a href="?route=Auth/login" class="btn-guest">Masuk</a>
         </div>
-        <div class="register-footer">
-            Ganti Role <a href="?route=Auth/pilihrole" class="btn-guest">Masuk</a>
-        </div>
     </section>
 </div>
 

@@ -16,6 +16,7 @@ unset($_SESSION['flash_error']);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Work+Sans:wght@500;600&display=swap" rel="stylesheet">
 </head>
 
+<!-- Menggunakan class auth-body agar layout konsisten -->
 <body class="auth-body login-page">
 
 <div class="auth-wrapper">
@@ -29,44 +30,59 @@ unset($_SESSION['flash_error']);
 
     <!-- BAGIAN KANAN: FORM -->
     <section class="auth-card form-panel">
-
-        <h2>Masuk</h2>
-
-        <?php if ($error): ?>
-            <div class="auth-error">
-                <?= htmlspecialchars($error) ?>
+        
+        <!-- Wrapper konten form agar rapi -->
+        <div class="form-content">
+            
+            <div class="form-header">
+                <h2>Masuk</h2>
             </div>
-        <?php endif; ?>
 
-        <form method="POST" class="login-form" action="?route=Auth/loginProcess">
-            
-            
-            <label for="nim">NIM/NIP</label>
-            <input id="nim"
-                   type="text"
-                   name="nim_nip"
-                   autocomplete="off"
-                   required>
+            <?php if ($error): ?>
+                <div class="auth-error">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
 
-            <label for="password">Password</label>
-            <input id="password"
-                   type="password"
-                   name="password"
-                   autocomplete="new-password"
-                   required>
+            <form method="POST" class="login-form" action="?route=Auth/loginProcess">
+                
+                <!-- Input NIM/NIP -->
+                <div class="form-group">
+                    <label for="nim">NIM/NIP</label>
+                    <input id="nim"
+                           type="text"
+                           name="nim_nip"
+                           class="form-control"
+                           placeholder="Masukkan NIM/NIP"
+                           autocomplete="off"
+                           required>
+                </div>
 
-            <!-- Lupa Password (Rata Kanan) -->
-            <a href="?route=Auth/forgotPassword" class="forgot-password-link">Lupa Password?</a>
+                <!-- Input Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input id="password"
+                           type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Masukkan Password"
+                           autocomplete="new-password"
+                           required>
+                </div>
 
-            <!-- Tombol Masuk (Center) -->
-            <button type="submit" name="submit" class="btn-login">Masuk</button>
-        </form>
+                <!-- Lupa Password (Rata Kanan) -->
+                <a href="?route=Auth/forgotPassword" class="forgot-password-link">Lupa Password?</a>
 
-        <!-- Footer (Center & Satu Baris) -->
-        <div class="register-footer">
-            Belum Punya Akun? <a href="?route=Auth/registerRole" class="btn-guest">Daftar</a>
+                <!-- Tombol Masuk (Center) -->
+                <button type="submit" name="submit" class="btn-login">Masuk</button>
+            </form>
+
+            <!-- Footer (Center & Satu Baris) -->
+            <div class="register-footer">
+                Belum Punya Akun? <a href="?route=Auth/registerRole" class="btn-guest">Daftar</a>
+            </div>
+
         </div>
-
     </section>
 </div>
 
