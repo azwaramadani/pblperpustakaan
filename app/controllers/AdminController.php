@@ -332,6 +332,66 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
 
+    public function exportRuangan()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $roomModel = new Room();
+        $data      = $roomModel->getAllForLaporan();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet       = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Ruangan RUDY');
+
+        $headers = [
+            'Nama',
+            'Kapasitas Minimum',
+            'Kapasitas Maximum',
+            'Deskripsi',
+            'Status',
+            'Total Booking',
+            'Total Feedback',
+            'Persentase Puas'
+        ];
+
+        $col = 'A';
+        foreach($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $col++;
+        }
+
+        // Data
+        $row = 2;
+        foreach ($data as $d) {
+            $sheet->setCellValue("A{$row}", $d['nama_ruangan']);
+            $sheet->setCellValue("B{$row}", $d['kapasitas_min']);
+            $sheet->setCellValue("C{$row}", $d['kapasitas_max']);
+            $sheet->setCellValue("D{$row}", $d['deskripsi']);
+            $sheet->setCellValue("E{$row}", $d['status']);
+            $sheet->setCellValue("F{$row}", $d['total_booking']);
+            $sheet->setCellValue("G{$row}", $d['total_feedback']);
+            $sheet->setCellValue("H{$row}", $d['puas_percent']);
+            $row++;
+        }
+
+        // Auto Width
+        foreach (range('A', 'H') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        // Output
+        $filename = 'Laporan Data Ruangan RUDY ' . date('d F Y') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+    }
+
     # method handler buat admin bikin ruangan baru, jadi di redirect ke add_ruangan.php
     public function addRuangan()
     {
@@ -642,61 +702,6 @@ class AdminController {
         require __DIR__ . '/../views/admin/data_akun.php';
     }
 
-    #method handler buat admin update status akun user
-    public function updateUserStatus()
-    {
-        Session::checkAdminLogin();
-        Session::preventCache();
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=Admin/dataAkun');
-            exit;
-        }
-
-        $userId = (int)($_POST['user_id'] ?? 0);
-        $status = trim($_POST['status_akun'] ?? '');
-
-        $allowed = ['Disetujui','Ditolak'];
-        if (!$userId || !in_array($status, $allowed, true)) {
-            Session::set('flash_error', 'Data tidak valid.');
-            header('Location: ?route=Admin/dataAkun');
-            exit;
-        }
-
-        $userModel = new User();
-        $userModel->updateStatus($userId, $status);
-
-        Session::set('flash_success', 'Status akun berhasil diperbarui.');
-        header('Location: ?route=Admin/dataAkun');
-        exit;
-    }
-
-    #method handler buat admin hapus user
-    public function deleteUser()
-    {
-        Session::checkAdminLogin();
-        Session::preventCache();
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=Admin/dataAkun');
-            exit;
-        }
-
-        $userId = (int)($_POST['user_id'] ?? 0);
-        if (!$userId) {
-            Session::set('flash_error', 'User tidak valid.');
-            header('Location: ?route=Admin/dataAkun');
-            exit;
-        }
-
-        $userModel = new User();
-        $userModel->deleteById($userId);
-
-        Session::set('flash_success', 'Akun berhasil dihapus.');
-        header('Location: ?route=Admin/dataAkun');
-        exit;
-    }
-
     public function exportAkun()
     {
         Session::checkAdminLogin();
@@ -762,7 +767,60 @@ class AdminController {
         $writer->save('php://output');
     }
 
+    #method handler buat admin update status akun user
+    public function updateUserStatus()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
 
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userId = (int)($_POST['user_id'] ?? 0);
+        $status = trim($_POST['status_akun'] ?? '');
+
+        $allowed = ['Disetujui','Ditolak'];
+        if (!$userId || !in_array($status, $allowed, true)) {
+            Session::set('flash_error', 'Data tidak valid.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userModel = new User();
+        $userModel->updateStatus($userId, $status);
+
+        Session::set('flash_success', 'Status akun berhasil diperbarui.');
+        header('Location: ?route=Admin/dataAkun');
+        exit;
+    }
+
+    #method handler buat admin hapus user
+    public function deleteUser()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userId = (int)($_POST['user_id'] ?? 0);
+        if (!$userId) {
+            Session::set('flash_error', 'User tidak valid.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        }
+
+        $userModel = new User();
+        $userModel->deleteById($userId);
+
+        Session::set('flash_success', 'Akun berhasil dihapus.');
+        header('Location: ?route=Admin/dataAkun');
+        exit;
+    }
 
     #method helper buat redirect admin setelah update status booking (bisa kembali ke dashboard)
     private function redirectAfterBookingUpdate(string $redirect = ''): void

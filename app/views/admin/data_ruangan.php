@@ -57,6 +57,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
         </div>
         <button class="btn-add" type="button" onclick="window.location='?route=Admin/addRuangan'">Tambah Ruangan</button>
+        <a href="?route=Admin/exportRuangan" style="text-decoration: none">
+          <button class="btn-add" type="button">Buat Laporan</button>
+        </a>
       </div>
 
       <?php if (empty($rooms)): ?>
