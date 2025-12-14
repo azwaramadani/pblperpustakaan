@@ -1,9 +1,7 @@
 <?php
-// Kita komentari dulu bagian session success agar tidak auto-trigger saat load
-$err     = Session::get('flash_error');
-// $success = Session::get('flash_success'); 
+// Session error handler
+$err = Session::get('flash_error');
 Session::set('flash_error', null);
-// Session::set('flash_success', null); 
 
 $isEdit = !empty($payload['booking_id'] ?? null);
 
@@ -52,7 +50,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         <p><?= htmlspecialchars($user['nim_nip']) ?></p>
         <p><?= htmlspecialchars($user['no_hp']) ?></p>
         <p><?= htmlspecialchars($user['email']) ?></p>
-        <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
+        <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
       </div>
     </div>
   </header>
@@ -78,7 +76,6 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         <div class="alert-error"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>
 
-      <!-- Tambahkan ID pada Form -->
       <form action="<?= $isEdit ? '?route=Booking/update' : '?route=Booking/store' ?>" method="POST" id="bookingForm">
         <?php if ($isEdit): ?>
           <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
@@ -122,8 +119,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
 
         <div class="actions">
           <a href="?route=<?= $isEdit ? ('Booking/editForm/' . urlencode($payload['booking_id'])) : ('Booking/step1/' . urlencode($payload['room_id'])) ?>" class="btn-back">Kembali</a>
-          <!-- Button Type Submit akan ditangkap JS -->
-          <button type="submit" class="btn-save"><?= $isEdit ? 'Simpan Perubahan' : 'Simpan Perubahan' ?></button>
+          <button type="submit" class="btn-save"><?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?></button>
         </div>
       </form>
     </div>
@@ -167,18 +163,39 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         </div>
         <h2 class="modal-title">Booking berhasil disimpan</h2>
         <div class="modal-actions">
+            <!-- Menambahkan timestamp di URL riwayat untuk mencegah cache dan memastikan data fresh -->
             <a href="?route=User/home" class="btn-modal btn-modal-yellow">Kembali ke beranda</a>
-            <a href="?route=User/riwayat" class="btn-modal btn-modal-white">Lihat riwayat peminjaman</a>
+            <a href="?route=User/riwayat&refresh=<?= time() ?>" class="btn-modal btn-modal-white">Lihat riwayat peminjaman</a>
         </div>
     </div>
   </div>
+
+  <div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <!-- Icon Logout -->
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </div>
+
+        <h2 class="modal-title">Apakah anda yakin ingin keluar dari akun ini?</h2>
+
+        <div class="modal-actions">
+            <a href="?route=Auth/logout" class="btn-modal-red">Ya</a>
+            <button onclick="closeLogoutModal()" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
 
   <script>
     const anggotaList = document.getElementById('anggotaList');
     const addBtn = document.getElementById('addAnggota');
     const jumlahHidden = document.getElementById('jumlahPeminjam');
     const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
-    const bookingForm = document.getElementById('bookingForm'); // Ambil elemen form
+    const bookingForm = document.getElementById('bookingForm');
     let anggotaCount = <?= $idx - 1 ?>;
 
     function addAnggotaField(value = '') {
@@ -194,10 +211,11 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
 
     addBtn.addEventListener('click', () => addAnggotaField(''));
 
-    // --- LOGIKA UTAMA PERBAIKAN ---
-    // Menggunakan Event Listener pada Form Submit
+    // --- LOGIKA SUBMIT DENGAN AJAX ---
     bookingForm.addEventListener('submit', function(event) {
-        // 1. Hitung jumlah anggota sebelum submit
+        event.preventDefault(); // Mencegah reload halaman
+
+        // Update jumlah anggota
         const filledMembers = Array.from(document.querySelectorAll('.anggota-input'))
             .map(i => i.value.trim())
             .filter(v => v !== '');
@@ -205,13 +223,35 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         jumlahHidden.value  = total;
         jumlahDisplay.value = total;
 
-        // 2. Cegah reload halaman (prevent submit asli PHP) agar modal muncul
-        // Catatan: Jika nanti backend sudah siap redirect, hapus baris 'event.preventDefault()' ini
-        // dan gunakan logika session PHP seperti kode sebelumnya.
-        event.preventDefault(); 
+        const formData = new FormData(bookingForm);
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.innerText;
         
-        // 3. Tampilkan modal
-        openModal();
+        // Ubah teks tombol jadi loading
+        submitBtn.innerText = 'Menyimpan...'; 
+        submitBtn.disabled = true;
+
+        fetch(bookingForm.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // Asumsi: Backend akan memproses dan jika sukses (redirect atau 200 OK), kita tampilkan modal
+            if (response.ok) {
+                openModal();
+            } else {
+                alert('Terjadi kesalahan pada server. Mohon coba lagi.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal terhubung ke server. Periksa koneksi internet.');
+        })
+        .finally(() => {
+            // Kembalikan tombol ke keadaan semula jika modal belum pindah halaman
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        });
     });
 
     // --- MODAL FUNCTIONS ---
@@ -230,6 +270,24 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
             closeModal();
         }
     });
+// -- MODAL LOGOUT -->
+    const logoutModal = document.getElementById('logoutModal');
+
+    function showLogoutModal() {
+        logoutModal.classList.add('active');
+    }
+
+    function closeLogoutModal() {
+        logoutModal.classList.remove('active');
+    }
+
+    // Tutup jika klik di luar area putih
+    logoutModal.addEventListener('click', (e) => {
+        if (e.target === logoutModal) {
+            closeLogoutModal();
+        }
+    });
+
   </script>
 </body>
 </html>

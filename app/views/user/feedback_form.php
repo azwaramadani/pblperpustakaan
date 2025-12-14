@@ -41,7 +41,7 @@ Session::set('flash_success', null);
       <p><?= htmlspecialchars($user['nim_nip']) ?></p>
       <p><?= htmlspecialchars($user['no_hp']) ?></p>
       <p><?= htmlspecialchars($user['email']) ?></p>
-      <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
+      <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
     </div>
   </div>
 </header>
@@ -94,29 +94,71 @@ Session::set('flash_success', null);
 </main>
 
 <footer class="footer">
-        <div class="footer-brand">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study"class="footer-logo">
+    <div class="footer-content-wrapper">
+        <div class="footer-left">
+            <div class="footer-brand">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study" class="footer-logo">
             </div>
             <p class="footer-description">
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
         </div>
 
-        <!-- Footer Links -->
         <div class="footer-nav">
             <div>
                 <h4>Navigasi</h4>
-                    <a href="?route=user/home">Beranda</a>
-                    <a href="?route=user/ruangan">Ruangan</a>
-                    <a id="navigasipanduan"href="#">Panduan</a>
-            </div>
+                <a href="?route=user/home">Beranda</a>
+                <a href="?route=user/ruangan">Ruangan</a>
+                <a id="navigasipanduan" href="#">Panduan</a>
+            </div>        
             <div>
                 <h4>Kontak</h4>
                 <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
                 <a href="tel:0822123456780">0822123456780</a>
                 <p>Kampus PNJ, Depok</p>
+            </div>
         </div>
     </div>
 </footer>
+<!-- MODAL LOGOUT POP-UP -->
+<div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <!-- Icon Logout -->
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </div>
+
+        <h2 class="modal-title">Apakah anda yakin ingin keluar dari akun ini?</h2>
+
+        <div class="modal-actions">
+            <a href="?route=Auth/logout" class="btn-modal-red">Ya</a>
+            <button onclick="closeLogoutModal()" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT LOGOUT -->
+<script>
+    const logoutModal = document.getElementById('logoutModal');
+
+    function showLogoutModal() {
+        logoutModal.classList.add('active');
+    }
+
+    function closeLogoutModal() {
+        logoutModal.classList.remove('active');
+    }
+
+    // Tutup jika klik di luar area putih
+    logoutModal.addEventListener('click', (e) => {
+        if (e.target === logoutModal) {
+            closeLogoutModal();
+        }
+    });
+</script>
 </body>
 </html>

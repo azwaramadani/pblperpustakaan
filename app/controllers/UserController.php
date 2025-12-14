@@ -2,6 +2,24 @@
 require_once __DIR__ . '/../../core/Session.php';
 
 class UserController{
+
+    public function viewProfile() 
+    {
+        Session::CheckUserLogin();
+        Session::preventCache();
+        
+        if (!Session::get('user_id')) {
+            header("Location: ?route=Auth/Login");
+            exit;
+        }
+
+        $user_id = Session::get('user_id');
+
+        $userModel = new User();
+        $user      = $userModel->findById($user_id);
+
+        require __DIR__ . '/../views/user/view_profile.php';
+    }
     public function home()
     {
         Session::checkUserLogin();
