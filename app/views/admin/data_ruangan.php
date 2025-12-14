@@ -8,7 +8,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Ruangan - Rudy</title>
   <!-- Update versi CSS agar cache ter-refresh -->
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.5">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.7">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -83,11 +83,8 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 
       <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
         <div>
-          <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
-          <a href="?route=Admin/exportRuangan" style="text-decoration: none">
-          <button class="btn-add" type="button">Buat Laporan</button>
-          </a>
-        </div>
+  <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
+</div>
         <button class="btn-add" type="button" onclick="window.location='?route=Admin/addRuangan'">Tambah Ruangan</button>
       </div>
 
@@ -157,41 +154,58 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   </div>
 </div>
 
-<!-- Modal Hapus -->
-<div class="modal-backdrop" id="modalDelete" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
-  <div class="modal-card" style="background: white; padding: 24px; border-radius: 12px; max-width: 400px; width: 90%;">
-    <h4 style="margin-top: 0;">Hapus Ruangan?</h4>
-    <p id="deleteInfo">Apakah Anda yakin ingin menghapus ruangan ini?</p>
+<!-- Modal Hapus Ruangan -->
+<div id="modalDelete" class="modal-overlay">
+  <div class="modal-content">
+    <div class="icon-box-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </div>
+    
+    <h2 class="modal-title">Hapus Ruangan?</h2>
+    
+    <p id="deleteInfo" style="color: #666; margin-bottom: 20px;">Apakah Anda yakin ingin menghapus ruangan ini?</p>
+    
     <form method="POST" action="?route=Admin/deleteRuangan">
       <input type="hidden" name="room_id" id="deleteRoomId">
-      <div class="modal-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
-        <button type="button" class="btn-pill btn-cancel js-close-modal" style="padding: 8px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">Batal</button>
-        <button type="submit" class="btn-pill btn-save" style="padding: 8px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">Ya, hapus</button>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-white js-close-modal">Batal</button>
+        <button type="submit" class="btn-modal-red">Ya, hapus</button>
       </div>
     </form>
   </div>
 </div>
-
 <script>
-const modalDelete = document.getElementById('modalDelete');
-const roomIdInput = document.getElementById('deleteRoomId');
-const infoText    = document.getElementById('deleteInfo');
+    // --- SCRIPT MODAL HAPUS ---
+    const modalDelete = document.getElementById('modalDelete');
+    const roomIdInput = document.getElementById('deleteRoomId');
+    const infoText    = document.getElementById('deleteInfo');
 
-document.querySelectorAll('.js-open-delete').forEach(btn => {
-  btn.addEventListener('click', () => {
-    roomIdInput.value = btn.dataset.id;
-    infoText.textContent = `Hapus ruangan "${btn.dataset.name}"? Data yang dihapus tidak bisa dikembalikan.`;
-    modalDelete.style.display = 'flex';
-  });
-});
+    document.querySelectorAll('.js-open-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        roomIdInput.value = btn.dataset.id;
+        if(infoText) {
+            infoText.textContent = `Hapus ruangan "${btn.dataset.name}"? Data yang dihapus tidak bisa dikembalikan.`;
+        }
+        modalDelete.classList.add('active');
+      });
+    });
 
-document.querySelectorAll('.js-close-modal').forEach(btn => {
-  btn.addEventListener('click', () => modalDelete.style.display = 'none');
-});
+    document.querySelectorAll('.js-close-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        modalDelete.classList.remove('active');
+      });
+    });
 
-modalDelete.addEventListener('click', (e) => {
-  if (e.target === modalDelete) modalDelete.style.display = 'none';
-});
+    modalDelete.addEventListener('click', (e) => {
+      if (e.target === modalDelete) {
+          modalDelete.classList.remove('active');
+      }
+    });
 </script>
 </body>
 </html>

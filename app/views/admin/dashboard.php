@@ -327,8 +327,8 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <label><input type="radio" name="status_booking" value="Selesai"> Selesai</label>
       </div>
       <div style="text-align:right;">
-        <button type="button" class="aksi-btn js-close-status" style="margin-right:10px;">Batal</button>
-        <button type="submit" class="aksi-btn" style="background:#22b6b3; color:white; border-color:#22b6b3;">Simpan</button>
+        <button type="button" class="btn-pill btn-cancel js-close-status" >Batal</button>
+        <button type="submit" class="btn-pill btn-save">Simpan</button>
       </div>
     </form>
   </div>
