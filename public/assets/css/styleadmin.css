@@ -18,9 +18,10 @@
   box-sizing: border-box;
 }
 
+/* --- 1. GLOBAL SETTINGS (Berpengaruh ke SEMUA halaman) --- */
 body {
   margin: 0;
-  background: #f7f9fb;
+  background: #f7f9fb; /* Warna background abu-abu muda */
   color: #1e1f26;
   font-family: 'Poppins', 'Work Sans', sans-serif;
 }
@@ -44,46 +45,29 @@ body {
   min-height: 100vh;
 }
 
-.top-nav {
-  width: 100%;
-  background: linear-gradient(90deg, #1bbab3 0%, #0f8f8c 100%);
-  color: #fff;
-  padding: 20px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-  box-shadow: var(--shadow);
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.nav-brand img {
-  height: 54px;
-  max-width: 140px;
-  object-fit: contain;
-}
-
+/* --- 2. SIDEBAR (Berpengaruh ke SEMUA halaman) --- */
 .sidebar {
   width: 260px;
-  background: #ffffff !important;      /* putih */
-  color: #000 !important;
-  padding: 30px 25px;
-  border-right: 1px solid #e5e5e5;     /* garis halus */
+  background: #ffffff;      /* Latar putih bersih */
+  border-right: 1px solid #e5e7eb; /* Garis batas tipis */
+  
+  /* Flexbox & Tinggi Layar (PENTING untuk posisi footer) */
   display: flex;
-  flex-direction: column;
-  gap: 35px;
+  flex-direction: column;   /* Susunan vertikal (atas ke bawah) */
+  height: 100vh;            /* Tinggi full satu layar */
+  position: sticky;         /* Agar sidebar diam saat konten discroll */
+  top: 0;
+  padding: 24px;
+  flex-shrink: 0;
+  z-index: 50;
 }
 
 .brand img {
   max-width: 150px;
+  margin-bottom: 20px;
 }
 
+/* Link Menu Sidebar */
 .sidebar-nav a {
   display: flex;
   align-items: center;
@@ -91,86 +75,105 @@ body {
   padding: 12px 14px;
   font-size: 15px;
   font-weight: 600;
-  color: #333 !important;               /* teks gelap */
+  color: #333 !important;
   border-radius: 10px;
   transition: 0.2s ease;
+  text-decoration: none;    /* Hilangkan garis bawah link */
 }
 
+/* Icon Menu */
 .sidebar-nav a i,
 .sidebar-nav a svg {
   font-size: 20px;
   width: 22px;
-  color: #1bbab3 !important;            /* icon warna teal */
+  color: #1bbab3 !important; /* Warna Teal */
 }
 
-/* .sidebar-nav a:hover {
-  background: #f4f4f4 !important;       
-  color: #000 !important;
-} */
+/* Efek Hover (Opsional, biar lebih interaktif) */
+.sidebar-nav a:hover {
+  background-color: #f3f4f6; 
+}
 
+/* Menu Aktif */
 .sidebar-nav a.active {
   background: transparent !important;
-  color: #f7c825 !important;            /* kuning sesuai desain */
+  color: #f7c825 !important; /* Warna Kuning */
 }
 
 .sidebar-nav a.active i {
   color: #f7c825 !important;
 }
 
-/* Profil kecil di sidebar (Admin) */
-/* Mengubah ukuran gambar avatar di sidebar */
+/* --- 3. SIDEBAR FOOTER (Profil Admin di Bawah) --- */
+/* Class ini yang membuat profil turun ke paling bawah */
+.sidebar-footer {
+  margin-top: auto;        /* KUNCI: Mendorong elemen ini ke dasar sidebar */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f9fafb;     /* Background sedikit abu */
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
 .sidebar-footer .avatar-img {
-    width: 30px;  /* Ubah ukuran gambar menjadi lebih kecil */
-    height: 30px; /* Ubah ukuran gambar menjadi lebih kecil */
-    object-fit: cover;
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
-/* Menghilangkan tombol Buat Laporan di samping avatar */
-.top-nav .header-actions {
-    display: none; /* Menyembunyikan tombol Buat Laporan yang ada di samping avatar */
-}
-
-
-/* Menghilangkan avatar besar (jika ada elemen default) */
-.big-profile,
-.profile-large,
-.user-avatar-large {
+/* Sembunyikan class lama yang mungkin masih ada di HTML lain */
+.big-profile, .profile-large, .user-avatar-large {
   display: none !important;
 }
 
 
-   /* HEADER BAR (TOP NAV) */
-
-/* Header */
+/* --- 4. TOP NAV / HEADER (Berpengaruh ke SEMUA halaman) --- */
 .top-nav {
   width: 100%;
-  background: #ffffff !important;        /* Putih bersih */
+  background: #ffffff !important; /* Pastikan Putih, HAPUS gradient lama */
   color: #000 !important;
   padding: 20px 40px;
   border-bottom: 1px solid #e5e5e5;
+  
+  /* Layout Flexbox */
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Judul kiri, Tombol kanan */
   align-items: center;
+  height: 80px;
 }
 
-/* Menghilangkan header title "Dashboard" */
+/* Sembunyikan judul "Dashboard" lama jika HTML masih menggunakannya */
 .top-nav h1 {
   display: none !important;
 }
 
-/* Tombol kuning "Buat Laporan" */
+/* Bagian Brand Header (Judul Halaman Baru) */
+.nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+/* Tombol "Buat Laporan" */
 .top-nav .btn-laporan {
-  background: #f7c825 !important;
+  background: #f7c825 !important; /* Warna Kuning */
   color: #000 !important;
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: 0.2s ease;
 }
 
 .top-nav .btn-laporan:hover {
   background: #ffd944 !important;
+  transform: translateY(-2px);
 }
 
 .content {
@@ -390,8 +393,8 @@ table.data-table tbody tr:hover {
     padding: 9px 14px;
     font-weight: 700;
     cursor: pointer;
-    background: #0d8f8c;
-    color: #fff;
+    background: #f7c825;
+    color: #000000;
 }
 
 .filter-bar .btn-reset {
@@ -522,19 +525,19 @@ table.data-table tbody tr:hover {
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
-    border: 1px solid #0d8f8c;
-    background: #0d8f8c;
+    border: 1px solid #ffd633;
+    background: #000000;
     color: #fff;
     transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .page-btn.secondary {
     background: #fff;
-    color: #0d8f8c;
+    color: #ffd633;
 }
 
 .page-btn:hover {
-    background: #0c7e7b;
+    background: #917b19;
     color: #fff;
     transform: translateY(-1px);
 }
@@ -1018,4 +1021,98 @@ table.data-table tbody tr:hover {
         width: 100%;
         height: auto;
     }
+}
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+
+.icon-box-red {
+    width: 60px;
+    height: 60px;
+    background-color: #ff4d4f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.icon-box-red svg {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+    stroke-width: 3;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-modal-red {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-modal-red:hover {
+    background-color: #d9363e;
+}
+
+.btn-modal-white {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-modal-white:hover {
+    background-color: #f5f5f5;
 }

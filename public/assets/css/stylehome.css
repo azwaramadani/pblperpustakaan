@@ -25,6 +25,9 @@ body {
   background: linear-gradient(180deg, #fdfefe 0%, #f4fbff 17%, #6ed2c6 70%);
   color: #16213c;
   min-height: 100vh;
+  /* Tambahan: Flexbox untuk Sticky Footer */
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -37,6 +40,7 @@ img {
   display: block;
 }
 
+/* ===== NAVBAR ===== */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -69,12 +73,12 @@ img {
   font-size: 16px;
 }
 
-.nav-menu a.active {
+.nav-menu a.active, .nav-links a.active {
   color: #007777;
   position: relative;
 }
 
-.nav-menu a.active::after {
+.nav-menu a.active::after, .nav-links a.active::after {
   content: '';
   position: absolute;
   left: 0;
@@ -190,10 +194,12 @@ img {
   background: #ff6668;
 }
 
+/* ===== MAIN CONTENT ===== */
 main {
   max-width: 85vw;
   margin: 0 auto;
   padding: 50px 24px 96px;
+  flex: 1; /* Agar konten mengisi ruang dan mendorong footer ke bawah */
 }
 
 .hero {
@@ -287,8 +293,6 @@ main {
 .btn.block {
   width: 100%;
 }
-
-
 
 .fitur {
   border-radius: 24px;
@@ -391,12 +395,6 @@ main {
   font-size: 14px;
 }
 
-.card-body p {
-  margin: 4px 0;
-  color: #5a5f69;
-  font-size: 14px;
-}
-
 .card-body .status {
   color: #1bbf83;
   font-weight: 600;
@@ -426,9 +424,9 @@ main {
 .steps li {
   position: relative;
   padding-left: 48px;
-  margin-bottom: 16px;
+  margin-bottom: 30px;
   font-size: 15px;
-  color: #3c4858;
+  color: black;
 }
 
 .steps li::before {
@@ -440,7 +438,7 @@ main {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #FF383C;
+  background: #ffd84f;
   color: #303030;
   font-weight: 600;
   display: flex;
@@ -452,64 +450,7 @@ main {
   margin-bottom: 0;
 }
 
-footer {
-    background-color: #000;
-    color: white;
-    padding: 60px 5%;
-    margin-top: auto; /* Membuat footer selalu berada di bawah */
-    position: relative;
-}
-.footer {
-  background: #000000;
-  color: #bdc4d2;
-  display: flex;
-  gap: 60px;
-  padding: 60px 80px;
-}
-
-.footer-brand {
-    display: flex;
-    flex-direction: column; /* Menata logo dan teks penjelasan secara vertikal */
-    align-items: flex-start;
-    gap: 10px; /* Menambah jarak antara logo dan teks */
-}
-
-.footer-logo {
-  width: 300px;
-  margin-bottom: 10px;
-}
-
-.footer-description {
-    font-size: 14px;  /* Mengatur ukuran font untuk teks penjelasan */
-    color: #ccc;
-    margin: 0;  /* Menghapus margin default */
-    text-align: left;  /* Menyelaraskan teks ke kiri */
-}
-
-.footer-nav {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(140px, 1fr));
-  gap: 40px;
-}
-
-.footer-nav h4 {
-  margin: 0 0 12px;
-  color: #ffffff;
-}
-
-.footer-nav a,
-.footer-nav p {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 15px;
-  text-decoration: none;
-  color: #cdd4df;
-}
-
-.footer-nav a:hover {
-  color: var(--yellow);
-}
-
+/* ===== MODAL ===== */
 .modal {
   position: fixed;
   inset: 0;
@@ -577,6 +518,80 @@ footer {
   justify-content: center;
 }
 
+/* ===== FOOTER (UPDATED - SAMA DENGAN RIWAYAT) ===== */
+footer {
+    background-color: #000;
+    color: white;
+    padding: 40px 0;
+    width: 100%;
+    margin-top: auto; /* Sticky footer */
+    position: relative;
+}
+
+/* Ini adalah class baru untuk wrapper konten footer agar bisa 1300px */
+.footer-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1300px; /* Lebar diperluas agar konten kiri lebih ke pinggir */
+    margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-left {
+    flex: 2;
+    min-width: 300px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.footer-logo {
+  width: 150px; /* Disamakan dengan halaman Riwayat agar proporsional */
+  margin-bottom: 10px;
+}
+
+.footer-description {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+    text-align: left;
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 1fr));
+  gap: 40px;
+  flex: 1;
+}
+
+.footer-nav h4 {
+  margin: 0 0 12px;
+  color: #ffffff;
+}
+
+.footer-nav a,
+.footer-nav p {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  text-decoration: none;
+  color: #cdd4df;
+}
+
+.footer-nav a:hover {
+  color: var(--yellow);
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 992px) {
   .navbar {
     padding: 16px 32px;
@@ -594,10 +609,13 @@ footer {
   .hero-visual img {
     margin: 0 auto;
   }
-
-  .footer {
-    flex-direction: column;
-    padding: 50px 40px;
+  
+  /* Footer Responsive */
+  .footer-content-wrapper {
+      flex-direction: column;
+  }
+  .footer-left, .footer-nav {
+      width: 100%;
   }
 }
 
@@ -623,6 +641,97 @@ footer {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 }
-.nav-links a.active {
-    color: #007777;
-}
+  .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .icon-box-red {
+            width: 60px;
+            height: 60px;
+            background-color: #ff4d4f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .icon-box-red svg {
+            width: 30px;
+            height: 30px;
+            stroke: white;
+            stroke-width: 3;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-modal-red {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-modal-red:hover {
+            background-color: #d9363e;
+        }
+
+        .btn-modal-white {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-modal-white:hover {
+            background-color: #f5f5f5;
+        }

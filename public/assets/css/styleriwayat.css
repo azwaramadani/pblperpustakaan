@@ -20,6 +20,9 @@ body {
   background: linear-gradient(180deg, #fdfefe 0%, #f4fbff 17%, #6ed2c6 70%);
   color: #16213c;
   min-height: 100vh;
+  /* Tambahan untuk Sticky Footer */
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== NAVBAR ===== */
@@ -177,7 +180,7 @@ body {
 /* ===== TITLE ===== */
 .title {
   text-align: center;
-  color: var(--teal-dark);
+  color: black;
   margin-top: 40px;
   font-size: 26px;
   font-weight: 700;
@@ -191,9 +194,11 @@ body {
   display: flex;
   flex-direction: column;
   gap: 26px;
+  flex: 1; /* Agar container mengisi ruang kosong & footer terdorong ke bawah */
 }
 
-.card {
+/* Gunakan spesifisitas .container .card agar tidak tertimpa style .card lain */
+.container .card {
   display: flex;
   justify-content: space-between;
   background: #ffffff;
@@ -204,7 +209,8 @@ body {
   align-items: center;
   transition: transform 0.2s ease;
 }
-.card:hover {
+
+.container .card:hover {
   transform: translateY(-4px);
 }
 
@@ -230,6 +236,38 @@ body {
   border-radius: 12px;
   margin-bottom: 14px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== EMPTY STATE (Tampilan Saat Kosong) ===== */
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 20px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 15px;
+    margin-bottom: 40px;
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 25px;
 }
 
 /* ===== BUTTONS ===== */
@@ -265,12 +303,12 @@ body {
 }
 
 .btn.ubah {
-  background: var(--teal-dark);
-  color: white;
-  box-shadow: 0 10px 20px rgba(11, 142, 138, 0.25);
+  background: #ffca28;
+  color: black;
+  box-shadow: #e3a700;
 }
 .btn.ubah:hover {
-  background: #13aaa5;
+  background: #e3a700;
   transform: translateY(-2px);
 }
 
@@ -284,28 +322,49 @@ body {
   transform: translateY(-2px);
 }
 
+/* Tombol Khusus Empty State */
+.btn.feedback.empty-action {
+    background-color: #FFC107;
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.btn.feedback.empty-action:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
 /* ===== FOOTER (UPDATED) ===== */
 footer {
     background-color: #000;
     color: white;
-    padding: 60px 5%;
+    padding: 40px 0;
+    width: 100%;
     margin-top: auto; /* Membuat footer selalu berada di bawah */
     position: relative;
 }
 
-.footer {
-  background: #000000;
-  color: #bdc4d2;
-  display: flex;
-  gap: 60px;
-  padding: 60px 80px;
+.footer-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1300px; /* Menyamakan dengan container */
+    margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.footer-left {
+    flex: 2;
+    min-width: 300px;
 }
 
 .footer-brand {
     display: flex;
-    flex-direction: column; /* Menata logo dan teks penjelasan secara vertikal */
+    flex-direction: column;
     align-items: flex-start;
-    gap: 10px; /* Menambah jarak antara logo dan teks */
+    gap: 10px;
 }
 
 .footer-logo {
@@ -314,16 +373,19 @@ footer {
 }
 
 .footer-description {
-    font-size: 14px;  /* Mengatur ukuran font untuk teks penjelasan */
+    font-size: 14px;
     color: #ccc;
-    margin: 0;  /* Menghapus margin default */
-    text-align: left;  /* Menyelaraskan teks ke kiri */
+    margin: 0;
+    text-align: left;
+    max-width: 400px;
+    line-height: 1.6;
 }
 
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, minmax(140px, 1fr)); /* Adjusted to 2 cols based on HTML */
   gap: 40px;
+  flex: 1;
 }
 
 .footer-nav h4 {
@@ -344,8 +406,7 @@ footer {
   color: var(--yellow);
 }
 
-
-/* ===== OTHER STYLES ===== */
+/* ===== OTHER STYLES (Styles from previous code that might be for other pages) ===== */
 .feedback-wrap {
   max-width: 900px;
   margin: 30px auto;
@@ -420,7 +481,8 @@ footer {
     padding: 0 16px;
 }
 
-.card {
+/* Generic card for forms (Renamed/Scoped to avoid conflict with List Card) */
+.page .card {
     background: #fff;
     border-radius: 14px;
     padding: 24px;
@@ -489,16 +551,6 @@ h1 {
     margin-top: 20px;
 }
 
-.btn {
-    flex: 1;
-    padding: 11px 0;
-    border-radius: 10px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 15px;
-}
-
 .btn-back {
     background: #0d9488;
     color: #fff;
@@ -511,33 +563,9 @@ h1 {
     color: #000;
 }
 
-/* Alerts */
-.alert {
-    margin: 12px 0;
-    padding: 10px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-.alert.error {
-    background: #ffecec;
-    color: #c0392b;
-}
-
-/* Responsive */
-@media (max-width: 540px) {
-    .page {
-        margin: 24px auto;
-    }
-
-    .actions {
-        flex-direction: column;
-    }
-}
-
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-  .card {
+  .container .card {
     flex-direction: column;
     text-align: center;
     gap: 20px;
@@ -553,6 +581,14 @@ h1 {
     flex-direction: column;
     gap: 14px;
     padding: 18px 24px;
+  }
+  
+  .footer-content-wrapper {
+      flex-direction: column;
+  }
+  
+  .footer-left, .footer-nav {
+      width: 100%;
   }
 }
 
@@ -573,28 +609,198 @@ h1 {
   background: #f8d7da;
   color: #721c24;
 }
+.modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Navbar logo penyesuaian */
-.logo-pnj, .logo-rudy {
-  height: 40px;
-  margin-right: 10px;
-}
-.left-section {
-  display: flex;
-  align-items: center;
-}
-.nav-links a.active {
-  color: #007777;
-  position: relative;
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Icon X Merah */
+        .icon-box-red {
+            width: 60px;
+            height: 60px;
+            background-color: #ff4d4f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .icon-box-red svg {
+            width: 30px;
+            height: 30px;
+            stroke: white;
+            stroke-width: 3;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Tombol YA (Merah) */
+        .btn-modal-red {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #ff4d4f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-modal-red:hover {
+            background-color: #d9363e;
+        }
+
+        /* Tombol TIDAK (Putih) */
+        .btn-modal-white {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-sizing: border-box;
+        }
+
+        .btn-modal-white:hover {
+            background-color: #f5f5f5;
+        }
+/* ===== MODAL LOGOUT ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
 }
 
-.nav-links a.active::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 100%;
-  height: 3px;
-  background: #007777;
-  border-radius: 999px;
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Icon X / Logout Merah */
+.icon-box-red {
+    width: 60px;
+    height: 60px;
+    background-color: #ff4d4f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.icon-box-red svg {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+    stroke-width: 3;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Tombol YA (Merah) */
+.btn-modal-red {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-modal-red:hover {
+    background-color: #d9363e;
+}
+
+/* Tombol TIDAK (Putih) */
+.btn-modal-white {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-modal-white:hover {
+    background-color: #f5f5f5;
 }

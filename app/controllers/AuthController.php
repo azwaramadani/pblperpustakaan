@@ -2,11 +2,8 @@
 require_once __DIR__ . '/../../core/Model.php';
 require_once __DIR__ . '/../../core/Session.php';
 
-
 class AuthController
 {
-    
-
     #method buat redirect ke halaman login
     public function login()
     {
@@ -42,15 +39,15 @@ class AuthController
 
         # VALIDASI LOGIN ADMIN
         if ($admin) {
-        if (!password_verify($password, $admin['password'])) {
-            Session::set("flash_error", "Password salah.");
-            header("Location: ?route=Auth/login");
-            exit;
-        }
+            if (!password_verify($password, $admin['password'])) {
+                Session::set("flash_error", "Password salah.");
+                header("Location: ?route=Auth/login");
+                exit;
+            }
             Session::set("admin_id", $admin['admin_id']);
             Session::set("username", $admin['username']);
             header("Location: ?route=Admin/dashboard");
-        exit;
+            exit;
         }
 
         # VALIDASI 1: Akun tidak ditemukan
@@ -67,14 +64,14 @@ class AuthController
             exit;
         }
 
-        # VALIDASI 4: Status masih menunggu belum divalidasi admin
+        # VALIDASI 3: Status masih menunggu belum divalidasi admin
         if ($user['status_akun'] == 'Menunggu') {
             Session::set("flash_error", " Mohon menunggu, akun anda sedang divalidasi oleh admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
             exit;
         }
 
-        # VALIDASI 4: Status belum ditolak admin
+        # VALIDASI 4: Status ditolak admin
         if ($user['status_akun'] == 'Ditolak') {
             Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
@@ -167,6 +164,16 @@ class AuthController
             $old['email']   = trim($_POST['email'] ?? '');
             $password       = $_POST['password'] ?? '';
             $confirmPassword= $_POST['confirm_password'] ?? '';
+
+            // --- START: TAMBAHAN VALIDASI CAPTCHA ---
+            $inputCaptcha = $_POST['captcha_input'] ?? '';
+            // Mengambil kode dari session native PHP karena captcha.php menggunakan session_start()
+            $sessionCaptcha = $_SESSION['captcha_code'] ?? '';
+
+            if ($inputCaptcha !== $sessionCaptcha) {
+                $errors[] = 'Kode keamanan (Captcha) salah atau tidak sesuai.';
+            }
+            // --- END: TAMBAHAN VALIDASI CAPTCHA ---
 
             if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
                 $errors[] = 'Semua kolom wajib diisi.';

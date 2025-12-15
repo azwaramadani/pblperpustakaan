@@ -7,26 +7,56 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Ruangan - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
+  <!-- Update versi CSS agar cache ter-refresh -->
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="admin-body">
 <div class="admin-layout">
+  
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Rudy">
     </div>
+    
     <nav class="sidebar-nav">
-      <a href="?route=Admin/dashboard">Dashboard</a>
-      <a href="?route=Admin/dataPeminjaman">Data Peminjaman</a>
-      <a href="?route=Admin/dataRuangan" class="active">Data Ruangan</a>
-      <a href="?route=Admin/dataFromAdminCreateBooking">Data Pinjam Admin</a>
-      <a href="?route=Admin/dataAkun">Data Akun</a>
-      <a href="?route=Auth/logout">Keluar</a>
+      <a href="?route=Admin/dashboard">
+        <i class="fa-solid fa-chart-line"></i> Dashboard
+      </a>
+      <a href="?route=Admin/dataPeminjaman">
+        <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
+      </a>
+      <!-- CLASS ACTIVE DISINI -->
+      <a href="?route=Admin/dataRuangan" class="active">
+        <i class="fa-solid fa-door-open"></i> Data Ruangan
+      </a>
+      <a href="?route=Admin/dataFromAdminCreateBooking">
+        <i class="fa-solid fa-user-tag"></i> Data Pinjam Admin
+      </a>
+      <a href="?route=Admin/dataAkun">
+        <i class="fa-solid fa-users"></i> Data Akun
+      </a>
+      <a href="?route=Auth/logout" style="color: var(--danger) !important;">
+        <i class="fa-solid fa-right-from-bracket" style="color: var(--danger) !important;"></i> Keluar
+      </a>
     </nav>
+
+    <!-- PROFIL DI SIDEBAR (Footer) -->
+    <div class="sidebar-footer">
+      <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
+      <div class="user-info">
+        <span class="name">adminrudy1</span>
+        <span style="font-size:11px; color:#6b7280;">Administrator</span>
+      </div>
+    </div>
   </aside>
 
+  <!-- KONTEN UTAMA -->
   <div class="main-area">
+    
+    <!-- HEADER (TOP NAV) - SUDAH DIPERBAIKI -->
     <header class="top-nav">
       <div class="nav-brand">
         <div>
@@ -34,12 +64,12 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           <p style="margin:4px 0 0;">Kelola data ruangan.</p>
         </div>
       </div>
-      <div class="profile-summary top">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="Admin" class="avatar">
-        <div>
-          <p style="margin:0;"><?= htmlspecialchars($adminName) ?></p>
-          <span>ID: <?= htmlspecialchars($admin['admin_id'] ?? '-') ?></span>
-        </div>
+      
+      <!-- TOMBOL BUAT LAPORAN (MUNCUL SEKARANG) -->
+      <div class="header-actions">
+        <a href="?route=Admin/exportRuangan" class="btn-laporan">
+            <i class="fa-solid fa-plus"></i> Buat Laporan
+        </a>
       </div>
     </header>
 
@@ -51,25 +81,28 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
         <div class="flash error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 
-      <div class="section-head" style="align-items:center; justify-content:space-between; margin-bottom: 20px;">
+      <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
         <div>
-          <h3>Daftar Ruangan</h3>
-          <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
-          <a href="?route=Admin/exportRuangan" style="text-decoration: none">
-          <button class="btn-add" type="button">Buat Laporan</button>
-          </a>
-        </div>
+  <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
+</div>
         <button class="btn-add" type="button" onclick="window.location='?route=Admin/addRuangan'">Tambah Ruangan</button>
       </div>
 
       <?php if (empty($rooms)): ?>
         <div class="flash error">Belum ada data ruangan.</div>
       <?php else: ?>
-        <!-- Container untuk semua card -->
+        <!-- Container Card Ruangan -->
         <div class="rooms-container">
           <?php foreach ($rooms as $r): ?>
             <?php
-              $img        = 'public/assets/image/contohruangan.png';
+              $img        = 'public/assets/image/contohruangan.png'; // Default image
+              // Cek jika ada gambar spesifik dan path-nya valid
+              if (!empty($r['gambar']) && file_exists($r['gambar'])) {
+                  $img = $r['gambar'];
+              } elseif (!empty($r['image_path'])) {
+                  $img = $r['image_path'];
+              }
+
               $imgUrl     = preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/');
               $kapasitas  = $r['kapasitas_min'].' - '.$r['kapasitas_max'].' orang';
               $totalBook  = (int)($r['total_booking'] ?? 0);
@@ -79,9 +112,8 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               $statusCls  = (strtolower($status) === 'tersedia') ? 'status-tersedia' : 'status-tidak-tersedia';
             ?>
             
-            <!-- CARD RUANGAN -->
             <div class="room-card">
-              <!-- BAGIAN KIRI: INFORMASI -->
+              <!-- Info Kiri -->
               <div class="room-info">
                 <div>
                   <h3>
@@ -91,17 +123,13 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 </div>
                 
                 <p><strong>Deskripsi :</strong> <?= htmlspecialchars($r['deskripsi'] ?? 'Belum ada deskripsi.') ?></p>
-                
                 <p><strong>Kapasitas :</strong> <?= htmlspecialchars($kapasitas) ?></p>
-                
                 <p><strong>Jumlah peminjaman :</strong> <?= $totalBook ?> kali</p>
-                
                 <p><strong>Tingkat kepuasan :</strong> <?= $puas ?>%</p>
-                
                 <p><strong>Jumlah feedback :</strong> <?= $totalFb ?></p>
               </div>
               
-              <!-- BAGIAN KANAN: GAMBAR DAN TOMBOL AKSI -->
+              <!-- Gambar & Aksi Kanan -->
               <div class="room-actions">
                 <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
                 
@@ -118,7 +146,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 </div>
               </div>
             </div>
-            <!-- END CARD -->
             
           <?php endforeach; ?>
         </div>
@@ -127,42 +154,58 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
   </div>
 </div>
 
-<!-- Modal konfirmasi hapus -->
-<div class="modal-backdrop" id="modalDelete" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
-  <div class="modal-card" style="background: white; padding: 24px; border-radius: 12px; max-width: 400px; width: 90%;">
-    <h4 style="margin-top: 0;">Hapus Ruangan?</h4>
-    <p id="deleteInfo">Apakah Anda yakin ingin menghapus ruangan ini?</p>
+<!-- Modal Hapus Ruangan -->
+<div id="modalDelete" class="modal-overlay">
+  <div class="modal-content">
+    <div class="icon-box-red">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+    </div>
+    
+    <h2 class="modal-title">Hapus Ruangan?</h2>
+    
+    <p id="deleteInfo" style="color: #666; margin-bottom: 20px;">Apakah Anda yakin ingin menghapus ruangan ini?</p>
+    
     <form method="POST" action="?route=Admin/deleteRuangan">
       <input type="hidden" name="room_id" id="deleteRoomId">
-      <div class="modal-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
-        <button type="button" class="btn-pill btn-cancel js-close-modal" style="padding: 8px 20px; border: 1px solid #ddd; background: white; border-radius: 6px; cursor: pointer;">Batal</button>
-        <button type="submit" class="btn-pill btn-save" style="padding: 8px 20px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">Ya, hapus</button>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-white js-close-modal">Batal</button>
+        <button type="submit" class="btn-modal-red">Ya, hapus</button>
       </div>
     </form>
   </div>
 </div>
-
 <script>
-// Script sederhana untuk buka/tutup modal konfirmasi hapus
-const modalDelete = document.getElementById('modalDelete');
-const roomIdInput = document.getElementById('deleteRoomId');
-const infoText   = document.getElementById('deleteInfo');
+    // --- SCRIPT MODAL HAPUS ---
+    const modalDelete = document.getElementById('modalDelete');
+    const roomIdInput = document.getElementById('deleteRoomId');
+    const infoText    = document.getElementById('deleteInfo');
 
-document.querySelectorAll('.js-open-delete').forEach(btn => {
-  btn.addEventListener('click', () => {
-    roomIdInput.value = btn.dataset.id;
-    infoText.textContent = `Hapus ruangan "${btn.dataset.name}"? Data yang dihapus tidak bisa dikembalikan.`;
-    modalDelete.style.display = 'flex';
-  });
-});
+    document.querySelectorAll('.js-open-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        roomIdInput.value = btn.dataset.id;
+        if(infoText) {
+            infoText.textContent = `Hapus ruangan "${btn.dataset.name}"? Data yang dihapus tidak bisa dikembalikan.`;
+        }
+        modalDelete.classList.add('active');
+      });
+    });
 
-document.querySelectorAll('.js-close-modal').forEach(btn => {
-  btn.addEventListener('click', () => modalDelete.style.display = 'none');
-});
+    document.querySelectorAll('.js-close-modal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        modalDelete.classList.remove('active');
+      });
+    });
 
-modalDelete.addEventListener('click', (e) => {
-  if (e.target === modalDelete) modalDelete.style.display = 'none';
-});
+    modalDelete.addEventListener('click', (e) => {
+      if (e.target === modalDelete) {
+          modalDelete.classList.remove('active');
+      }
+    });
 </script>
 </body>
 </html>

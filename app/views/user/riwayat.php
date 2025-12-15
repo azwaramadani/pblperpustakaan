@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Peminjaman Ruangan</title>
+    <!-- Link ke CSS Eksternal -->
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleriwayat.css?v=<?= time() ?>">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -33,7 +34,9 @@
       <p><?= htmlspecialchars($user['nim_nip']) ?></p>
       <p><?= htmlspecialchars($user['no_hp']) ?></p>
       <p><?= htmlspecialchars($user['email']) ?></p>
-      <a class="btn-logout" href="?route=Auth/logout">Keluar</a>
+      
+      <!-- MODIFIKASI 1: Link Keluar memicu Modal -->
+      <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
     </div>
   </div>
 </header>
@@ -73,13 +76,12 @@
                     <div class="btn-group">
                         <?php if ($r['status'] == 'Disetujui'): ?>
                             <a href="?route=Booking/editForm/<?= urlencode($r['booking_id']) ?>" class="btn ubah">Ubah</a>
-                            <a href="?route=Booking/cancel/<?= urlencode($r['booking_id']) ?>" class="btn batal btn-cancel">Batalkan</a>
+                            <a href="#" onclick="showCancelModal('<?= $r['booking_id'] ?>'); return false;" class="btn batal btn-cancel">Batalkan</a>
                         <?php elseif ($r['status'] == 'Selesai' && !$r['sudah_feedback']): ?>
                             <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Beri Feedback</a>
                         <?php elseif ($r['status'] == 'Selesai' && $r['sudah_feedback']): ?>
                             <a href="?route=Feedback/form/<?= urlencode($r['booking_id']) ?>" class="btn feedback">Lihat Feedback Saya</a>
                         <?php endif; ?>
-
                     </div>
                 </div>
             </div>
@@ -88,31 +90,114 @@
 </div>
 
 <footer class="footer">
-        <div class="footer-brand">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study"class="footer-logo">
+    <div class="footer-content-wrapper">
+        <div class="footer-left">
+            <div class="footer-brand">
+                    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study"class="footer-logo">
             </div>
             <p class="footer-description">
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
         </div>
 
-        <!-- Footer Links -->
         <div class="footer-nav">
             <div>
                 <h4>Navigasi</h4>
                     <a href="?route=user/home">Beranda</a>
                     <a href="?route=user/ruangan">Ruangan</a>
                     <a id="navigasipanduan"href="#">Panduan</a>
-            </div>         
+            </div>        
 
             <div>
                 <h4>Kontak</h4>
                 <a href="mailto:PerpusPNJ@email.com">PerpusPNJ@email.com</a>
                 <a href="tel:0822123456780">0822123456780</a>
                 <p>Kampus PNJ, Depok</p>
+            </div>
         </div>
     </div>
 </footer>
+
+<!-- MODAL CANCEL POP-UP (Yang Sebelumnya) -->
+<div id="cancelModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <h2 class="modal-title">Apakah anda yakin ingin membatalkan booking ini?</h2>
+        <div class="modal-actions">
+            <a id="btnConfirmCancel" href="#" class="btn-modal-red">Ya</a>
+            <button onclick="closeCancelModal()" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODIFIKASI 2: MODAL LOGOUT POP-UP (Baru) -->
+<div id="logoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <!-- Icon Logout -->
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </div>
+
+        <!-- Teks -->
+        <h2 class="modal-title">Apakah anda yakin ingin keluar dari akun ini?</h2>
+
+        <!-- Tombol Aksi -->
+        <div class="modal-actions">
+            <!-- Tombol YA mengarah ke fungsi logout -->
+            <a href="?route=Auth/logout" class="btn-modal-red">Ya</a>
+            
+            <!-- Tombol TIDAK menutup modal -->
+            <button onclick="closeLogoutModal()" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+    /* LOGIC MODAL CANCEL (YANG LAMA) */
+    const cancelModal = document.getElementById('cancelModal');
+    const confirmBtn = document.getElementById('btnConfirmCancel');
+
+    function showCancelModal(bookingId) {
+        confirmBtn.href = "?route=Booking/cancel/" + encodeURIComponent(bookingId);
+        cancelModal.classList.add('active');
+    }
+
+    function closeCancelModal() {
+        cancelModal.classList.remove('active');
+    }
+
+    cancelModal.addEventListener('click', (e) => {
+        if (e.target === cancelModal) closeCancelModal();
+    });
+
+    /* MODIFIKASI 3: LOGIC MODAL LOGOUT (BARU) */
+    const logoutModal = document.getElementById('logoutModal');
+
+    function showLogoutModal() {
+        logoutModal.classList.add('active');
+    }
+
+    function closeLogoutModal() {
+        logoutModal.classList.remove('active');
+    }
+
+    // Tutup jika klik di luar area putih
+    logoutModal.addEventListener('click', (e) => {
+        if (e.target === logoutModal) {
+            closeLogoutModal();
+        }
+    });
+</script>
 
 </body>
 </html>
