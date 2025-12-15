@@ -1,7 +1,3 @@
-<?php
-// Pastikan variabel $user sudah diisi dari controller.
-// Gunakan null coalescing (?? '') supaya tetap aman jika ada field NULL.
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>

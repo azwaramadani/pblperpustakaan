@@ -19,7 +19,7 @@ class Model
         ]);
     }
 
-    #function utama query buat semua file di folder models
+    #function utama untuk menjalankan query, jadi file-file di models tinggal memanggil function ini untuk menjalankan query
     protected function query(string $sql, array $params = [])
     {
         $stmt = $this->db->prepare($sql);

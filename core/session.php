@@ -1,14 +1,32 @@
 <?php
+# Class Session ini berfungsi mengatur session baik untuk aktor admin maupun user
+# =================================================================================
+
 class Session
 {
+    /**
+     * Menyimpan data ke dalam session.
+     *
+     * @param string $key   Nama key session
+     * @param mixed  $value Nilai yang akan disimpan ke session
+     */
     public static function set($key, $value)
     {
+        // Memastikan session sudah aktif sebelum digunakan
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
+        // Menyimpan nilai ke variabel session
         $_SESSION[$key] = $value;
     }
 
+    /**
+     * Mengambil data dari session berdasarkan key.
+     *
+     * @param string $key Nama key session
+     * @return mixed|null Mengembalikan nilai session atau null jika tidak ada
+     */
     public static function get($key)
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -17,7 +35,7 @@ class Session
         return $_SESSION[$key] ?? null;
     }
 
-    #buat bersihin session + cookie pas logout
+    #buat bersihin session + cookie ketika logout
     public static function destroy()
     {
         if (session_status() === PHP_SESSION_NONE) {

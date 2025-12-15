@@ -5,10 +5,6 @@
 # Router utama aplikasi RUDY.
 # Mengarahkan:
 #     domain.com/?route=controller/method/param1/param2
-#
-# Contoh:
-#     ?route=Auth/login
-#     ?route=Booking/detail/15
 # ===============================================================
 
 class Router

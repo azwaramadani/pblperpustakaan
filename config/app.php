@@ -1,15 +1,12 @@
 <?php
-/**
- * ==============================================
- * KONFIGURASI GLOBAL APLIKASI RUDY
- * ==============================================
- * File ini berfungsi sebagai pusat pengaturan aplikasi.
- * Semua bagian MVC (controller, model, helper, dsb)
- * membaca nilai konfigurasi melalui fungsi app_config().
+/*
+KONFIGURASI GLOBAL APLIKASI RUDY
+ - File ini berfungsi sebagai pusat pengaturan aplikasi.
+ - Semua bagian MVC (controller, model, helper, dsb.)
+ - membaca nilai konfigurasi melalui fungsi app_config().
  */
 
 if (!function_exists('app_config')) {
-
     function app_config()
     {
         return [
@@ -36,19 +33,6 @@ if (!function_exists('app_config')) {
                 'password' => '',
                 'dbname'   => 'pblperpustakaan',
                 'charset'  => 'utf8mb4'
-            ],
-
-            # ============================================
-            # EMAIL / PHPMailer
-            # ============================================
-            'mail' => [
-                'host'       => 'smtp.gmail.com',
-                'username'   => 'thierry.yudha.diantha.tik24@stu.pnj.ac.id',
-                'password'   => 'E1QN2E47',   // App password Gmail
-                'port'       => 587,
-                'encryption' => 'tls',
-                'from_email' => 'thierry.yudha.diantha.tik24@stu.pnj.ac.id',
-                'from_name'  => 'RUDY System - Notifikasi',
             ],
 
             # ============================================

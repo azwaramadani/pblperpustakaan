@@ -1,15 +1,11 @@
 <?php
-# ===============================================================
 # CORE: HELPER
-# ===============================================================
-# Berisi fungsi umum yang digunakan oleh banyak bagian aplikasi.
+# Berisi fungsi-fungsi helper seperti kirim email, generate kode booking, dan upload file bukti aktivasi kubaca
 # ===============================================================
 require_once __DIR__ . '/../config/app.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-// ...lanjutkan isi helper lainnya (sendMail, generateBookingCode, dst)
 
 # buat mailpit
 function sendMail($to, $subject, $body) {

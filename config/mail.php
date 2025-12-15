@@ -1,4 +1,5 @@
 <?php
+// untuk simulasi email, saat ini kami memakai mailpit
 return [
     'host' => '127.0.0.1',   // Mailpit SMTP
     'port' => 1025,          // default Mailpit
