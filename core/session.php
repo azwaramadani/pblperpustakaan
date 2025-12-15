@@ -57,6 +57,7 @@ class Session
         header('Expires: 0');
     }
 
+    // method buat memastikan apakah user sudah login saat mengakses semua file hak user
     public static function checkUserLogin()
     {
         if (!self::get('user_id')) {
@@ -65,6 +66,7 @@ class Session
         }
     }
 
+    // method buat memastikan apakah admin sudah login saat mengakses semua file hak admin
     public static function checkAdminLogin(){
         if (!self::get('admin_id')) {
             header('Location: /pblperpustakaan');

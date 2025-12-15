@@ -1,14 +1,34 @@
 <?php
-# ===============================================================
-# CORE: ROUTER
-# ===============================================================
-# Router utama aplikasi RUDY.
-# Mengarahkan:
-#     domain.com/?route=controller/method/param1/param2
-# ===============================================================
+/**
+ * ============================================================================
+ * CORE: Router
+ * ============================================================================
+ * Class Router merupakan router utama aplikasi RUDY.
+ *
+ * Router ini bertugas untuk:
+ * - Membaca parameter `route` dari URL
+ * - Menentukan controller, method, dan parameter
+ * - Memanggil controller dan method yang sesuai
+ *
+ * Pola URL yang digunakan:
+ *     domain.com/?route=controller/method/param1/param2
+ *
+ * Misal:
+ *     ?route=booking/detail/12
+ *     → BookingController::detail(12)
+ */
 
 class Router
 {
+    /**
+     * Menjalankan proses routing aplikasi.
+     *
+     * Method ini akan:
+     * 1. Mengambil route dari URL
+     * 2. Menentukan nama controller dan method
+     * 3. Memuat file controller
+     * 4. Mengeksekusi method dengan parameter (jika ada)
+     */
     public function run()
     {
         # Ambil route dari URL

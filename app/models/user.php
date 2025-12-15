@@ -340,7 +340,7 @@ class User extends Model
                 VALUES (?, ?, ?, ?, ?, ?, ?, 'Disetujui', NOW())";
 
         return $this->query($sql, [
-             'Tenaga Pendidik',
+            $data['role'] ?? 'Tenaga Kependidikan',
             $data['nim_nip'],
             $data['unit'],
             $data['nama'],
