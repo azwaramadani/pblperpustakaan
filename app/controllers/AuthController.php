@@ -175,7 +175,9 @@ class AuthController
             }
             // --- END: TAMBAHAN VALIDASI CAPTCHA ---
 
-            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
+            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || 
+                $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || 
+                $confirmPassword === '') {
                 $errors[] = 'Semua kolom wajib diisi.';
             }
 

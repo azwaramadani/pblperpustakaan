@@ -163,7 +163,7 @@ class Booking extends Model
     }
 
 
-    # method data booking buat admin, pake sorting dan pagination
+    # method khusus semua data booking yang dibuat oleh admin
     public function adminCreateGetAllSortedPaginated(
         string $sortOrder     = 'desc',
         ?string $fromDate     = null,
@@ -491,7 +491,7 @@ class Booking extends Model
         return $this->query($sql, [$user_id])->fetchAll();
     }
 
-    #buat cancel booking, bisa juga dipake buat feedback 
+    #method buat cancel booking 
     public function findByIdAndUser($bookingId, $userId)
     {
         $sql = "SELECT 
@@ -510,7 +510,7 @@ class Booking extends Model
         return $this->query($sql, [$bookingId, $userId])->fetch();
     }
 
-    # Detail booking
+    # method buat menampilkan etail booking di riwayat user
     public function detail($booking_id)
     {
         $sql = "SELECT booking.*, u.email AS email_user, u.nama AS nama_user, r.nama_ruangan 
@@ -519,30 +519,6 @@ class Booking extends Model
                 JOIN room r ON b.room_id = r.room_id
                 WHERE booking.booking_id = ?";
         return $this->query($sql, [$booking_id])->fetch();
-    }
-
-    # Tambah booking baru
-    public function createUserBooking($data)
-    {
-        $sql = "INSERT INTO {$this->table}
-                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
-                 nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
-                 nimnip_peminjam, kode_booking, status_booking)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        return $this->query($sql, [
-            $data['user_id'],
-            $data['room_id'],
-            $data['tanggal'],
-            $data['jam_mulai'],
-            $data['jam_selesai'],
-            $data['jumlah_peminjam'],
-            $data['nama_penanggung_jawab'],
-            $data['nimnip_penanggung_jawab'],
-            $data['email_penanggung_jawab'],
-            $data['nimnip_peminjam'],
-            $data['kode_booking'],
-            $data['status_booking']
-        ]);
     }
 
     // Ambil data lengkap booking + ruangan (untuk preload edit)
@@ -593,6 +569,30 @@ class Booking extends Model
     {
         $parts = array_map('trim', explode(',', $nimList));
         return array_values(array_filter($parts, fn($v) => $v !== ''));
+    }
+
+    # Tambah booking baru
+    public function createUserBooking($data)
+    {
+        $sql = "INSERT INTO {$this->table}
+                (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
+                 nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
+                 nimnip_peminjam, kode_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return $this->query($sql, [
+            $data['user_id'],
+            $data['room_id'],
+            $data['tanggal'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['jumlah_peminjam'],
+            $data['nama_penanggung_jawab'],
+            $data['nimnip_penanggung_jawab'],
+            $data['email_penanggung_jawab'],
+            $data['nimnip_peminjam'],
+            $data['kode_booking'],
+            $data['status_booking']
+        ]);
     }
 
     public function createAdminBooking($data)

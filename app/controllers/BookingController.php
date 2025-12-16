@@ -159,7 +159,7 @@ Class bookingController{
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
-    // method handler admin create booking
+    // method handler untuk admin membuat booking
     public function adminStore()
     {
         Session::checkAdminLogin();
@@ -242,7 +242,7 @@ Class bookingController{
         exit;
     }
 
-    // Method handler user create booking
+    // Method handler buat user create booking
     public function store()
     {
         Session::checkUserLogin();
