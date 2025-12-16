@@ -804,11 +804,19 @@ class AdminController {
         $email      = trim($user['email'] ?? '');
         $nama       = $user['nama'] ?? 'user';
 
-        // hanya kirim email ke user dengan role Mahasiswa, sebelumnya statusnya menunggu dan ditolak, dan diubah menjadi disetujui
+        // kirim email ke user dengan role Mahasiswa, status sebelumnya dari menunggu dan ditolak, dan diubah menjadi disetujui
         $shouldSendEmail = (
             $role === 'Mahasiswa' &&
             ($oldStatus === 'Menunggu' || $oldStatus === 'Ditolak') &&
-            $status === 'Disetujui' || 'Ditolak' &&
+            $status === 'Disetujui' &&
+            $email !== ''
+        );
+
+        // kirim email ke user dengan role mahasiswa, status sebelumnya dari Menunggu dan Disetujui, dan diubah menjad ditolak 
+        $ditolakSendEmail = (
+            $role === 'Mahasiswa' &&
+            ($oldStatus === 'Menunggu' || $oldStatus === 'Disetujui') &&
+            $status === 'Ditolak' &&
             $email !== ''
         );
 
@@ -817,7 +825,7 @@ class AdminController {
 
         $successMsg = 'Status akun berhasil diperbarui';
 
-        // buat kirim email-nya
+        // buat kirim email-nya dari menunggu ke disetujui, ditolak ke disetujui
         if ($shouldSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
             $subject = 'Akun RUDY Anda Sudah Disetujui oleh Admin';
@@ -833,7 +841,30 @@ class AdminController {
             
             // Tambahkan info hasil kirim email ke flash message
             if ($sent) {
-                $successMsg .= ' Notifikasi email berhasil dikirim (cek Mailpit).';
+                $successMsg .= ' Notifikasi email berhasil dikirim ke user.';
+            } else {
+                // Status akun tetap sudah diupdate; beritahu jika email gagal
+                Session::set('flash_error', 'Status akun sudah diperbarui, tetapi email notifikasi gagal dikirim.');
+                header('Location: ?route=Admin/dataAkun');
+                exit;
+            }
+        }
+
+        // buat kirim email dari menunggu ke ditolak, disetujui ke ditolak
+        if ($ditolakSendEmail) {
+            $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
+            $subject = 'Akun RUDY Anda Ditolak oleh Admin';
+            $body    = "
+                        <p>Halo, " . htmlspecialchars($nama) . "!</p>
+                        <p>Akun anda ditolak karena tidak mencantumkan bukti aktivasi Kubaca dengan benar, Segera hubungi Admin!</p>
+                        <p>Rudy Developers.</p>";
+            
+            // kirim email ke mailpit
+            $sent = sendmail($email, $subject, $body);         
+            
+            // Tambahkan info hasil kirim email ke flash message
+            if ($sent) {
+                $successMsg .= ' Notifikasi email berhasil dikirim ke user.';
             } else {
                 // Status akun tetap sudah diupdate; beritahu jika email gagal
                 Session::set('flash_error', 'Status akun sudah diperbarui, tetapi email notifikasi gagal dikirim.');
