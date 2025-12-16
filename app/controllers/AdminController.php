@@ -823,7 +823,7 @@ class AdminController {
         // baru panggil/akses method update status di database
         $userModel->updateStatus($userId, $status);
 
-        $successMsg = 'Status akun berhasil diperbarui';
+        $successMsg = 'Status akun berhasil diperbarui!';
 
         // buat kirim email-nya dari menunggu ke disetujui, ditolak ke disetujui
         if ($shouldSendEmail) {
@@ -832,7 +832,7 @@ class AdminController {
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
                         <p>Akun RUDY kamu sudah <strong>siap digunakan.</strong> Silahkan Login!</p>
-                        <p>Klik disini untuk Login ke aplikasi: </p>
+                        <p>Klik link berikut ini untuk login ke aplikasi: </p>
                         <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
                         <p>Rudy Developers.</p>";
             
