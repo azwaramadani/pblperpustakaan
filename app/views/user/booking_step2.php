@@ -39,7 +39,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
     <div class="profile-dropdown">
       <div class="profile-trigger">
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
-        <div class="user-name"><a href="?route=User/viewProfile"><p><?= htmlspecialchars($user['nama']) ?></p></a></div>
+        <div class="user-name"><a href="?route=User/viewProfile" style="text-decoration: none; color: black;"><p><?= htmlspecialchars($user['nama']) ?></p></a></div>
       </div>
       <div class="profile-card">
         <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>

@@ -67,7 +67,7 @@ class UserController{
                 $room['status_class']   = ($statusRaw === 'tersedia') ? 'available' : 'unavailable';
             }
         }
-        unset($room); // hindari reference leak
+        unset($room); 
 
         require __DIR__ . '/../views/user/ruangan.php';
     }

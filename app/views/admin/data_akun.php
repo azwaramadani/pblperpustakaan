@@ -132,7 +132,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <div class="sidebar-footer">
       <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
       <div class="user-info">
-        <span class="name">adminrudy1</span>
+        <span class="name"><?=  htmlspecialchars($admin['username']) ?></span>
         <span style="font-size:11px; color:#6b7280;">Administrator</span>
       </div>
     </div>

@@ -38,9 +38,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Admin - Rudy</title>
-  <!-- Pastikan path CSS ini sesuai dengan struktur folder Anda -->
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.2">
-  <!-- FontAwesome untuk icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -80,7 +78,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     <div class="sidebar-footer">
       <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
       <div class="user-info">
-        <span class="name">adminrudy1</span>
+        <span class="name"><?= htmlspecialchars($admin['username'] ?? 'Adminrudy') ?></span>
         <span style="font-size:11px; color:#6b7280;">Administrator</span>
       </div>
     </div>
