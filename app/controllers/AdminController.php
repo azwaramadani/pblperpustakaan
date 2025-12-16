@@ -778,6 +778,7 @@ class AdminController {
             exit;
         }
 
+        // Ambil data yang dikirim form
         $userId = (int)($_POST['user_id'] ?? 0);
         $status = trim($_POST['status_akun'] ?? '');
 
@@ -789,9 +790,59 @@ class AdminController {
         }
 
         $userModel = new User();
+        $user = $userModel->findById($userId);
+
+        if (!$user) {
+            Session::set('flash_error', 'User tidak ditemukan.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
+        } 
+
+        // siapkan data user untuk cek kondisi kirim email
+        $oldStatus  = $user['status_akun'] ?? '';
+        $role       = $user['role'] ?? '';
+        $email      = trim($user['email'] ?? '');
+        $nama       = $user['nama'] ?? 'user';
+
+        // hanya kirim email ke user dengan role Mahasiswa, sebelumnya statusnya menunggu dan ditolak, dan diubah menjadi disetujui
+        $shouldSendEmail = (
+            $role === 'Mahasiswa' &&
+            ($oldStatus === 'Menunggu' || $oldStatus === 'Ditolak') &&
+            $status === 'Disetujui' || 'Ditolak' &&
+            $email !== ''
+        );
+
+        // baru panggil/akses method update status di database
         $userModel->updateStatus($userId, $status);
 
-        Session::set('flash_success', 'Status akun berhasil diperbarui.');
+        $successMsg = 'Status akun berhasil diperbarui';
+
+        // buat kirim email-nya
+        if ($shouldSendEmail) {
+            $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
+            $subject = 'Akun RUDY Anda Sudah Disetujui oleh Admin';
+            $body    = "
+                        <p>Halo, " . htmlspecialchars($nama) . "!</p>
+                        <p>Akun RUDY kamu sudah <strong>siap digunakan.</strong> Silahkan Login!</p>
+                        <p>Klik disini untuk Login ke aplikasi: </p>
+                        <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
+                        <p>Rudy Developers.</p>";
+            
+            // kirim email ke mailpit
+            $sent = sendmail($email, $subject, $body);         
+            
+            // Tambahkan info hasil kirim email ke flash message
+            if ($sent) {
+                $successMsg .= ' Notifikasi email berhasil dikirim (cek Mailpit).';
+            } else {
+                // Status akun tetap sudah diupdate; beritahu jika email gagal
+                Session::set('flash_error', 'Status akun sudah diperbarui, tetapi email notifikasi gagal dikirim.');
+                header('Location: ?route=Admin/dataAkun');
+                exit;
+            }
+        }
+
+        Session::set('flash_success', $successMsg);
         header('Location: ?route=Admin/dataAkun');
         exit;
     }

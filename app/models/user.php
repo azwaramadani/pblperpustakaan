@@ -262,7 +262,7 @@ class User extends Model
         return $this->query($sql, [$id]);
     }
 
-    # method buat nampilin info user, sementara gw pake buat info hover profile
+    # method multifungsi buat get user berdasarkan user_id
     public function findById($id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE user_id = ?";
