@@ -62,7 +62,7 @@ class User extends Model
             $params[] = $toDate;
         }
         if (!empty($role)) {
-            $where[]  = "user.role <= ?";
+            $where[]  = "user.role = ?";
             $params[] = $role;
         }
         if (!empty($unit)) {
@@ -158,7 +158,7 @@ class User extends Model
             $params[] = $toDate;
         }
         if (!empty($role)) {
-            $where[]  = "user.role <= ?";
+            $where[]  = "user.role = ?";
             $params[] = $role;
         }
         if (!empty($unit)) {

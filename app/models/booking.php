@@ -48,7 +48,7 @@ class Booking extends Model
             $params[] = $toDate;
         }
         if (!empty($role)) {
-            $where[]  = "u.role <= ?";
+            $where[]  = "u.role = ?";
             $params[] = $role;
         }
         if (!empty($unit)) {
