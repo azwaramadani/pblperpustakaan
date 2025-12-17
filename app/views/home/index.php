@@ -24,12 +24,10 @@
 
   <div class="guest-login-button">
     <div class="btn-group">
-  
       <a href="?route=Auth/login" class="btn primary">Login</a>
     </div>
   </div>
 </header>
-
 
 <main>
   <section class="hero">
@@ -51,7 +49,6 @@
     </div>
   </section>
 
-  
   <section class="fitur">
     <div class="fitur-row">
       <div class="fitur-item">
@@ -95,13 +92,18 @@
       <p>Ruang study favorit mahasiswa!</p>
     </div>
     <div class="ruangan-list">
-      <?php foreach ($toprooms as $rooms): ?>
+      <?php foreach ($toprooms as $tr): ?>
+        <?php
+          // Ambil gambar ruangan per item
+          $imgPath = !empty($tr['gambar_ruangan']) ? $tr['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+          $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
+        ?>
         <article class="card">
-          <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
+          <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($tr['nama_ruangan']) ?>" class="room-image" style="object-fit:cover;">
           <div class="card-body">
-            <h3><?= htmlspecialchars($rooms['nama_ruangan']) ?></h3>
-            <p>Kapasitas: <?= htmlspecialchars($rooms['kapasitas_min']) ?> - <?=  htmlspecialchars($rooms['kapasitas_max'])?> orang </p>
-            <p>Status : <span class="status"><?=  htmlspecialchars($rooms['status']) ?></span></p>
+            <h3><?= htmlspecialchars($tr['nama_ruangan']) ?></h3>
+            <p>Kapasitas: <?= htmlspecialchars($tr['kapasitas_min']) ?> - <?=  htmlspecialchars($tr['kapasitas_max'])?> orang </p>
+            <p>Status : <span class="status"><?=  htmlspecialchars($tr['status']) ?></span></p>
             <button type="button" class="btn primary block booking-trigger">Booking sekarang</button>
           </div>
         </article>
@@ -109,7 +111,6 @@
     </div>
   </section>
 
-  <!-- CARA BOOKING -->
   <section id="cara-booking" class="steps">
     <h2>Cara Menggunakan Rudy</h2>
     <ol>
@@ -123,7 +124,6 @@
   </section>
 
 </main>
-
 
 <footer class="footer">
     <div class="footer-content-wrapper">
@@ -184,7 +184,7 @@
     });
   })();
 
-  document.querySelector('#bantuanpanduan').addEventListener('click', function(e){
+  document.querySelector('#bantuanpanduan')?.addEventListener('click', function(e){
       e.preventDefault();
       document.querySelector('#cara-booking').scrollIntoView({
           behavior: 'smooth'

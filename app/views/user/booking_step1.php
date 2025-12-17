@@ -18,6 +18,10 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
 // Batas jam diperbolehkan
 $minTime = '09:00';
 $maxTime = '15:00';
+
+// Bangun URL gambar ruangan (pakai gambar_ruangan jika ada, fallback ke contoh)
+$imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+$imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath, '/');
 ?>
 
 <!DOCTYPE html>
@@ -148,7 +152,7 @@ $maxTime = '15:00';
   <main class="main-container">  
     <div class="room-header">
       <div class="room-img-container">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="<?= htmlspecialchars($room['nama_ruangan']) ?>">
+        <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($room['nama_ruangan']) ?>" style="object-fit:cover;">
       </div>
       <div class="room-info">
         <h1><?= htmlspecialchars($room['nama_ruangan']) ?></h1>

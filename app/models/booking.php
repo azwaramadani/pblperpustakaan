@@ -375,6 +375,7 @@ class Booking extends Model
         $limit = (int) $limit;
         $sql = "SELECT
                     r.room_id,
+                    r.gambar_ruangan,
                     r.nama_ruangan,
                     r.kapasitas_min,
                     r.kapasitas_max,

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rudy Ruang Study</title>
-  <!-- CSS Utama (Pastikan kode modal sudah ada di dalam file ini) -->
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css?v=1.7">
 </head>
 
@@ -22,20 +21,20 @@
     <a href="?route=User/riwayat">Riwayat</a>
   </nav>
 
-    <div class="profile-dropdown">
-      <div class="profile-trigger"> 
-          <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
-          <div class="user-name"><a href="?route=User/viewProfile"><p><?= htmlspecialchars($user['nama']) ?></p></a></div>
-      </div>
-      <div class="profile-card">
-        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
-        <p><strong><?= htmlspecialchars($user['role']) ?></strong></p>
-        <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
-        <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
-        <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
-        <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
-      </div>
+  <div class="profile-dropdown">
+    <div class="profile-trigger"> 
+        <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
+        <div class="user-name"><a href="?route=User/viewProfile"><p><?= htmlspecialchars($user['nama']) ?></p></a></div>
     </div>
+    <div class="profile-card">
+      <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
+      <p><strong><?= htmlspecialchars($user['role']) ?></strong></p>
+      <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
+      <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
+      <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
+    </div>
+  </div>
 </header>
 
 <main>
@@ -92,8 +91,13 @@
     </div>
     <div class="ruangan-list">
       <?php foreach ($toprooms as $tr): ?>
+        <?php
+          // Ambil gambar ruangan per item
+          $imgPath = !empty($tr['gambar_ruangan']) ? $tr['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+          $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
+        ?>
         <article class="card">
-          <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan Populer">
+          <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($tr['nama_ruangan']) ?>" style="object-fit:cover;">
           <div class="card-body">
             <h3><?= htmlspecialchars($tr['nama_ruangan']) ?></h3>
             <p>Kapasitas: <?= htmlspecialchars($tr['kapasitas_min']) ?> - <?=  htmlspecialchars($tr['kapasitas_max'])?> orang </p>
@@ -130,7 +134,6 @@
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
         </div>
-
         <div class="footer-nav">
             <div>
                 <h4>Navigasi</h4>
@@ -151,7 +154,6 @@
 <!-- MODAL LOGOUT HTML -->
 <div id="logoutModal" class="modal-overlay">
     <div class="modal-content">
-        <!-- Icon Logout -->
         <div class="icon-box-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -189,7 +191,6 @@
       logoutModal.classList.remove('active');
   }
 
-  // Tutup jika klik di luar area putih
   logoutModal.addEventListener('click', (e) => {
       if (e.target === logoutModal) {
           closeLogoutModal();

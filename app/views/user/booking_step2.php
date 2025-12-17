@@ -16,6 +16,11 @@ $kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
 $kapasitasMin = (int)($room['kapasitas_min'] ?? 0);
 // Maksimal anggota = kapasitasMax - 1 (karena 1 untuk penanggung jawab). Jika 0/negatif, anggap tak terbatas.
 $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
+
+// Bangun URL gambar ruangan
+$imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+$imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath, '/');
+
 ?>
 
 <!DOCTYPE html>
@@ -126,7 +131,7 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
   <main>
     <div class="room-header">
       <div class="room-image-container">
-        <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Ruangan" class="room-image">
+        <img src="<?= htmlspecialchars($imgUrl) ?>" alt="Ruangan" class="room-image" style="object-fit:cover;">
       </div>
       <div class="room-details">
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
