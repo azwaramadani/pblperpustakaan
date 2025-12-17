@@ -38,9 +38,6 @@ Session::set('flash_success', null);
       <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
       <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
-      <p><?= htmlspecialchars($user['nim_nip']) ?></p>
-      <p><?= htmlspecialchars($user['no_hp']) ?></p>
-      <p><?= htmlspecialchars($user['email']) ?></p>
       <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
     </div>
   </div>
