@@ -175,14 +175,14 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
         <div class="form-group">
           <label>Jumlah Peminjam (1 PJ + anggota)</label>
-          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>">
+          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" required>
         </div>
 
         <div class="anggota-wrap" id="anggotaList">
           <?php $idx = 1; foreach ($initialMembers as $val): ?>
             <div class="form-group anggota-item">
               <label>NIM Anggota <?= $idx ?></label>
-              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" <?= $idx === 1 ? 'required' : '' ?>>
+              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" required>
             </div>
           <?php $idx++; endforeach; ?>
         </div>
@@ -311,7 +311,7 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
       div.className = 'form-group anggota-item';
       div.innerHTML = `
         <label>NIM Anggota ${anggotaCount}</label>
-        <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="${value}">
+        <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="${value}" required>
       `;
       anggotaList.appendChild(div);
     }
@@ -322,10 +322,16 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
     bookingForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Mencegah reload halaman
 
+        // Pastikan semua NIM anggota terisi
+        const anggotaInputs = Array.from(document.querySelectorAll('.anggota-input'));
+        const anyEmpty = anggotaInputs.some(inp => inp.value.trim() === '');
+        if (anyEmpty) {
+            showWarning('Isi semua NIM anggota, tidak boleh ada yang kosong.');
+            return;
+        }
+
         // Update jumlah anggota
-        const filledMembers = Array.from(document.querySelectorAll('.anggota-input'))
-            .map(i => i.value.trim())
-            .filter(v => v !== '');
+        const filledMembers = anggotaInputs.map(i => i.value.trim()).filter(v => v !== '');
         const total = 1 + filledMembers.length;
 
         // Validasi kapasitas
@@ -393,6 +399,7 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
         logoutModal.classList.remove('active');
     }
 
+    // Tutup jika klik di luar area putih
     logoutModal.addEventListener('click', (e) => {
         if (e.target === logoutModal) {
             closeLogoutModal();

@@ -153,11 +153,16 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
           <input class="input-line" type="email" name="email_penanggung_jawab" value="" required>
         </div>
 
+        <div class="form-group">
+          <label>Jumlah Peminjam</label>
+          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="2" required>
+        </div>
+
         <div class="anggota-wrap" id="anggotaList">
           <?php $idx = 1; foreach ($initialMembers as $val): ?>
             <div class="form-group anggota-item">
               <label>NIM Anggota <?= $idx ?></label>
-              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" <?= $idx === 1 ? 'required' : '' ?>>
+              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" required>
             </div>
           <?php $idx++; endforeach; ?>
         </div>
@@ -230,7 +235,7 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
       input.name = 'nim_anggota[]';
       input.value = value;
       input.className = 'input-line anggota-input';
-      input.required = false; // field tambahan opsional, minimal 1 sudah required
+      input.required = true; // wajib diisi untuk semua field
 
       wrapper.appendChild(label);
       wrapper.appendChild(input);
@@ -239,11 +244,17 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
     addBtn.addEventListener('click', () => addAnggotaField(''));
 
-    // Saat submit, hitung ulang jumlah peminjam: 1 penanggung + anggota yang terisi
+    // Saat submit, hitung ulang jumlah peminjam: 1 penanggung + anggota yang terisi, dan pastikan semua terisi
     document.getElementById('bookingForm').addEventListener('submit', (e) => {
-      const filledMembers = Array.from(document.querySelectorAll('.anggota-input'))
-        .map(i => i.value.trim())
-        .filter(v => v !== '');
+      const anggotaInputs = Array.from(document.querySelectorAll('.anggota-input'));
+      const anyEmpty = anggotaInputs.some(inp => inp.value.trim() === '');
+      if (anyEmpty) {
+        showWarning('Isi semua NIM anggota, tidak boleh ada yang kosong.');
+        e.preventDefault();
+        return;
+      }
+
+      const filledMembers = anggotaInputs.map(i => i.value.trim()).filter(v => v !== '');
       const total = 1 + filledMembers.length;
 
       // Validasi kapasitas sebelum submit
