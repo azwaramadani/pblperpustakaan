@@ -10,6 +10,12 @@ if (!isset($initialMembers) || !is_array($initialMembers)) {
 }
 
 $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMembers)));
+
+// Batas kapasitas ruangan dari backend
+$kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
+$kapasitasMin = (int)($room['kapasitas_min'] ?? 0);
+// Maksimal anggota = kapasitasMax - 1 (karena 1 untuk penanggung jawab). Jika 0/negatif, anggap tak terbatas.
+$maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 ?>
 
 <!DOCTYPE html>
@@ -20,6 +26,71 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
   <title><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css?v=1.7">
+  <style>
+    /* Modal warning khusus kapasitas/validasi */
+    .modal-warning {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-warning.active { display: flex; }
+    .modal-card {
+      width: 320px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 18px 16px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      animation: pop 0.18s ease-out;
+    }
+    @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      background: #ff5c5c;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #222;
+    }
+    .modal-text {
+      font-size: 14px;
+      margin: 0 0 16px;
+      color: #444;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn-modal-primary {
+      flex: 1;
+      background: #ff5c5c;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 6px 16px rgba(255,92,92,0.35);
+    }
+    .btn-modal-primary:hover { transform: translateY(-1px); }
+  </style>
 </head>
 <body>
 
@@ -66,6 +137,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
         <h3>Waktu Peminjaman:</h3>
         <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
+        <p style="margin-top:8px;font-weight:600;">Maks anggota yang bisa diinput: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).</p>
       </div>
     </div>
 
@@ -103,7 +175,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
 
         <div class="form-group">
           <label>Jumlah Peminjam (1 PJ + anggota)</label>
-          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" required>
+          <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>">
         </div>
 
         <div class="anggota-wrap" id="anggotaList">
@@ -163,16 +235,15 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         </div>
         <h2 class="modal-title">Booking berhasil disimpan</h2>
         <div class="modal-actions">
-            <!-- Menambahkan timestamp di URL riwayat untuk mencegah cache dan memastikan data fresh -->
             <a href="?route=User/home" class="btn-modal btn-modal-yellow">Kembali ke beranda</a>
             <a href="?route=User/riwayat&refresh=<?= time() ?>" class="btn-modal btn-modal-white">Lihat riwayat peminjaman</a>
         </div>
     </div>
   </div>
 
+  <!-- MODAL LOGOUT -->
   <div id="logoutModal" class="modal-overlay">
     <div class="modal-content">
-        <!-- Icon Logout -->
         <div class="icon-box-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -180,12 +251,22 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
                 <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
         </div>
-
         <h2 class="modal-title">Apakah anda yakin ingin keluar dari akun ini?</h2>
-
         <div class="modal-actions">
             <a href="?route=Auth/logout" class="btn-modal-red">Ya</a>
             <button onclick="closeLogoutModal()" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL WARNING (kapasitas & validasi lainnya) -->
+<div id="warningModal" class="modal-warning">
+    <div class="modal-card">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">Perhatian</div>
+        <p class="modal-text" id="warningText">Pesan peringatan.</p>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" type="button" onclick="closeWarning()">OK</button>
         </div>
     </div>
 </div>
@@ -198,7 +279,33 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
     const bookingForm = document.getElementById('bookingForm');
     let anggotaCount = <?= $idx - 1 ?>;
 
+    // batas kapasitas
+    const kapasitasMax = <?= $kapasitasMax ?>;
+    const maxAnggota = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
+    const kapasitasMsg = kapasitasMax > 0
+      ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
+      : 'Jumlah anggota tidak dibatasi.';
+
+    // Modal warning
+    const warningModal = document.getElementById('warningModal');
+    const warningText = document.getElementById('warningText');
+    function showWarning(msg) {
+        warningText.textContent = msg;
+        warningModal.classList.add('active');
+    }
+    function closeWarning() {
+        warningModal.classList.remove('active');
+    }
+    warningModal.addEventListener('click', (e) => {
+        if (e.target === warningModal) closeWarning();
+    });
+
     function addAnggotaField(value = '') {
+      // Cegah tambah field jika sudah mencapai batas anggota
+      if (anggotaCount >= maxAnggota && maxAnggota !== Infinity) {
+        showWarning(kapasitasMsg);
+        return;
+      }
       anggotaCount += 1;
       const div = document.createElement('div');
       div.className = 'form-group anggota-item';
@@ -220,6 +327,13 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
             .map(i => i.value.trim())
             .filter(v => v !== '');
         const total = 1 + filledMembers.length;
+
+        // Validasi kapasitas
+        if (kapasitasMax > 0 && total > kapasitasMax) {
+            showWarning(kapasitasMsg);
+            return;
+        }
+
         jumlahHidden.value  = total;
         jumlahDisplay.value = total;
 
@@ -236,25 +350,23 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
             body: formData
         })
         .then(response => {
-            // Asumsi: Backend akan memproses dan jika sukses (redirect atau 200 OK), kita tampilkan modal
             if (response.ok) {
                 openModal();
             } else {
-                alert('Terjadi kesalahan pada server. Mohon coba lagi.');
+                showWarning('Terjadi kesalahan pada server. Mohon coba lagi.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Gagal terhubung ke server. Periksa koneksi internet.');
+            showWarning('Gagal terhubung ke server. Periksa koneksi internet.');
         })
         .finally(() => {
-            // Kembalikan tombol ke keadaan semula jika modal belum pindah halaman
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
         });
     });
 
-    // --- MODAL FUNCTIONS ---
+    // --- MODAL SUCCESS ---
     const successModal = document.getElementById('successModal');
 
     function openModal() {
@@ -270,7 +382,7 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
             closeModal();
         }
     });
-// -- MODAL LOGOUT -->
+    // -- MODAL LOGOUT -->
     const logoutModal = document.getElementById('logoutModal');
 
     function showLogoutModal() {
@@ -281,7 +393,6 @@ $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMember
         logoutModal.classList.remove('active');
     }
 
-    // Tutup jika klik di luar area putih
     logoutModal.addEventListener('click', (e) => {
         if (e.target === logoutModal) {
             closeLogoutModal();

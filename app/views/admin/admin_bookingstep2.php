@@ -5,6 +5,11 @@ $err     = Session::get('flash_error');
 Session::set('flash_error', null);
 
 $initialMembers = [''];
+
+// Batas kapasitas ruangan dari backend
+$kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
+// Maksimal anggota = kapasitasMax - 1 (karena 1 slot untuk penanggung jawab). Jika 0/negatif, anggap tak terbatas.
+$maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +19,71 @@ $initialMembers = [''];
   <title>Lengkapi Data Peminjaman - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
+  <style>
+    /* Modal warning khusus kapasitas/validasi */
+    .modal-warning {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-warning.active { display: flex; }
+    .modal-card {
+      width: 320px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 18px 16px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      animation: pop 0.18s ease-out;
+    }
+    @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      background: #ff5c5c;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #222;
+    }
+    .modal-text {
+      font-size: 14px;
+      margin: 0 0 16px;
+      color: #444;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn-modal-primary {
+      flex: 1;
+      background: #ff5c5c;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 6px 16px rgba(255,92,92,0.35);
+    }
+    .btn-modal-primary:hover { transform: translateY(-1px); }
+  </style>
 </head>
 <body>
 
@@ -44,6 +114,7 @@ $initialMembers = [''];
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
         <h3>Waktu Peminjaman:</h3>
         <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
+        <p style="margin-top:8px;font-weight:600;">Maks anggota yang bisa diinput: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).</p>
       </div>
     </div>
 
@@ -82,11 +153,6 @@ $initialMembers = [''];
           <input class="input-line" type="email" name="email_penanggung_jawab" value="" required>
         </div>
 
-        <div class="form-group">
-          <label>Jumlah Peminjam</label>
-          <input class="input-line" type="number" name="jumlah_peminjam" min="2" value="2" required>
-        </div>
-
         <div class="anggota-wrap" id="anggotaList">
           <?php $idx = 1; foreach ($initialMembers as $val): ?>
             <div class="form-group anggota-item">
@@ -106,14 +172,52 @@ $initialMembers = [''];
     </div>
   </main>
 
+<!-- MODAL WARNING (kapasitas & validasi lainnya) -->
+<div id="warningModal" class="modal-warning">
+    <div class="modal-card">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">Perhatian</div>
+        <p class="modal-text" id="warningText">Pesan peringatan.</p>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" type="button" onclick="closeWarning()">OK</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Modal Warning
+    const warningModal = document.getElementById('warningModal');
+    const warningText = document.getElementById('warningText');
+    function showWarning(msg) {
+        warningText.textContent = msg;
+        warningModal.classList.add('active');
+    }
+    function closeWarning() {
+        warningModal.classList.remove('active');
+    }
+    warningModal.addEventListener('click', (e) => {
+        if (e.target === warningModal) closeWarning();
+    });
+
     // JS untuk menambah field NIM anggota baru
     const anggotaList = document.getElementById('anggotaList');
     const addBtn = document.getElementById('addAnggota');
     const jumlahInput = document.getElementById('jumlahPeminjam');
+    const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
     let anggotaCount = anggotaList.querySelectorAll('.anggota-item').length;
 
+    // batas kapasitas
+    const kapasitasMax = <?= $kapasitasMax ?>;
+    const maxAnggota = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
+    const kapasitasMsg = kapasitasMax > 0
+      ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
+      : 'Jumlah anggota tidak dibatasi.';
+
     function addAnggotaField(value = '') {
+      if (maxAnggota !== Infinity && anggotaCount >= maxAnggota) {
+        showWarning(kapasitasMsg);
+        return;
+      }
       anggotaCount += 1;
       const wrapper = document.createElement('div');
       wrapper.className = 'form-group anggota-item';
@@ -136,11 +240,21 @@ $initialMembers = [''];
     addBtn.addEventListener('click', () => addAnggotaField(''));
 
     // Saat submit, hitung ulang jumlah peminjam: 1 penanggung + anggota yang terisi
-    document.getElementById('bookingForm').addEventListener('submit', () => {
+    document.getElementById('bookingForm').addEventListener('submit', (e) => {
       const filledMembers = Array.from(document.querySelectorAll('.anggota-input'))
         .map(i => i.value.trim())
         .filter(v => v !== '');
-      jumlahInput.value = 1 + filledMembers.length;
+      const total = 1 + filledMembers.length;
+
+      // Validasi kapasitas sebelum submit
+      if (kapasitasMax > 0 && total > kapasitasMax) {
+        showWarning(kapasitasMsg);
+        e.preventDefault();
+        return;
+      }
+
+      jumlahInput.value = total;
+      jumlahDisplay.value = total;
     });
   </script>
 </body>

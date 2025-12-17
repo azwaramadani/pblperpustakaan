@@ -258,6 +258,15 @@ Class bookingController{
             exit('Ruangan tidak ditemukan.');
         }
 
+        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max
+        $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $totalPeople = 1 + count($anggota);
+        if ($maxCap > 0 && $totalPeople > $maxCap) {
+            Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
+        }
+
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
             Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
@@ -276,7 +285,7 @@ Class bookingController{
             }
         }
 
-        $payload['jumlah_peminjam'] = 1 + count($anggota);
+        $payload['jumlah_peminjam'] = $totalPeople;
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         
@@ -356,6 +365,15 @@ Class bookingController{
             exit('Ruangan tidak ditemukan.');
         }
 
+        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max
+        $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $totalPeople = 1 + count($anggota);
+        if ($maxCap > 0 && $totalPeople > $maxCap) {
+            Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
+            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            exit;
+        }
+
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
             Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
@@ -375,7 +393,7 @@ Class bookingController{
         }
 
         // buat count otomatis jumlah_peminjam walaupun NIM anggota yang diinput user ga sesuai sama jumlah peminjam yang dia input
-        $payload['jumlah_peminjam'] = 1 + count($anggota);
+        $payload['jumlah_peminjam'] = $totalPeople;
 
         // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
