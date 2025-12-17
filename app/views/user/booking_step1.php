@@ -385,13 +385,19 @@ $maxTime = '15:00';
         }
     });
 
-    // Guard jam: hanya 09:00 - 15:00 dan jam selesai > jam mulai
+    // Guard jam: hanya 09:00 - 15:00, jam selesai > jam mulai, durasi <= 3 jam
     const jamMulaiInput = document.querySelector('input[name="jam_mulai"]');
     const jamSelesaiInput = document.querySelector('input[name="jam_selesai"]');
     const minTime = '<?= htmlspecialchars($minTime) ?>';
     const maxTime = '<?= htmlspecialchars($maxTime) ?>';
     const timeMsg = 'Peminjaman hanya boleh antara 09:00 - 15:00.';
     const orderMsg = 'Jam selesai harus setelah jam mulai.';
+    const durationMsg = 'Durasi peminjaman maksimal 3 jam.';
+
+    function toMinutes(hhmm) {
+        const [h, m] = hhmm.split(':').map(Number);
+        return h * 60 + m;
+    }
 
     function validateTime() {
         const jm = jamMulaiInput.value;
@@ -407,6 +413,12 @@ $maxTime = '15:00';
         if (js <= jm) {
             jamSelesaiInput.value = '';
             showWarning(orderMsg);
+            return;
+        }
+        const diff = toMinutes(js) - toMinutes(jm);
+        if (diff > 180) { // lebih dari 3 jam
+            jamSelesaiInput.value = '';
+            showWarning(durationMsg);
             return;
         }
     }

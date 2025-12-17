@@ -488,14 +488,7 @@ Class bookingController{
         // Validasi tanggal edit: tidak boleh lampau & tidak boleh weekend
         $dateError = $this->validateTanggalPeminjaman($tanggal);
         if ($dateError !== null) {
-            Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
-        }
-
-        // Validasi jam edit
-        $timeError = $this->validateJamPeminjaman($jamMulai, $jamSelesai);
-        if ($timeError !== null) {
-            Session::set('flash_error', $timeError);
+            Session::set('flash_error', $dateError);    
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
@@ -570,13 +563,6 @@ Class bookingController{
         $dateError = $this->validateTanggalPeminjaman($tanggal);
         if ($dateError !== null) {
             Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
-        }
-
-        // Validasi jam edit
-        $timeError = $this->validateJamPeminjaman($jamMulai, $jamSelesai);
-        if ($timeError !== null) {
-            Session::set('flash_error', $timeError);
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
@@ -680,6 +666,12 @@ Class bookingController{
 
         if ($end <= $start) {
             return 'Jam selesai harus setelah jam mulai.';
+        }
+
+        // Hitung durasi; jika lebih dari 3 jam, tolak
+        $diffMinutes = (int)(($end->getTimestamp() - $start->getTimestamp()) / 60);
+        if ($diffMinutes > 180) {
+            return 'Durasi peminjaman maksimal 3 jam.';
         }
 
         return null;
