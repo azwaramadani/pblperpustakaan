@@ -695,7 +695,8 @@ class Booking extends Model
     public function cancelByUser($booking_id, $user_id)
     {
         $sql = "UPDATE {$this->table}
-                SET status_booking = 'Dibatalkan'
+                SET status_booking = 'Dibatalkan',
+                waktu_cancel = NOW()
                 WHERE booking_id = ? AND user_id = ? AND status_booking = 'Disetujui'";
         return $this->query($sql, [$booking_id, $user_id]);
     }
@@ -705,7 +706,10 @@ class Booking extends Model
     public function countCancellationsToday($user_id)
     {
         $sql = "SELECT COUNT(*) AS total FROM {$this->table}
-                WHERE user_id = ? AND status = 'Dibatalkan' AND DATE(waktu_booking) = CURDATE()";
-        return $this->query($sql, [$user_id])->fetch()['total'];
+                WHERE user_id = ?
+                AND status_booking = 'Dibatalkan'
+                AND DATE(waktu_cancel) = CURDATE()";
+        $row = $this->query($sql, [$user_id])->fetch();
+        return (int)($row['total'] ?? 0);
     }
 }

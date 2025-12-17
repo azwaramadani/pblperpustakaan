@@ -357,8 +357,7 @@ class User extends Model
         return $this->query($sql, [$status, $id]);
     }
 
-
-    # Blokir user otomatis jika batalkan booking 2x
+    // block user 3 kali batal booking dalam 1 hari
     public function blockUser($id)
     {
         $sql = "UPDATE {$this->table} SET status_akun = 'Diblokir' WHERE user_id = ?";

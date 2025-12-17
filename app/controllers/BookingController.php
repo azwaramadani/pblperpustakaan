@@ -398,6 +398,7 @@ Class bookingController{
         $userId = Session::get('user_id');
 
         $bookingModel = new Booking();
+        $userModel    = new User();
         $booking = $bookingModel->findByIdAndUser($bookingId, $userId);
 
         if (!$booking) {
@@ -406,8 +407,18 @@ Class bookingController{
         }
 
         if ($booking['status_booking'] === 'Disetujui') {
+            // set status dibatalkan + catat berapa kali waktu_cancel
             $bookingModel->cancelByUser($bookingId, $userId);
-            Session::set('flash_success', 'Booking berhasil dibatalkan.');
+
+            // hitung total pembatalan hari ini berdasarkan waktu_cancel
+            $cancelCount = (int)$bookingModel->countCancellationsToday($userId);
+
+            if ($cancelCount >= 3) {
+                $userModel->blockUser($userId);
+                Session::set('flash_error', 'Akun anda diblokir karena telah membatalkan booking 3x dalam 1 hari.');
+            } else {
+                Session::set('flash_success', 'Booking berhasil dibatalkan.');
+            }
         } else {
             Session::set('flash_error', 'Booking tidak bisa dibatalkan untuk status ini.');
         }
