@@ -147,7 +147,7 @@ class User extends Model
         $where  = [];
         $params = [];
 
-        $where[] = "(user.status_akun IN('Menunggu', 'Ditolak'))";
+        $where[] = "(user.status_akun IN('Menunggu', 'Ditolak', 'Diblokir'))";
 
         if (!empty($fromDate)) {
             $where[]  = "user.created_at >= ?";

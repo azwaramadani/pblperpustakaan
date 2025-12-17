@@ -609,6 +609,10 @@ h1 {
   background: #f8d7da;
   color: #721c24;
 }
+.status.disetujui {
+  background: #d4edda;
+  color: #155724;
+}
 .modal-overlay {
             display: none;
             position: fixed;
