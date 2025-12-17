@@ -1,6 +1,7 @@
 <?php
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 $img       = $room['gambar_ruangan'] ?? '';
+// Bangun URL gambar: jika sudah URL absolut, pakai langsung, jika relatif, prepend base_url
 $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
 ?>
 
@@ -28,7 +29,6 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
       <a href="?route=Admin/dataPeminjaman">
         <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
       </a>
-      <!-- CLASS ACTIVE DISINI -->
       <a href="?route=Admin/dataRuangan" class="active">
         <i class="fa-solid fa-door-open"></i> Data Ruangan
       </a>
@@ -43,7 +43,6 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
       </a>
     </nav>
 
-    <!-- PROFIL DI SIDEBAR (Footer) -->
     <div class="sidebar-footer">
       <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
       <div class="user-info">
@@ -100,12 +99,12 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
 
           <label>Gambar saat ini</label>
           <?php if ($imgUrl): ?>
-            <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png" alt="Gambar ruangan" style="width:240px; border-radius:12px;">
+            <img src="<?= htmlspecialchars($imgUrl) ?>" alt="Gambar ruangan" style="width:240px; border-radius:12px; object-fit:cover;">
           <?php else: ?>
             <p style="margin:0;">Belum ada gambar.</p>
           <?php endif; ?>
 
-          <label>Ganti gambar (opsional)</label>
+          <label>Ganti gambar</label>
           <input type="file" name="gambar_ruangan" accept="image/*">
           <input type="text" name="gambar_ruangan_manual" value="<?= htmlspecialchars($room['gambar_ruangan'] ?? '') ?>" placeholder="Atau isi URL/path gambar jika sudah ada">
 

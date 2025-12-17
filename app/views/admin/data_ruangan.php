@@ -28,7 +28,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       <a href="?route=Admin/dataPeminjaman">
         <i class="fa-solid fa-calendar-check"></i> Data Peminjaman
       </a>
-      <!-- CLASS ACTIVE DISINI -->
       <a href="?route=Admin/dataRuangan" class="active">
         <i class="fa-solid fa-door-open"></i> Data Ruangan
       </a>
@@ -43,7 +42,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
       </a>
     </nav>
 
-    <!-- PROFIL DI SIDEBAR (Footer) -->
     <div class="sidebar-footer">
       <img src="public/assets/image/userlogo.png" class="avatar-img" alt="Admin">
       <div class="user-info">
@@ -53,10 +51,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     </div>
   </aside>
 
-  <!-- KONTEN UTAMA -->
   <div class="main-area">
-    
-    <!-- HEADER (TOP NAV) - SUDAH DIPERBAIKI -->
     <header class="top-nav">
       <div class="nav-brand">
         <div>
@@ -64,8 +59,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           <p style="margin:4px 0 0;">Kelola data ruangan.</p>
         </div>
       </div>
-      
-      <!-- TOMBOL BUAT LAPORAN (MUNCUL SEKARANG) -->
       <div class="header-actions">
         <a href="?route=Admin/exportRuangan" class="btn-laporan">
             <i class="fa-solid fa-plus"></i> Buat Laporan
@@ -83,27 +76,21 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 
       <div class="section-head" style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px;">
         <div>
-  <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
-</div>
+          <p class="subtitle">Klik tombol aksi untuk booking, lihat feedback, ubah, atau hapus ruangan.</p>
+        </div>
         <button class="btn-add" type="button" onclick="window.location='?route=Admin/addRuangan'">Tambah Ruangan</button>
       </div>
 
       <?php if (empty($rooms)): ?>
         <div class="flash error">Belum ada data ruangan.</div>
       <?php else: ?>
-        <!-- Container Card Ruangan -->
         <div class="rooms-container">
           <?php foreach ($rooms as $r): ?>
             <?php
-              $img        = 'public/assets/image/contohruangan.png'; // Default image
-              // Cek jika ada gambar spesifik dan path-nya valid
-              if (!empty($r['gambar']) && file_exists($r['gambar'])) {
-                  $img = $r['gambar'];
-              } elseif (!empty($r['image_path'])) {
-                  $img = $r['image_path'];
-              }
+              // Ambil gambar ruangan: gunakan kolom gambar_ruangan jika ada, selain itu fallback ke contohruangan.png
+              $imgPath = !empty($r['gambar_ruangan']) ? $r['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+              $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
 
-              $imgUrl     = preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/');
               $kapasitas  = $r['kapasitas_min'].' - '.$r['kapasitas_max'].' orang';
               $totalBook  = (int)($r['total_booking'] ?? 0);
               $totalFb    = (int)($r['total_feedback'] ?? 0);
@@ -113,7 +100,6 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
             ?>
             
             <div class="room-card">
-              <!-- Info Kiri -->
               <div class="room-info">
                 <div>
                   <h3>
@@ -129,9 +115,8 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
                 <p><strong>Jumlah feedback :</strong> <?= $totalFb ?></p>
               </div>
               
-              <!-- Gambar & Aksi Kanan -->
               <div class="room-actions">
-                <img src="<?= $imgUrl ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>">
+                <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" style="object-fit:cover;">
                 
                 <div class="action-buttons">
                   <a class="btn-action btn-edit" href="?route=Booking/adminStep1/<?= $r['room_id'] ?>">Booking</a>

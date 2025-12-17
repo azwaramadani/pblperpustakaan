@@ -70,8 +70,6 @@ unset($_SESSION['flash_error']);
                            required>
                 </div>
 
-                <!-- Lupa Password (Rata Kanan) -->
-                <a href="?route=Auth/forgotPassword" class="forgot-password-link">Lupa Password?</a>
 
                 <!-- Tombol Masuk (Center) -->
                 <button type="submit" name="submit" class="btn-login">Masuk</button>

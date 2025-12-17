@@ -48,8 +48,13 @@
         <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
     <?php else: ?>
         <?php foreach ($rooms as $r): ?>
+            <?php
+              // Gunakan gambar_ruangan jika ada, fallback ke contohruangan.png
+              $imgPath = !empty($r['gambar_ruangan']) ? $r['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+              $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
+            ?>
             <div class="room-card">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/contohruangan.png"
+                <img src="<?= htmlspecialchars($imgUrl) ?>"
                      alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">
                 <div class="room-info">
                     <div class="room-header">
@@ -71,10 +76,9 @@
 </div>
 </main>
 
-<!-- FOOTER YANG SUDAH DIPERBAIKI (SAMA DENGAN HOME & RIWAYAT) -->
+<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-content-wrapper">
-        <!-- Bagian Kiri: Logo & Deskripsi -->
         <div class="footer-left">
             <div class="footer-brand">
                 <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study" class="footer-logo">
@@ -83,8 +87,6 @@
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.
             </p>
         </div>
-
-        <!-- Bagian Kanan: Navigasi & Kontak -->
         <div class="footer-nav">
             <div>
                 <h4>Navigasi</h4>
@@ -103,7 +105,6 @@
 </footer>
 <div id="logoutModal" class="modal-overlay">
     <div class="modal-content">
-        <!-- Icon Logout -->
         <div class="icon-box-red">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -129,24 +130,16 @@ document.addEventListener("DOMContentLoaded", function() {
     profileDropdown.classList.toggle('active');
   });
 });
-// <-- JAVASCRIPT LOGOUT -->
 
-    const logoutModal = document.getElementById('logoutModal');
-
-    function showLogoutModal() {
-        logoutModal.classList.add('active');
+// LOGOUT MODAL
+const logoutModal = document.getElementById('logoutModal');
+function showLogoutModal() { logoutModal.classList.add('active'); }
+function closeLogoutModal() { logoutModal.classList.remove('active'); }
+logoutModal.addEventListener('click', (e) => {
+    if (e.target === logoutModal) {
+        closeLogoutModal();
     }
-
-    function closeLogoutModal() {
-        logoutModal.classList.remove('active');
-    }
-
-    // Tutup jika klik di luar area putih
-    logoutModal.addEventListener('click', (e) => {
-        if (e.target === logoutModal) {
-            closeLogoutModal();
-        }
-    });
+});
 </script>
 </body>
 </html>
