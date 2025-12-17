@@ -1,7 +1,9 @@
 <?php
 $badgeText = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
 $err       = Session::get('flash_error');
+$success   = Session::get('flash_success');
 Session::set('flash_error', null);
+Session::set('flash_success', null);
 
 $isEdit = !empty($payload['booking_id'] ?? null);
 
@@ -12,6 +14,10 @@ if (!function_exists('app_config')) {
 
 // Batas minimal tanggal = hari ini (Asia/Jakarta)
 $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d');
+
+// Batas jam diperbolehkan
+$minTime = '09:00';
+$maxTime = '15:00';
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +28,91 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
   <title><?= $isEdit ? 'Ubah Peminjaman' : 'Pilih Tanggal & Jam' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css?v=1.2">
+  <style>
+    /* Flash message */
+    .flash-message {
+      padding: 12px 14px;
+      border-radius: 4px;
+      margin: 0 0 12px 0;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .flash-success {
+      background: #e5f6f3;
+      color: #0f766e;
+      border: 1px solid #b7e4dc;
+    }
+    .flash-warning {
+      background: #e5f6f3;
+      color: #0f766e;
+      border: 1px solid #b7e4dc;
+    }
+
+    /* Modal warning custom */
+    .modal-warning {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal-warning.active { display: flex; }
+    .modal-card {
+      width: 320px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 18px 16px;
+      text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      animation: pop 0.18s ease-out;
+    }
+    @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      background: #ff5c5c;
+      color: #fff;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0 0 10px;
+      color: #222;
+    }
+    .modal-text {
+      font-size: 14px;
+      margin: 0 0 16px;
+      color: #444;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn-modal-primary {
+      flex: 1;
+      background: #ff5c5c;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 6px 16px rgba(255,92,92,0.35);
+    }
+    .btn-modal-primary:hover { transform: translateY(-1px); }
+  </style>
 </head>
 <body>
 
@@ -78,8 +169,11 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
     <div class="booking-card">
       <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
+      <?php if ($success): ?>
+        <div class="flash-message flash-success"><?= htmlspecialchars($success) ?></div>
+      <?php endif; ?>
       <?php if ($err): ?>
-        <div class="alert-error"><?= htmlspecialchars($err) ?></div>
+        <div class="flash-message flash-warning"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>
       
       <!-- Informasi jadwal terpakai hari ini -->
@@ -130,16 +224,28 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
             <div class="time-wrapper">
                 <div class="form-group time-box">
                     <label>Jam mulai</label>
-                    <input type="time" name="jam_mulai" class="input-line" required
-                           value="<?= htmlspecialchars($payload['jam_mulai'] ?? '') ?>">
+                    <input
+                        type="time"
+                        name="jam_mulai"
+                        class="input-line"
+                        required
+                        min="<?= htmlspecialchars($minTime) ?>"
+                        max="<?= htmlspecialchars($maxTime) ?>"
+                        value="<?= htmlspecialchars($payload['jam_mulai'] ?? '') ?>">
                 </div>
                 
                 <span class="sampai-text">Sampai</span>
 
                 <div class="form-group time-box">
                     <label>Jam selesai</label>
-                    <input type="time" name="jam_selesai" class="input-line" required
-                           value="<?= htmlspecialchars($payload['jam_selesai'] ?? '') ?>">
+                    <input
+                        type="time"
+                        name="jam_selesai"
+                        class="input-line"
+                        required
+                        min="<?= htmlspecialchars($minTime) ?>"
+                        max="<?= htmlspecialchars($maxTime) ?>"
+                        value="<?= htmlspecialchars($payload['jam_selesai'] ?? '') ?>">
                 </div>
             </div>
         </div>
@@ -203,7 +309,19 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
     </div>
 </div>
 
-<!-- JAVASCRIPT LOGOUT + BLOK WEEKEND -->
+<!-- MODAL WARNING (untuk validasi tanggal/jam) -->
+<div id="warningModal" class="modal-warning">
+    <div class="modal-card">
+        <div class="modal-icon">!</div>
+        <div class="modal-title">Perhatian</div>
+        <p class="modal-text" id="warningText">Pesan peringatan.</p>
+        <div class="modal-actions">
+            <button class="btn-modal-primary" type="button" onclick="closeWarning()">OK</button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT LOGOUT + BLOK WEEKEND & JAM -->
 <script>
     const logoutModal = document.getElementById('logoutModal');
 
@@ -220,6 +338,20 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
         if (e.target === logoutModal) {
             closeLogoutModal();
         }
+    });
+
+    // Modal Warning
+    const warningModal = document.getElementById('warningModal');
+    const warningText = document.getElementById('warningText');
+    function showWarning(msg) {
+        warningText.textContent = msg;
+        warningModal.classList.add('active');
+    }
+    function closeWarning() {
+        warningModal.classList.remove('active');
+    }
+    warningModal.addEventListener('click', (e) => {
+        if (e.target === warningModal) closeWarning();
     });
 
     // Blokir weekend & tanggal lampau di browser (frontend guard)
@@ -242,16 +374,45 @@ $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m
         const val = tanggalInput.value;
         if (!val) return;
         if (isPast(val)) {
-            alert(pastMsg);
             tanggalInput.value = '';
+            showWarning(pastMsg);
             return;
         }
         if (isWeekend(val)) {
-            alert(weekendMsg);
             tanggalInput.value = '';
+            showWarning(weekendMsg);
             return;
         }
     });
+
+    // Guard jam: hanya 09:00 - 15:00 dan jam selesai > jam mulai
+    const jamMulaiInput = document.querySelector('input[name="jam_mulai"]');
+    const jamSelesaiInput = document.querySelector('input[name="jam_selesai"]');
+    const minTime = '<?= htmlspecialchars($minTime) ?>';
+    const maxTime = '<?= htmlspecialchars($maxTime) ?>';
+    const timeMsg = 'Peminjaman hanya boleh antara 09:00 - 15:00.';
+    const orderMsg = 'Jam selesai harus setelah jam mulai.';
+
+    function validateTime() {
+        const jm = jamMulaiInput.value;
+        const js = jamSelesaiInput.value;
+        if (!jm || !js) return;
+
+        if (jm < minTime || js > maxTime) {
+            jamMulaiInput.value = '';
+            jamSelesaiInput.value = '';
+            showWarning(timeMsg);
+            return;
+        }
+        if (js <= jm) {
+            jamSelesaiInput.value = '';
+            showWarning(orderMsg);
+            return;
+        }
+    }
+
+    jamMulaiInput?.addEventListener('change', validateTime);
+    jamSelesaiInput?.addEventListener('change', validateTime);
 </script>
 
 </body>
