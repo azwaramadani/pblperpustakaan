@@ -25,14 +25,6 @@
           <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
           <div class="user-name"><a href="?route=User/viewProfile"><p><?= htmlspecialchars($user['nama']) ?></p></a></div>
       </div>
-      <div class="profile-card">
-        <p><strong><?= htmlspecialchars($user['nama']) ?></strong></p>
-        <p><strong><?= htmlspecialchars($user['role']) ?></strong></p>
-        <p><?= htmlspecialchars($user['unit'] ?? '') ?></p>
-        <p><?= htmlspecialchars($user['jurusan'] ?? '') ?></p>
-        <p><?= htmlspecialchars($user['program_studi'] ?? '') ?></p>
-        <a class="btn-logout" href="#" onclick="showLogoutModal(); return false;">Keluar</a>
-      </div>
     </div>
 </header>
 

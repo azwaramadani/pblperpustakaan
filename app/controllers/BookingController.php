@@ -65,7 +65,7 @@ Class bookingController{
             exit;
         }
 
-        // Validasi jam (harus 09:00-15:00 dan mulai < selesai)
+        // Validasi jam (harus 09:00-15:00 dan mulai < selesai, gaboleh > 3 jam)
         $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai']);
         if ($timeError !== null) {
             Session::set('flash_error', $timeError);
@@ -517,13 +517,6 @@ Class bookingController{
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
-        // Validasi tanggal edit: tidak boleh lampau & tidak boleh weekend
-        $dateError = $this->validateTanggalPeminjaman($tanggal);
-        if ($dateError !== null) {
-            Session::set('flash_error', $dateError);    
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
-        }
-
         $bookingModel = new Booking();
         $roomModel    = new Room();
         $userModel    = new User();
@@ -591,13 +584,6 @@ Class bookingController{
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
-        // Validasi tanggal edit: tidak boleh lampau & tidak boleh weekend
-        $dateError = $this->validateTanggalPeminjaman($tanggal);
-        if ($dateError !== null) {
-            Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
-        }
-
         $userId       = Session::get('user_id');
         $bookingModel = new Booking();
         $roomModel    = new Room();
@@ -652,13 +638,6 @@ Class bookingController{
         exit;
     }
 
-    /**
-     * Validasi tanggal peminjaman:
-     * - format Y-m-d
-     * - tidak boleh sebelum hari ini
-     * - tidak boleh Sabtu/Minggu
-     * Mengembalikan null jika valid, atau string pesan error jika tidak valid.
-     */
     private function validateTanggalPeminjaman(string $tanggal): ?string
     {
         $tz = new DateTimeZone('Asia/Jakarta');
@@ -685,13 +664,7 @@ Class bookingController{
         return null;
     }
 
-    /**
-     * Validasi jam peminjaman:
-     * - format HH:MM
-     * - jam mulai harus >= 09:00
-     * - jam selesai harus <= 15:00
-     * - jam selesai harus lebih besar dari jam mulai
-     */
+
     private function validateJamPeminjaman(string $jamMulai, string $jamSelesai): ?string
     {
         $tz = new DateTimeZone('Asia/Jakarta');
