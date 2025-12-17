@@ -9,6 +9,9 @@ $isEdit = !empty($payload['booking_id'] ?? null);
 if (!function_exists('app_config')) {
     function app_config() { return ['base_url' => '']; }
 }
+
+// Batas minimal tanggal = hari ini (Asia/Jakarta)
+$todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d');
 ?>
 
 <!DOCTYPE html>
@@ -114,8 +117,14 @@ if (!function_exists('app_config')) {
         <div class="form-grid">
             <div class="form-group">
                 <label>Pilih tanggal</label>
-                <input type="date" name="tanggal" class="input-line" required
-                       value="<?= htmlspecialchars($payload['tanggal'] ?? '') ?>">
+                <!-- Min di-set hari ini, weekend di-blok via JS -->
+                <input
+                    type="date"
+                    name="tanggal"
+                    class="input-line"
+                    required
+                    min="<?= htmlspecialchars($todayMin) ?>"
+                    value="<?= htmlspecialchars($payload['tanggal'] ?? '') ?>">
             </div>
 
             <div class="time-wrapper">
@@ -194,7 +203,7 @@ if (!function_exists('app_config')) {
     </div>
 </div>
 
-<!-- JAVASCRIPT LOGOUT -->
+<!-- JAVASCRIPT LOGOUT + BLOK WEEKEND -->
 <script>
     const logoutModal = document.getElementById('logoutModal');
 
@@ -210,6 +219,37 @@ if (!function_exists('app_config')) {
     logoutModal.addEventListener('click', (e) => {
         if (e.target === logoutModal) {
             closeLogoutModal();
+        }
+    });
+
+    // Blokir weekend & tanggal lampau di browser (frontend guard)
+    const tanggalInput = document.querySelector('input[name="tanggal"]');
+    const minDateStr = '<?= htmlspecialchars($todayMin) ?>';
+    const weekendMsg = 'Peminjaman tidak diperbolehkan pada hari Sabtu atau Minggu.';
+    const pastMsg = 'Tanggal peminjaman tidak boleh sebelum hari ini.';
+
+    function isWeekend(dateStr) {
+        const d = new Date(dateStr + 'T00:00:00');
+        const day = d.getDay(); // 0 = Minggu, 6 = Sabtu
+        return day === 0 || day === 6;
+    }
+
+    function isPast(dateStr) {
+        return dateStr < minDateStr;
+    }
+
+    tanggalInput?.addEventListener('change', () => {
+        const val = tanggalInput.value;
+        if (!val) return;
+        if (isPast(val)) {
+            alert(pastMsg);
+            tanggalInput.value = '';
+            return;
+        }
+        if (isWeekend(val)) {
+            alert(weekendMsg);
+            tanggalInput.value = '';
+            return;
         }
     });
 </script>

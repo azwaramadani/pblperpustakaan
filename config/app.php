@@ -21,7 +21,15 @@ if (!function_exists('app_config')) {
             # ============================================
             # GLOBAL SETTINGS
             # ============================================
-            'base_url'     => 'http://localhost/pblperpustakaan',
+            'base_url'     => (
+                                isset($_SERVER['HTTP_X_FORWARDED_PROTO']) 
+                                    ? $_SERVER['HTTP_X_FORWARDED_PROTO'] 
+                                    : (
+                                        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                                            ? 'https'
+                                            : 'http'
+                                    )
+                            ) . '://' . $_SERVER['HTTP_HOST'] . '/pblperpustakaan',
             'timezone'     => 'Asia/Jakarta',
 
             # ============================================
@@ -54,7 +62,7 @@ if (!function_exists('app_config')) {
             # ============================================
             'developer' => [
                 'maintainer'  => 'Kelompok 4, RUDY Developers',
-                'github_repo' => 'https://github.com/azwaramadani/pblperpustakaansemester3',
+                'github_repo' => 'https://github.com/azwaramadani/pblperpustakaan',
             ],
         ];
     }

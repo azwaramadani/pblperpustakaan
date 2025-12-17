@@ -3,6 +3,8 @@
 require_once __DIR__ . '/../../core/Session.php';
 require_once __DIR__ . '/../../core/helper.php';
 
+date_default_timezone_set('Asia/Jakarta');
+
 Class bookingController{
      public function step1($roomId)
     {
@@ -53,6 +55,14 @@ Class bookingController{
                 header('Location: ?route=Booking/step1/'.$payload['room_id']); 
                 exit;
             }
+        }
+
+        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            exit;
         }
 
         $userModel    = new User();
@@ -132,6 +142,14 @@ Class bookingController{
             }
         }
 
+        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
+        }
+
         $roomModel    = new Room();
         $bookingModel = new Booking();
         $adminModel   = new Admin();
@@ -193,6 +211,14 @@ Class bookingController{
                 header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
                 exit;
             }
+        }
+
+        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
         }
 
         // Minimal 1 anggota
@@ -275,6 +301,14 @@ Class bookingController{
                 header('Location: ?route=Booking/step1/'.$payload['room_id']);
                 exit;
             }
+        }
+
+        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            exit;
         }
 
         // Buat validasi minimal input 1 anggota
@@ -408,6 +442,13 @@ Class bookingController{
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
+        // Validasi tanggal edit: tidak boleh lampau & tidak boleh weekend
+        $dateError = $this->validateTanggalPeminjaman($tanggal);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+        }
+
         $bookingModel = new Booking();
         $roomModel    = new Room();
         $userModel    = new User();
@@ -475,6 +516,13 @@ Class bookingController{
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
+        // Validasi tanggal edit: tidak boleh lampau & tidak boleh weekend
+        $dateError = $this->validateTanggalPeminjaman($tanggal);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+        }
+
         $userId       = Session::get('user_id');
         $bookingModel = new Booking();
         $roomModel    = new Room();
@@ -515,4 +563,37 @@ Class bookingController{
         exit;
     }
 
+    /**
+     * Validasi tanggal peminjaman:
+     * - format Y-m-d
+     * - tidak boleh sebelum hari ini
+     * - tidak boleh Sabtu/Minggu
+     * Mengembalikan null jika valid, atau string pesan error jika tidak valid.
+     */
+    private function validateTanggalPeminjaman(string $tanggal): ?string
+    {
+        $tz = new DateTimeZone('Asia/Jakarta');
+        $date = DateTime::createFromFormat('Y-m-d', $tanggal, $tz);
+
+        // Jika format salah, anggap tidak valid
+        if (!$date || $date->format('Y-m-d') !== $tanggal) {
+            return 'Tanggal peminjaman tidak boleh sebelum hari ini.';
+        }
+
+        // Set jam ke 00:00 supaya perbandingan adil
+        $date->setTime(0, 0, 0);
+        $today = new DateTime('today', $tz);
+
+        if ($date < $today) {
+            return 'Tanggal peminjaman tidak boleh sebelum hari ini.';
+        }
+
+        $dayNumber = (int)$date->format('N'); // 1=Senin ... 6=Sabtu, 7=Minggu
+        if ($dayNumber >= 6) {
+            return 'Peminjaman tidak diperbolehkan pada hari Sabtu atau Minggu.';
+        }
+
+        return null;
+    }
+    
 }
