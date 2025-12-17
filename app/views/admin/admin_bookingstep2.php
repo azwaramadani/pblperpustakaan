@@ -8,6 +8,7 @@ $initialMembers = [''];
 
 // Batas kapasitas ruangan dari backend
 $kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
+$kapasitasMin = (int)($room['kapasitas_min'] ?? 0);
 // Maksimal anggota = kapasitasMax - 1 (karena 1 slot untuk penanggung jawab). Jika 0/negatif, anggap tak terbatas.
 $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 ?>
@@ -114,7 +115,10 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
         <h3>Waktu Peminjaman:</h3>
         <p><strong><?= htmlspecialchars($payload['tanggal']) ?></strong> (<?= htmlspecialchars($payload['jam_mulai']) ?> - <?= htmlspecialchars($payload['jam_selesai']) ?>)</p>
-        <p style="margin-top:8px;font-weight:600;">Maks anggota yang bisa diinput: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).</p>
+        <p style="margin-top:8px;font-weight:600;">
+          Maks anggota: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).
+          <?= $kapasitasMin > 0 ? ' Minimal total peminjam: ' . $kapasitasMin . ' orang.' : '' ?>
+        </p>
       </div>
     </div>
 
@@ -213,14 +217,18 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
     // batas kapasitas
     const kapasitasMax = <?= $kapasitasMax ?>;
+    const kapasitasMin = <?= $kapasitasMin ?>;
     const maxAnggota = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
-    const kapasitasMsg = kapasitasMax > 0
+    const kapasitasMaxMsg = kapasitasMax > 0
       ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
       : 'Jumlah anggota tidak dibatasi.';
+    const kapasitasMinMsg = kapasitasMin > 0
+      ? `Jumlah peminjam harus minimal ${kapasitasMin} orang.`
+      : '';
 
     function addAnggotaField(value = '') {
       if (maxAnggota !== Infinity && anggotaCount >= maxAnggota) {
-        showWarning(kapasitasMsg);
+        showWarning(kapasitasMaxMsg);
         return;
       }
       anggotaCount += 1;
@@ -259,7 +267,12 @@ $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
       // Validasi kapasitas sebelum submit
       if (kapasitasMax > 0 && total > kapasitasMax) {
-        showWarning(kapasitasMsg);
+        showWarning(kapasitasMaxMsg);
+        e.preventDefault();
+        return;
+      }
+      if (kapasitasMin > 0 && total < kapasitasMin) {
+        showWarning(kapasitasMinMsg);
         e.preventDefault();
         return;
       }

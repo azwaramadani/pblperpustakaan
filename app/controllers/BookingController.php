@@ -260,9 +260,16 @@ Class bookingController{
 
         // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max
         $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $minCap      = (int)($room['kapasitas_min'] ?? 0);
         $totalPeople = 1 + count($anggota);
+
         if ($maxCap > 0 && $totalPeople > $maxCap) {
             Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
+        }
+        if ($minCap > 0 && $totalPeople < $minCap) {
+            Session::set('flash_error', 'Jumlah peminjam belum memenuhi kapasitas minimum ruangan (' . $minCap . ' orang).');
             header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
             exit;
         }
@@ -365,11 +372,18 @@ Class bookingController{
             exit('Ruangan tidak ditemukan.');
         }
 
-        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max
+        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max, dan harus >= kapasitas_min
         $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $minCap      = (int)($room['kapasitas_min'] ?? 0);
         $totalPeople = 1 + count($anggota);
+
         if ($maxCap > 0 && $totalPeople > $maxCap) {
             Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
+            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            exit;
+        }
+        if ($minCap > 0 && $totalPeople < $minCap) {
+            Session::set('flash_error', 'Jumlah peminjam belum memenuhi kapasitas minimum ruangan (' . $minCap . ' orang).');
             header('Location: ?route=Booking/step1/'.$payload['room_id']);
             exit;
         }
@@ -599,6 +613,20 @@ Class bookingController{
         $room   = $roomModel->findById($roomId);
         if (!$room) {
             Session::set('flash_error', 'Ruangan tidak ditemukan.');
+            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+        }
+
+        // Validasi kapasitas saat edit
+        $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $minCap      = (int)($room['kapasitas_min'] ?? 0);
+        $totalPeople = 1 + count($anggota);
+
+        if ($maxCap > 0 && $totalPeople > $maxCap) {
+            Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
+            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+        }
+        if ($minCap > 0 && $totalPeople < $minCap) {
+            Session::set('flash_error', 'Jumlah peminjam belum memenuhi kapasitas minimum ruangan (' . $minCap . ' orang).');
             header('Location: ?route=Booking/editForm/'.$bookingId); exit;
         }
 
