@@ -1,5 +1,9 @@
 <?php
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+
+$img       = $room['gambar_ruangan'] ?? '';
+// Bangun URL gambar: jika sudah URL absolut, pakai langsung, jika relatif, prepend base_url
+$imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
 ?>
 
 <!DOCTYPE html>
@@ -93,9 +97,9 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
           <option value="Tidak Tersedia">Tidak Tersedia</option>
         </select>
 
-        <label>Gambar (opsional)</label>
-        <input type="file" name="gambar_ruangan" accept="image/*">
-        <input type="text" name="gambar_ruangan_manual" placeholder="Atau isi URL/path gambar jika sudah ada">
+        <label>Gambar </label>
+        <input type="file" name="gambar_ruangan" class="form-control" accept="image/*" style="margin-bottom: 10px;">
+        <input type="text" name="gambar_ruangan_manual" placeholder="">
 
         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
           <button type="submit" class="btn-pill btn-save">Simpan</button>

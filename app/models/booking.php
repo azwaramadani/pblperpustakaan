@@ -68,7 +68,7 @@ class Booking extends Model
             $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
             $like     = '%' . $searchName . '%';
             $params[] = $like;
-            $params[] = $like;      
+            $params[] = $like;                                   
         }
 
         $whereSql = $where ? (" WHERE " . implode(' AND ', $where)) : '';

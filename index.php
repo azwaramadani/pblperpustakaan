@@ -1,13 +1,10 @@
 <?php
-// buat skip warning page device baru di ngrok, tapi ttp muncul yaudh la ya
-header('ngrok-skip-browser-warning: true');
 # Composer autoload (Buat PHPSpreadsheet (admin buat laporan) dan PHPMailer (simulasi notif akun user udah siap dipakai))
 require_once __DIR__ . '/vendor/autoload.php';
 
 # ================================================
 # AUTOLOAD untuk semua class (Controller, Model, Core)
 # ================================================
-
 spl_autoload_register(function ($class) {
     # Prioritas: core
     $corePath = __DIR__ . '/core/' . $class . '.php';
