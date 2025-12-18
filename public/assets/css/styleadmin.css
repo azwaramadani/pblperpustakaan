@@ -276,6 +276,60 @@ body {
   color: #fff;
 }
 
+/* Container untuk setiap pasangan Label + Input */
+.form-group {
+    margin-bottom: 20px; /* Jarak ke bawah antar elemen */
+}
+
+/* Style untuk Label */
+.form-label {
+    display: block; /* Agar label selalu di baris sendiri */
+    margin-bottom: 8px; /* Jarak antara label dan kotak input */
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Style untuk Input (Textbox, Number, Select) */
+.form-control {
+    width: 100%; /* Lebar penuh mengikuti wadah */
+    padding: 10px 15px; /* Ruang di dalam kotak agar teks tidak mepet */
+    border: 1px solid #ddd; /* Garis pinggir halus */
+    border-radius: 8px; /* Sudut melengkung agar terlihat modern */
+    font-size: 14px;
+    box-sizing: border-box; /* Agar padding tidak menambah lebar total */
+    transition: all 0.3s ease;
+}
+
+/* Efek saat kotak diklik (Focus) */
+.form-control:focus {
+    border-color: #fdd835; /* Warna kuning sesuai tema tombol Anda */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(253, 216, 53, 0.2); /* Efek glow tipis */
+}
+
+/* Style khusus untuk Textarea agar bisa di-resize vertikal saja */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Helper: Membuat dua kolom (untuk Kapasitas Min/Max) */
+.row-2-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Bagi 2 kolom sama besar */
+    gap: 20px; /* Jarak antar kolom */
+}
+
+/* Helper: Preview Gambar */
+.img-preview {
+    width: 100%;
+    max-width: 240px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 1px solid #eee;
+    padding: 4px;
+}
 
 .panel {
     background: #fff;
