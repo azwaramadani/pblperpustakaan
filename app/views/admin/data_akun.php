@@ -1,13 +1,37 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 //pagination
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($users)];
+$pagination        = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($users)];
+$paginationregist  = $paginationregist ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($userregist)];
+
+// pagination user regist
+$perPageRegist         = (int)($paginationregist['limit'] ?? 10);
+$currentPageRegist     = (int)($paginationregist['page'] ?? 1);
+$totalPagesRegist      = max(1, (int)($paginationregist['total_pages'] ?? 1));
+$totalRowsRegist = (int)($paginationregist['total'] ?? count($userregist));
+
+$startRowRegist = $totalRowsRegist ? (($currentPageRegist - 1) * $perPageRegist + 1) : 0;
+$endRowRegist   = $totalRowsRegist ? min($startRowRegist + $perPageRegist - 1, $totalRowsRegist) : 0;
+
+// Tentukan range nomor halaman yang ditampilin pagination user regist
+$maxLinksRegist   = 5;
+$startPageRegist  = max(1, $currentPageRegist - 2);
+$endPageRegist    = min($totalPagesRegist, $currentPageRegist + 2);
+if (($endPageRegist - $startPageRegist + 1) < $maxLinksRegist) {
+    $neededRegist    = $maxLinksRegist - ($endPageRegist - $startPageRegist + 1);
+    $startPageRegist = max(1, $startPageRegist - $neededRegist);
+    $endPageRegist   = min($totalPagesRegist, $startPageRegist + $maxLinksRegist - 1);
+}
+$noDataRegist        = $totalRowsRegist === 0;
+$disablePrevRegist   = $noDataRegist || $currentPageRegist <= 1;
+$disableNextRegist   = $noDataRegist || $currentPageRegist >= $totalPagesRegist;
+
 
 //buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
-$perPage     = (int)($pagination['limit'] ?? 10);
-$currentPage = (int)($pagination['page'] ?? 1);
-$totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
-$totalRows   = (int)($pagination['total'] ?? count($users));
+$perPage         = (int)($pagination['limit'] ?? 10);
+$currentPage     = (int)($pagination['page'] ?? 1);
+$totalPages      = max(1, (int)($pagination['total_pages'] ?? 1));
+$totalRows       = (int)($pagination['total'] ?? count($users));
 
 $startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
 $endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
@@ -316,6 +340,23 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <?php endif; ?>
             </tbody>
           </table>
+        </div>
+
+        <div class="pagination-bar">
+          <div class="pagination-info">
+            Menampilkan <?= $startRowRegist ? "{$startRowRegist} - {$endRowRegist}" : "0" ?> dari <?= $totalRowsRegist ?> Data.
+          </div>
+          <div class="pagination-nav">
+            <a class="page-btn secondary <?= $disablePrevRegist ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=1">« Pertama</a>
+            <a class="page-btn secondary <?= $disablePrevRegist ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= max(1, $currentPageRegist - 1) ?>">‹ Sebelumnya</a>
+
+            <?php for ($p = $startPageRegist; $p <= $endPageRegist; $p++): ?>
+              <a class="page-btn <?= ($p === $currentPageRegist) ? 'active' : 'secondary' ?>" href="?<?= $baseQuery ?>page=<?= $p ?>"><?= $p ?></a>
+            <?php endfor; ?>
+
+            <a class="page-btn secondary <?= $disableNextRegist ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= min($totalPagesRegist, $currentPageRegist + 1) ?>">Berikutnya ›</a>
+            <a class="page-btn secondary <?= $disableNextRegist ? 'disabled' : '' ?>" href="?<?= $baseQuery ?>page=<?= $totalPagesRegist ?>">Terakhir »</a>
+          </div>
         </div>
       </section>
   
