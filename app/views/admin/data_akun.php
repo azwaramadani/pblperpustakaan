@@ -1,14 +1,14 @@
 <?php
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-//pagination
+//declare pagination
 $pagination        = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($users)];
 $paginationregist  = $paginationregist ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($userregist)];
 
 // pagination user regist
-$perPageRegist         = (int)($paginationregist['limit'] ?? 10);
-$currentPageRegist     = (int)($paginationregist['page'] ?? 1);
-$totalPagesRegist      = max(1, (int)($paginationregist['total_pages'] ?? 1));
-$totalRowsRegist = (int)($paginationregist['total'] ?? count($userregist));
+$perPageRegist     = (int)($paginationregist['limit'] ?? 10);
+$currentPageRegist = (int)($paginationregist['page'] ?? 1);
+$totalPagesRegist  = max(1, (int)($paginationregist['total_pages'] ?? 1));
+$totalRowsRegist   = (int)($paginationregist['total'] ?? count($userregist));
 
 $startRowRegist = $totalRowsRegist ? (($currentPageRegist - 1) * $perPageRegist + 1) : 0;
 $endRowRegist   = $totalRowsRegist ? min($startRowRegist + $perPageRegist - 1, $totalRowsRegist) : 0;
