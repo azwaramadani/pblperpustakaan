@@ -46,7 +46,6 @@ unset($_SESSION['flash_error']);
 
             <form method="POST" class="login-form" action="?route=Auth/loginProcess">
                 
-                <!-- Input NIM/NIP -->
                 <div class="form-group">
                     <label for="nim">NIM/NIP</label>
                     <input id="nim"
@@ -58,7 +57,6 @@ unset($_SESSION['flash_error']);
                            required>
                 </div>
 
-                <!-- Input Password -->
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input id="password"
@@ -70,8 +68,6 @@ unset($_SESSION['flash_error']);
                            required>
                 </div>
 
-
-                <!-- Tombol Masuk (Center) -->
                 <button type="submit" name="submit" class="btn-login">Masuk</button>
             </form>
 

@@ -79,39 +79,61 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
         <form method="POST" action="?route=Admin/updateRuangan" enctype="multipart/form-data" style="display:grid; gap:12px; max-width:720px;">
           <input type="hidden" name="room_id" value="<?= (int)$room['room_id'] ?>">
 
-          <label>Nama Ruangan</label>
-          <input type="text" name="nama_ruangan" value="<?= htmlspecialchars($room['nama_ruangan'] ?? '') ?>" required>
+          <div class="form-group">
+    <label class="form-label">Nama Ruangan</label>
+    <input type="text" name="nama_ruangan" class="form-control" 
+           value="<?= htmlspecialchars($room['nama_ruangan'] ?? '') ?>" required>
+</div>
 
-          <label>Kapasitas Minimum</label>
-          <input type="number" name="kapasitas_min" min="1" value="<?= (int)($room['kapasitas_min'] ?? 0) ?>" required>
+<div class="row-2-cols">
+    <div class="form-group">
+        <label class="form-label">Kapasitas Minimum</label>
+        <input type="number" name="kapasitas_min" class="form-control" min="1" 
+               value="<?= (int)($room['kapasitas_min'] ?? 0) ?>" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Kapasitas Maksimum</label>
+        <input type="number" name="kapasitas_max" class="form-control" min="1" 
+               value="<?= (int)($room['kapasitas_max'] ?? 0) ?>" required>
+    </div>
+</div>
 
-          <label>Kapasitas Maksimum</label>
-          <input type="number" name="kapasitas_max" min="1" value="<?= (int)($room['kapasitas_max'] ?? 0) ?>" required>
+<div class="form-group">
+    <label class="form-label">Deskripsi</label>
+    <textarea name="deskripsi" class="form-control" rows="4" 
+              placeholder="Tulis deskripsi ruangan..."><?= htmlspecialchars($room['deskripsi'] ?? '') ?></textarea>
+</div>
 
-          <label>Deskripsi</label>
-          <textarea name="deskripsi" rows="4" placeholder="Tulis deskripsi ruangan..."><?= htmlspecialchars($room['deskripsi'] ?? '') ?></textarea>
+<div class="form-group">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-control" required>
+        <option value="Tersedia" <?= ((strtolower($room['status'] ?? '') === 'tersedia') ? 'selected' : '') ?>>Tersedia</option>
+        <option value="Tidak Tersedia" <?= ((strtolower($room['status'] ?? '') === 'tidak tersedia') ? 'selected' : '') ?>>Tidak Tersedia</option>
+    </select>
+</div>
 
-          <label>Status</label>
-          <select name="status" required>
-            <option value="Tersedia" <?= ((strtolower($room['status'] ?? '') === 'tersedia') ? 'selected' : '') ?>>Tersedia</option>
-            <option value="Tidak Tersedia" <?= ((strtolower($room['status'] ?? '') === 'tidak tersedia') ? 'selected' : '') ?>>Tidak Tersedia</option>
-          </select>
+<div class="form-group">
+    <label class="form-label">Gambar saat ini</label>
+    <?php if ($imgUrl): ?>
+        <img src="<?= htmlspecialchars($imgUrl) ?>" alt="Gambar ruangan" class="img-preview">
+    <?php else: ?>
+        <p style="color: #888; font-style: italic;">Belum ada gambar.</p>
+    <?php endif; ?>
+</div>
 
-          <label>Gambar saat ini</label>
-          <?php if ($imgUrl): ?>
-            <img src="<?= htmlspecialchars($imgUrl) ?>" alt="Gambar ruangan" style="width:240px; border-radius:12px; object-fit:cover;">
-          <?php else: ?>
-            <p style="margin:0;">Belum ada gambar.</p>
-          <?php endif; ?>
+<div class="form-group">
+    <label class="form-label">Ganti Gambar</label>
+    <input type="file" name="gambar_ruangan" class="form-control" accept="image/*" style="margin-bottom: 10px;">
+    
+    <input type="text" name="gambar_ruangan_manual" class="form-control" 
+           value="<?= htmlspecialchars($room['gambar_ruangan'] ?? '') ?>" 
+           placeholder="Atau tempel URL/path gambar di sini">
+</div>
 
-          <label>Ganti gambar</label>
-          <input type="file" name="gambar_ruangan" accept="image/*">
-          <input type="text" name="gambar_ruangan_manual" value="<?= htmlspecialchars($room['gambar_ruangan'] ?? '') ?>" placeholder="Atau isi URL/path gambar jika sudah ada">
-
-          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
-            <button type="submit" class="btn-pill btn-save">Simpan Perubahan</button>
-            <a class="btn-pill btn-cancel" href="?route=Admin/dataRuangan">Batal</a>
-          </div>
+<div style="display:flex; gap:12px; margin-top:30px;">
+    <button type="submit" class="btn-pill btn-save">Simpan Perubahan</button>
+    <a class="btn-pill btn-cancel" href="?route=Admin/dataRuangan">Batal</a>
+</div>
         </form>
       </section>
     </main>
