@@ -39,7 +39,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Akun User - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.9">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=2.1">
   <!-- FontAwesome Regular & Solid -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -170,7 +170,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           </div>
         </div>
 
-        <form class="filter-bar" method="GET" action="">
+         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dataAkun">
 
           <label>Urut tanggal</label>
@@ -201,13 +201,15 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <?php endforeach; ?>
           </select>
 
-          <label>Jurusan</label>
-          <select name="jurusan">
-            <option value="">Semua</option>
-            <?php foreach ($jurusanList as $jrl): ?>
+          <div style="display: flex; align-items: center; gap: 15px; margin-top: 15px; flex-wrap: wrap;">
+    
+    <label style="font-weight: bold; white-space: nowrap;">Jurusan</label>
+
+    <select name="jurusan" style="padding: 8px; border-radius: 8px; border: 1px solid #ccc; min-width: 150px;">
+        <?php foreach ($jurusanList as $jrl): ?>
               <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
             <?php endforeach; ?>
-          </select>
+    </select>
 
           <label>Program Studi</label>
           <select name="program_studi">
@@ -216,34 +218,32 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
-
-          <label>Status Akun</label>
-          <select name="status_akun">
-            <option value="">Semua</option>
-            <?php foreach ($statusakunList as $stl): ?>
-              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filters['status_akun']===$stl?'selected':'') ?>><?= htmlspecialchars($stl) ?></option>
-            <?php endforeach; ?>
-          </select>
+          <br>
           
-          <div class="search-bar" style="margin-left:auto;">
-            <input
-              type="text"
-              name="keyword"
-              placeholder="Cari nama atau NIM/NIP..."
-              value="<?= htmlspecialchars($filters['keyword']) ?>">
-            <button type="submit" aria-label="Cari">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round">
+          <div class="search-bar" style="width: 250px; margin: 0; display: flex; align-items: center;">
+        <input
+            type="text"
+            name="keyword"
+            placeholder="Cari nama/NIM..."
+            value="<?= htmlspecialchars($filters['keyword']) ?>"
+            style="flex: 1; border: none; outline: none; background: transparent;">
+        <button type="submit" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; padding-right: 10px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="orange" stroke-width="2">
                 <circle cx="11" cy="11" r="7"></circle>
-                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
-              </svg>
-            </button>
-          </div>
+                <line x1="16.65" y1="16.65" x2="21" y2="20"></line>
+            </svg>
+        </button>
+    </div>
 
-          <button type="submit" class="btn-filter">Terapkan</button>
-          <a class="btn-reset" href="?route=Admin/dataakun">Reset</a>
+    <button type="submit" class="btn-terapkan" style="height: 42px; padding: 0 20px; background-color: #ffcc00; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+        Terapkan
+    </button>
+
+    <a href="?reset=1" class="btn-reset" style="height: 42px; padding: 0 20px; background-color: #e0e0e0; border: none; border-radius: 8px; text-decoration: none; color: black; display: flex; align-items: center; font-size: 14px; font-weight: bold; white-space: nowrap;">
+        Reset
+    </a>
+</div>
         </form>
-
         <div class="table-wrap">
           <table class="data-table">
             <thead>
