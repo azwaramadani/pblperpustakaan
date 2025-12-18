@@ -638,6 +638,28 @@ Class bookingController{
         exit;
     }
 
+        private function findInvalidMemberNims(array $anggota, User $userModel): array
+    {
+        // Hilangkan duplikat supaya pengecekan database tidak berulang.
+        $uniqueNims = array_values(array_unique($anggota));
+
+        $invalid = [];
+        foreach ($uniqueNims as $nim) {
+            // Lewati nilai kosong (jaga-jaga kalau input tidak bersih).
+            if ($nim === '') {
+                continue;
+            }
+
+            // Jika NIM/NIP tidak ada di tabel user, simpan untuk pesan error.
+            if (!$userModel->isNIMExists($nim)) {
+                $invalid[] = $nim;
+            }
+        }
+
+        return $invalid;
+    }
+
+    
     private function validateTanggalPeminjaman(string $tanggal): ?string
     {
         $tz = new DateTimeZone('Asia/Jakarta');
