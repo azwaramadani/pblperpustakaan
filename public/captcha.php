@@ -3,7 +3,7 @@ session_start();
 
 // 1. Generate Kode Acak (5 Karakter)
 $random_alpha = md5(rand());
-$captcha_code = substr($random_alpha, 0, 5);
+$captcha_code = substr($random_alpha, 0, 3);
 
 // Simpan kode di sesi untuk validasi nanti
 $_SESSION['captcha_code'] = $captcha_code;

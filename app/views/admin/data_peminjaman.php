@@ -2,10 +2,10 @@
 $adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 
 //pagination
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($bookings)];
+$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>15, 'total'=>count($bookings)];
 
 //buat hitung informasi kayak (menampilkan 1-... data dari ... data) 
-$perPage     = (int)($pagination['limit'] ?? 10);
+$perPage     = (int)($pagination['limit'] ?? 15);
 $currentPage = (int)($pagination['page'] ?? 1);
 $totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
 $totalRows   = (int)($pagination['total'] ?? count($bookings));
@@ -194,6 +194,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Waktu Peminjaman</th>
                 <th>Waktu Dibuat</th>
                 <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>

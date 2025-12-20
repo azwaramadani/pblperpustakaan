@@ -118,7 +118,7 @@ class AdminController {
         $keyword    = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
 
         // pagination setup
-        $perPage = 10; // jumlah baris per halaman
+        $perPage = 5; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
 

@@ -21,25 +21,4 @@ class Admin extends Model
         $sql = "SELECT * FROM {$this->table} WHERE admin_id = ?";
         return $this->query($sql, [$id])->fetch();
     }
-
-    # Ambil semua user yang belum divalidasi
-    public function getPendingUsers()
-    {
-        $sql = "SELECT * FROM user WHERE status_akun = 'Menunggu'";
-        return $this->query($sql)->fetchAll();
-    }
-
-    # Setujui akun user
-    public function approveUser($user_id)
-    {
-        $sql = "UPDATE user SET status_akun = 'Disetujui' WHERE user_id = ?";
-        return $this->query($sql, [$user_id]);
-    }
-
-    # Tolak akun user
-    public function rejectUser($user_id)
-    {
-        $sql = "UPDATE user SET status_akun = 'Ditolak' WHERE user_id = ?";
-        return $this->query($sql, [$user_id]);
-    }
 }

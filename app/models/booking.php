@@ -7,19 +7,7 @@ class Booking extends Model
 {
     protected $table = 'booking';
 
-    #ini jg method buat data book dashboard admin, tp buat backup aja kalo filtering/sorting error
-    public function getAll()
-    {
-        $sql = "SELECT b.*, u.role, u.jurusan, u.program_studi, u.nama AS nama_user, 
-                u.nim_nip, r.nama_ruangan
-                FROM {$this->table} b
-                JOIN user u ON b.user_id = u.user_id
-                JOIN room r ON b.room_id = r.room_id
-                ORDER BY b.tanggal DESC, b.jam_mulai DESC";
-        return $this->query($sql)->fetchAll();
-    }
-
-    # method data booking buat admin, pake sorting dan pagination
+    # method data booking buat admin, pake sorting trus pagination
     public function getAllSortedPaginated(
         string $sortOrder     = 'desc',
         ?string $fromDate     = null,
@@ -28,7 +16,7 @@ class Booking extends Model
         ?string $unit         = null,
         ?string $jurusan      = null,
         ?string $programStudi = null,
-        ?string $searchName   = null, //buat nyari nama
+        ?string $searchName   = null, 
         int $limit            = 10,
         int $page             = 1
     ): array {
@@ -65,8 +53,9 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ? OR b.tanggal LIKE ?)";
             $like     = '%' . $searchName . '%';
+            $params[] = $like;
             $params[] = $like;
             $params[] = $like;                                   
         }

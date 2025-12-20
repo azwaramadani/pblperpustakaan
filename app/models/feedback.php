@@ -73,8 +73,9 @@ class Feedback extends Model
         }
         if (!empty($searchName)) {
             // Cari berdasarkan nama penanggung jawab (yang buat booking) atau nama user
-            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ?)";
+            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ? OR b.kode_booking ?)";
             $like     = '%' . $searchName . '%';
+            $params[] = $like;
             $params[] = $like;
             $params[] = $like;
         }

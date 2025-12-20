@@ -165,15 +165,12 @@ class AuthController
             $password       = $_POST['password'] ?? '';
             $confirmPassword= $_POST['confirm_password'] ?? '';
 
-            // --- START: TAMBAHAN VALIDASI CAPTCHA ---
             $inputCaptcha = $_POST['captcha_input'] ?? '';
-            // Mengambil kode dari session native PHP karena captcha.php menggunakan session_start()
             $sessionCaptcha = $_SESSION['captcha_code'] ?? '';
 
             if ($inputCaptcha !== $sessionCaptcha) {
                 $errors[] = 'Kode keamanan (Captcha) salah atau tidak sesuai.';
             }
-            // --- END: TAMBAHAN VALIDASI CAPTCHA ---
 
             if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || 
                 $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || 
@@ -187,6 +184,10 @@ class AuthController
 
             if ($password !== $confirmPassword) {
                 $errors[] = 'Konfirmasi password tidak sesuai.';
+            }
+
+            if (strlen($password) > 6 ) {
+                $errors[] = 'password harus 6 karakter.';
             }
 
             $userModel = new User();
@@ -263,6 +264,10 @@ class AuthController
                 $errors[] = 'Konfirmasi password tidak sesuai.';
             }
 
+            if (strlen($password) < 8) {
+                $errors[] = 'password kurang dari 8 karakter.';
+            }
+
             $userModel = new User();
 
             if ($userModel->isNIMExists($old['nim_nip'])) {
@@ -327,6 +332,10 @@ class AuthController
 
             if ($password !== $confirmPassword) {
                 $errors[] = 'Konfirmasi password tidak sesuai.';
+            }
+
+            if (strlen($password) < 8) {
+                $errors[] = 'password kurang dari 8 karakter.';
             }
 
             $userModel = new User();
