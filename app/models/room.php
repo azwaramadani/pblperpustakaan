@@ -29,6 +29,13 @@ class Room extends Model
         return (int)($row['total'] ?? 0);
     }
 
+    #buat otomatis update status ruangan, ini sekalian nerapin materi basdat procedure
+    public function refreshRoomStatus() 
+    {
+        $sql = "CALL update_status_ruangan()";
+        return $this->query($sql);
+    }
+    
     #buat admin data ruangan
     public function getAllWithStats()
     {

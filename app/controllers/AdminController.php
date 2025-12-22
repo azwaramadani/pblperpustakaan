@@ -318,10 +318,12 @@ class AdminController {
         Session::preventCache();
 
         $adminModel = new Admin();
-        $roomModel  = new Room();
 
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
+
+        $roomModel = new Room();
+        $roomModel->refreshRoomStatus();
         $rooms   = $roomModel->getAllWithStats();
 
         $success = Session::get('flash_success');
