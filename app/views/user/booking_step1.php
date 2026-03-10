@@ -174,7 +174,9 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         <div class="flash-message flash-success"><?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
       <?php if ($err): ?>
-        <div class="flash-message flash-warning"><?= htmlspecialchars($err) ?></div>
+        <div class="flash-message flash-warning">
+          <h4><?= htmlspecialchars($err) ?></h4>
+        </div>
       <?php endif; ?>
       
       <!-- Informasi jadwal terpakai hari ini -->

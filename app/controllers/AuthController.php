@@ -186,8 +186,8 @@ class AuthController
                 $errors[] = 'Konfirmasi password tidak sesuai.';
             }
 
-            if (strlen($password) > 6 ) {
-                $errors[] = 'password harus 6 karakter.';
+            if (strlen($password) < 8 ) {
+                $errors[] = 'password harus lebih dari 8 karakter.';
             }
 
             $userModel = new User();

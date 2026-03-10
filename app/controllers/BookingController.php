@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../core/helper.php';
 date_default_timezone_set('Asia/Jakarta');
 
 Class bookingController{
-     public function step1($roomId)
+    public function step1($roomId)
     {
         Session::checkUserLogin();
         Session::preventCache();
