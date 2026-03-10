@@ -94,6 +94,8 @@ class AuthController
         Session::set("email", $user['email'] ?? '');
         Session::set("jurusan", $user['jurusan'] ?? '');
         Session::set("program_studi", $user['program_studi'] ?? '');
+
+        Session::regenerate();
         
         # Redirect user ke halaman home
         header("Location: ?route=User/home");

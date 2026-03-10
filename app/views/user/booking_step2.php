@@ -369,13 +369,16 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (response.ok) {
-                openModal();
-            } else {
-                showWarning('Terjadi kesalahan pada server. Mohon coba lagi.');
-            }
-        })
+        .then(res => res.json())
+          .then(data => {
+
+              if (data.success) {
+                  openModal();
+              } else {
+                  showWarning(data.message);
+              }
+
+          })
         .catch(error => {
             console.error('Error:', error);
             showWarning('Gagal terhubung ke server. Periksa koneksi internet.');

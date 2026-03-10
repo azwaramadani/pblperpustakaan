@@ -1,19 +1,18 @@
 <?php
-# CORE: HELPER
-# Berisi fungsi-fungsi helper seperti kirim email, generate kode booking, dan upload file bukti aktivasi kubaca
-# ===============================================================
+
 require_once __DIR__ . '/../config/app.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-# buat mailpit
-function sendMail($to, $subject, $body) {
+function sendMail($to, $subject, $body)
+{
     $mailConfig = require __DIR__ . '/../config/mail.php';
 
     $mail = new PHPMailer(true);
 
     try {
+
         $mail->isSMTP();
         $mail->Host = $mailConfig['host'];
         $mail->Port = $mailConfig['port'];
@@ -33,27 +32,30 @@ function sendMail($to, $subject, $body) {
     }
 }
 
-# method/function Generate kode booking 
 function generateBookingCode(): string
 {
-    $date = date('Ymd');
-    $rand = random_int(1000, 9999);
-    return "BK-{$date}-{$rand}";
+    return "BK-" . date('Ymd') . "-" . strtoupper(bin2hex(random_bytes(2)));
 }
 
-// method helper buat upload image (misal bukti aktivasi)
 function uploadFile($file, $targetDir)
 {
     if (!isset($file) || $file['error'] !== 0) {
         return false;
     }
 
-    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-    $name = time() . "-" . rand(1000, 9999) . "." . $ext;
+    $allowed = ['jpg','jpeg','png','pdf'];
+
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $allowed)) {
+        return false;
+    }
 
     if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
+        mkdir($targetDir, 0755, true);
     }
+
+    $name = uniqid() . "." . $ext;
 
     $path = $targetDir . $name;
 
@@ -64,7 +66,6 @@ function uploadFile($file, $targetDir)
     return false;
 }
 
-# Kirim JSON (untuk AJAX)
 function jsonResponse($data)
 {
     header('Content-Type: application/json');
