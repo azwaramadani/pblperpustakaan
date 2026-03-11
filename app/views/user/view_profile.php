@@ -32,7 +32,7 @@
   
   <div class="page-header">
     <h1 class="page-title">Profil Saya</h1>
-    <p class="page-subtitle">Kelola informasi profil dan akun Anda</p>
+    <p class="page-subtitle">Informasi Anda</p>
   </div>
 
   <section class="profile-container">

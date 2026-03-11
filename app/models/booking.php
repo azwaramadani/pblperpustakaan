@@ -96,6 +96,7 @@ class Booking extends Model
                         b.jam_selesai,
                         b.created_at,
                         b.status_booking,
+                        b.waktu_cancel,
                         b.jumlah_peminjam,
                         u.role,
                         u.unit,

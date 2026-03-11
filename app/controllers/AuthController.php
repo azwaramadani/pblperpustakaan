@@ -52,7 +52,7 @@ class AuthController
 
         # VALIDASI 1: Akun tidak ditemukan
         if (!$user) {
-            Session::set("flash_error", "Akun tidak ditemukan.");
+            Session::set("flash_error", "Akun tidak ditemukan, silahkan daftar/register jika belum memiliki akun");
             header("Location: ?route=Auth/login");
             exit;
         }
@@ -80,7 +80,7 @@ class AuthController
 
         # VALIDASI Password user salah
         if (!password_verify($password, $user['password'])) {
-            Session::set("flash_error", "Password salah.");
+            Session::set("flash_error", "username atau  password salah.");
             header("Location: ?route=Auth/login");
             exit;
         }

@@ -194,6 +194,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Waktu Peminjaman</th>
                 <th>Waktu Dibuat</th>
                 <th>Status</th>
+                <th>Waktu Dibatalkan</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -227,6 +228,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                         <?= htmlspecialchars($b['status_booking']) ?>
                       </span>
                     </td>
+                    <td><?= htmlspecialchars($b['waktu_cancel'] ?? '-') ?></td>
                   </tr>
                 <?php endforeach; ?>
               <?php endif; ?>
