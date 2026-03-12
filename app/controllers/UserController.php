@@ -92,14 +92,14 @@ class UserController{
             $bookingId     = $row['booking_id'];
             $namaRuangan   = $row['nama_ruangan'] ?? '-';
             $kodeBooking   = $row['kode_booking'] ?? '-';
-            $tanggal       = $this->formatTanggal($row['tanggal'] ?? null);
+            $tanggal       = $this->formatTanggal($row['tanggal'] ?? '-');
             $jam           = $this->formatRentangJam($row['jam_mulai'] ?? null, $row['jam_selesai'] ?? null);
             $penanggung    = $row['nama_penanggung_jawab'] ?? '-';
             $nim           = $row['nimnip_penanggung_jawab'] ?? '-';
             $email         = $row['email_penanggung_jawab'] ?? '-';
             $nimRuangan    = $row['nimnip_peminjam'] ?? '-';
             $status        = $row['status_booking'] ?? '-';
-            $createdAt     = $row['created_at'] ?? '-';
+            $createdAt     = $this->formatTanggal($row['created_at'] ?? '-');
             $gambar        = $this->buildGambarUrl($row['gambar'] ?? null);
             $sudahFeedback = !empty($row['sudah_feedback']);
 
@@ -113,7 +113,7 @@ class UserController{
                 'penanggung'     => $penanggung,
                 'nim'            => $nim,
                 'email'          => $email,
-                'nim_ruangan'    => $nimRuangan,
+                'nimnip_peminjam'    => $nimRuangan,
                 'status'         => $status,
                 'created_at'     => $createdAt,
                 'gambar'         => $gambar,
