@@ -5,10 +5,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class AdminController {
 
-    #method handler buat dashboard admin
+    #Method handler untuk page dashboard admin
     public function dashboard()
     {
-        // buat memastikan kalau admin udah login dan kalau admin logout, halamannya tidak di cache oleh sistem.
+        // untuk memastikan bahwa admin sudah login atau belum, lalu halamannya tidak di cache oleh sistem.
         Session::checkAdminLogin();
         Session::preventCache();
 
@@ -18,11 +18,11 @@ class AdminController {
         $userModel     = new User();
         $roomModel     = new Room();
 
-        // buat nampilin icon profile admin 
+        // untuk menampilkan logo profile admin di pojok kiri page
         $adminId = Session::get('admin_id');
         $admin   = $adminModel->findById($adminId);
 
-        // ini buat nampilin card-card statistik di bagian atas, tapi khusus hari ini
+        // untuk menampilkan statistik card 
         $today = date('Y-m-d');
         $stats = [
             'user_today'        => $userModel->countRegisteredToday($today),
@@ -32,10 +32,10 @@ class AdminController {
             'user_total'        => $userModel->countAllusers(), 
         ];
 
-        // buat set auto selesai kalo jam booking udah nyentuh jam selesai
+        // untuk set auto selesai kalo jam booking sudah menyentuh jam selesai
         $bookingModel->markFinishedBookings();
 
-        // ini semua buat sorting + searching di tabel admin today bookings
+        // ini semua untuk sorting + searching di tabel admin today bookings
         $sortCreate  = strtolower($_GET['sort_create'] ?? 'desc');
         $sortDate    = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate    = $_GET['from_date'] ?? '';
@@ -47,12 +47,12 @@ class AdminController {
         $feedbackSel = $_GET['feedback'] ?? '';
         $keyword     = trim($_GET['keyword'] ?? ''); // kata kuncinya pakai nama penanggung jawab
     
-        // ini buat setup pagination
+        // ini untuk setup pagination
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
 
-        // nah, ini dia untuk mengambil semua data tabel today bookings
+        //ini untuk mengambil semua data tabel today bookings
         $pagination = $bookingModel->getAllSortedPaginatedToday(
                         $sortCreate,
                         $roleSel ?: null,
@@ -63,10 +63,10 @@ class AdminController {
                         $perPage,
                         $page);
         
-        // nah, variabel ini fungsinya nyimpen semua data, lalu dipanggil di views/dashboard                
+        // variabel ini fungsinya menyimpan semua data, lalu dipanggil di views/dashboard                
         $todayBookings = $pagination['data'];    
 
-        // ini opsi-opsi buat sorting role, unit tendik, jurusan, dan prodi
+        // ini opsi-opsi buat sorting role, unit tenaga kependidikan, jurusan, dan prodi (program studi)
         $roleList     = $this->roleOptions();
         $unitList     = $this->unitOptions();
         $jurusanList  = $this->jurusanOptions();
@@ -82,7 +82,7 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        // variabel ini buat nyimpen ruangan + total udah dibooking berapa kali
+        // variabel ini buat menyimpan ruangan + total udah dibooking berapa kali
         $topRooms  = $bookingModel->getTopRoomsByBooking(9);
 
         // buat flash error atau success

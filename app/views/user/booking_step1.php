@@ -360,8 +360,8 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
     // Blokir weekend & tanggal lampau di browser (frontend guard)
     const tanggalInput = document.querySelector('input[name="tanggal"]');
     const minDateStr = '<?= htmlspecialchars($todayMin) ?>';
-    const weekendMsg = 'Peminjaman tidak diperbolehkan pada hari Sabtu atau Minggu.';
-    const pastMsg = 'Tanggal peminjaman tidak boleh sebelum hari ini.';
+    const weekendMsg = 'Tidak bisa meminjam untuk hari Sabtu dan Minggu.';
+    const pastMsg = 'Tanggal peminjaman tidak bisa sebelum hari ini.';
 
     function isWeekend(dateStr) {
         const d = new Date(dateStr + 'T00:00:00');
@@ -393,7 +393,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
     const jamSelesaiInput = document.querySelector('input[name="jam_selesai"]');
     const minTime = '<?= htmlspecialchars($minTime) ?>';
     const maxTime = '<?= htmlspecialchars($maxTime) ?>';
-    const timeMsg = 'Peminjaman hanya boleh antara 09:00 - 15:00.';
+    const timeMsg = 'Peminjaman hanya bisa antara 09:00 - 15:00.';
     const orderMsg = 'Jam selesai harus setelah jam mulai.';
     const durationMsg = 'Durasi peminjaman maksimal 3 jam.';
 

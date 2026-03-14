@@ -734,7 +734,7 @@ Class bookingController{
         $breakEnd   = DateTime::createFromFormat('H:i', '12:30', $tz);
 
         if (!($end <= $breakStart || $start >= $breakEnd)) {
-            return 'Tidak boleh memesan ruangan pada jam istirahat (11:30 - 12:30).';
+            return 'Tidak bisa memesan ruangan untuk jam istirahat (11:30 - 12:30).';
         }
 
         // BLOK JAM YANG SUDAH LEWAT HARI INI
