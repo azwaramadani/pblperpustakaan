@@ -12,87 +12,96 @@ class AdminController {
         Session::checkAdminLogin();
         Session::preventCache();
 
-        // buat objek baru dari class-class yang dibutuhkan di folder Model
-        $adminModel    = new Admin();
-        $bookingModel  = new Booking();
-        $userModel     = new User();
-        $roomModel     = new Room();
+        $admin  = $this->getAdminProfile();
 
-        // untuk menampilkan logo profile admin di pojok kiri page
-        $adminId = Session::get('admin_id');
-        $admin   = $adminModel->findById($adminId);
+        $stats = $this->getDashboardStats();
 
-        // untuk menampilkan statistik card 
-        $today = date('Y-m-d');
-        $stats = [
-            'user_today'        => $userModel->countRegisteredToday($today),
-            'user_mustvalidate' => $userModel->mustvalidateRegistered(),
-            'booking_today'     => $bookingModel->countBookingToday($today),
-            'room_active'       => $roomModel->countActiverooms(),
-            'user_total'        => $userModel->countAllusers(), 
-        ];
+        $filters = $this->getDashboardFilters();
 
-        // untuk set auto selesai kalo jam booking sudah menyentuh jam selesai
-        $bookingModel->markFinishedBookings();
+        $pagination = $this->getTodayBookings($filters);
 
-        // ini semua untuk sorting + searching di tabel admin today bookings
-        $sortCreate  = strtolower($_GET['sort_create'] ?? 'desc');
-        $sortDate    = strtolower($_GET['sort_date'] ?? 'desc');
-        $fromDate    = $_GET['from_date'] ?? '';
-        $toDate      = $_GET['to_date'] ?? '';
-        $roleSel     = $_GET['role'] ?? '';
-        $unitSel     = $_GET['unit'] ?? '';
-        $jurusanSel  = $_GET['jurusan'] ?? '';
-        $prodiSel    = $_GET['program_studi'] ?? '';
-        $feedbackSel = $_GET['feedback'] ?? '';
-        $keyword     = trim($_GET['keyword'] ?? ''); // kata kuncinya pakai nama penanggung jawab
-    
-        // ini untuk setup pagination
-        $perPage = 10; // jumlah baris per halaman
-        $pageReq = (int)($_GET['page'] ?? 1);
-        $page    = $pageReq > 0 ? $pageReq : 1;
+        $todayBookings = $pagination['data'];
 
-        //ini untuk mengambil semua data tabel today bookings
-        $pagination = $bookingModel->getAllSortedPaginatedToday(
-                        $sortCreate,
-                        $roleSel ?: null,
-                        $unitSel ?: null,
-                        $jurusanSel ?: null,
-                        $prodiSel ?: null,
-                        $keyword ?: null,
-                        $perPage,
-                        $page);
-        
-        // variabel ini fungsinya menyimpan semua data, lalu dipanggil di views/dashboard                
-        $todayBookings = $pagination['data'];    
-
-        // ini opsi-opsi buat sorting role, unit tenaga kependidikan, jurusan, dan prodi (program studi)
         $roleList     = $this->roleOptions();
         $unitList     = $this->unitOptions();
         $jurusanList  = $this->jurusanOptions();
         $prodiList    = $this->prodiOptions();
 
-        // ini variabel yang nyimpan semua sorting-nya, supaya bisa dipanggil di views/dashboard
-        $filters = [
-            'sort_create'   => $sortCreate,
-            'role'          => $roleSel,
-            'unit'          => $unitSel,
-            'jurusan'       => $jurusanSel,
-            'program_studi' => $prodiSel,
-            'keyword'       => $keyword,
-        ];
+        $topRooms = (new Booking())->getTopRoomsbyBooking(15);
+        
+        $flash = $this->getFlashMessages();
 
-        // variabel ini buat menyimpan ruangan + total udah dibooking berapa kali
-        $topRooms  = $bookingModel->getTopRoomsByBooking(9);
-
-        // buat flash error atau success
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $success = $flash['success'] ?? null;
+        $error   = $flash['error'] ?? null;
 
         // jangan lupa pakai require, karena kalau tidak, semua variabel controller yang dipanggil di views, gaakan bekerja.
         require __DIR__ . '/../views/admin/dashboard.php';
+    }
+    
+    private function getAdminProfile(){
+        $adminModel = new Admin();
+        $adminId    = Session::get('admin_id');
+        return $adminModel->findbyId($adminId);
+    }
+
+    private function getDashboardStats(){
+        $userModel      = new User();
+        $bookingModel   = new Booking();
+        $roomModel      = new Room();
+
+        $today  = date('Y-m-d');
+
+        $bookingModel->markFinishedBookings();
+
+        return [
+            'user_today'            => $userModel->countRegisteredToday($today),
+            'user_mustvalidate'     => $userModel->mustvalidateRegistered(),
+            'booking_today'         => $bookingModel->countBookingToday($today),
+            'room_active'           => $roomModel->countActiveRooms(),
+            'user_total'            => $userModel->countAllusers()
+        ];
+    }
+
+    private function getDashboardFilters(){
+        return [
+            'sort_create'   => strtolower($_GET['sort_create'] ?? 'desc'),
+            'role'          => $_GET['role'] ?? '',
+            'unit'          => $_GET['unit'] ?? '',
+            'jurusan'       => $_GET['jurusan'] ?? '',
+            'program_studi' => $_GET['program_studi'] ?? '',
+            'keyword'       => trim($_GET['keyword'] ?? ''),
+            'page'          => max(1, (int)($_GET['page'] ?? 1))
+        ];
+    }
+
+    private function getTodayBookings($filters){
+        $bookingModel   = new Booking();
+
+        $perPage = 10;
+
+        return $bookingModel->getAllSortedPaginatedToday(
+            $filters['sort_create'],
+            $filters['role'] ?: null,
+            $filters['unit'] ?: null,
+            $filters['jurusan'] ?: null,
+            $filters['program_studi'] ?: null,
+            $filters['keyword'] ?: null,
+            $perPage,
+            $filters['page']
+        );
+    }
+
+    private function getFlashMessages(){
+        $success    = Session::get('flash_success');
+        $error      = Session::get('flash_error');
+
+        Session::set('flash_success', null);
+        Session::set('flash_error', null);
+
+        return [
+            'success'   => $success,
+            'error'     => $error
+        ];
     }
 
     //method handler data peminjaman admin

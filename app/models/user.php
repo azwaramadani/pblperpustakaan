@@ -258,7 +258,7 @@ class User extends Model
     //method hapus akun user di page admin data akun
     public function deleteById($id)
     {
-        $sql = "DELETE FROM {$this->table} WHERE user_id = ?";
+        $sql = "UPDATE {$this->table} SET status_akun = 'Dihapus', deleted_at = NOW() WHERE user_id = ?";
         return $this->query($sql, [$id]);
     }
 

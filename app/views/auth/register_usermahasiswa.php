@@ -58,7 +58,7 @@ $prodiList = $prodiList ?? [];
             <input id="nama" type="text" name="nama" placeholder="Masukkan Nama Lengkap" value="<?= htmlspecialchars($old['nama']) ?>" required>
 
             <label for="no_hp">No. Handphone</label>
-            <input id="no_hp" type="text" name="no_hp" placeholder="Contoh: 08123456789" value="<?= htmlspecialchars($old['no_hp']) ?>" required>
+            <input id="no_hp" type="tel" name="no_hp" placeholder="Contoh: 08123456789" value="<?= htmlspecialchars($old['no_hp']) ?>" required>
 
             <label for="email">Email</label>
             <input id="email" type="email" name="email" placeholder="email@contoh.com" autocomplete="off" value="<?= htmlspecialchars($old['email']) ?>" required>

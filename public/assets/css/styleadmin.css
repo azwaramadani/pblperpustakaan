@@ -485,6 +485,11 @@ table.data-table tbody tr:hover {
     background: #ffe4e1;
 }
 
+.status-dihapus {
+    color: #c0392b;
+    background: #ffe4e1;
+}
+
 .status-diblokir {
     color: #c0392b;
     background: #ffe4e1;
