@@ -72,3 +72,32 @@ function jsonResponse($data)
     echo json_encode($data);
     exit;
 }
+
+function format_indo_date($dateTime, $showTime = false){
+    if (empty($dateTime) || $dateTime == '-' || $dateTime == '0000-00-00 00:00:00'){
+        return '-';
+    }
+    try {
+        $date = new DateTime($dateTime);
+
+        $bulan = [
+            1 => 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
+            'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
+        ];
+
+        $tgl = $date->format('d');
+        $bln = (int)$date->format('m');
+        $thn = $date->format('Y');
+        
+        $hasil = "{$tgl} {$bulan[$bln]} {$thn}";
+
+        if ($showTime = True){
+            $waktu = $date->format('H:i');
+            $hasil .= " | {$waktu}";
+        }
+
+        return $hasil;
+    } catch (Exception $e) {
+        return '-';
+    }
+}

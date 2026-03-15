@@ -162,7 +162,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <input
               type="text"
               name="keyword"
-              placeholder="Cari Nama atau NIM/NIP penanggung jawab..."
+              placeholder="Cari Nama, NIM/NIP PJ, atau Ruangan..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -222,13 +222,13 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
-                    <td><?= htmlspecialchars($b['created_at']) ?></td>
+                    <td><?= htmlspecialchars(format_indo_date($b['created_at'])) ?></td>
                     <td>
                       <span class="status-chip status-<?= $statusKey ?>">
                         <?= htmlspecialchars($b['status_booking']) ?>
                       </span>
                     </td>
-                    <td><?= htmlspecialchars($b['waktu_cancel'] ?? '-') ?></td>
+                    <td><?= htmlspecialchars(format_indo_date($b['waktu_cancel'])) ?></td>
                   </tr>
                 <?php endforeach; ?>
               <?php endif; ?>
