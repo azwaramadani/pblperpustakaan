@@ -138,7 +138,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
         <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
         <h3>Waktu Peminjaman:</h3>
-        <p>Tanggal: <strong><?= htmlspecialchars($payload['tanggal']) ?></strong></p>
+        <p>Tanggal: <strong><?= htmlspecialchars($payload['tanggal']) ? date('d M Y', strtotime($payload['tanggal'])) : '-' ?></strong></p>
         <p>Jam: <strong><?= htmlspecialchars($payload['jam_mulai']) ?> </strong> - <strong> <?= htmlspecialchars($payload['jam_selesai']) ?> </strong></p>
         <p style="margin-top:8px;font-weight:600;">
           Maks anggota: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).
@@ -381,7 +381,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
           })
         .catch(error => {
             console.error('Error:', error);
-            showWarning('Gagal terhubung ke server. Periksa koneksi internet.');
+            showWarning('Anda atau salah satu anggota peminjam sudah meminjam ruangan hari ini! coba lagi besok.');
         })
         .finally(() => {
             submitBtn.innerText = originalBtnText;

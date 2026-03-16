@@ -435,10 +435,12 @@ class Booking extends Model
         $sql = "SELECT DISTINCT room_id
                 FROM {$this->table}
                 WHERE status_booking = 'Disetujui'
-                  AND tanggal = CURDATE()
-                  AND jam_mulai <= CURTIME()
-                  AND jam_selesai > CURTIME()";
+                AND tanggal = CURDATE()
+                AND jam_mulai <= CURTIME()
+                AND jam_selesai > CURTIME()";
+
         $rows = $this->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+
         return array_map('intval', $rows);
     }
 
@@ -580,7 +582,7 @@ class Booking extends Model
             $data['nama_penanggung_jawab'],
             $data['nimnip_penanggung_jawab'],
             $data['email_penanggung_jawab'],
-            $data['nimnip_peminjam'],
+            $data['nimnip_peminjam'],   
             $data['kode_booking'],
             $data['status_booking']
         ]);
@@ -609,15 +611,16 @@ class Booking extends Model
         ]);
     }
 
-        // Cek bentrok booking lain di ruangan dan tanggal yang sama
+    // Cek bentrok booking lain di ruangan dan tanggal yang sama
     public function hasOverlap($room_id, $tanggal, $jam_mulai, $jam_selesai, $exclude_booking_id = null)
     {
         $sql = "SELECT COUNT(*) AS cnt
                 FROM {$this->table}
                 WHERE room_id = ?
-                  AND status_booking IN ('Disetujui')
-                  AND tanggal = ?
-                  AND NOT (jam_selesai <= ? OR jam_mulai >= ?)";
+                AND tanggal = ?
+                AND status_booking = 'Disetujui'
+                AND NOT (jam_selesai <= ? OR jam_mulai >= ?)";
+
         $params = [$room_id, $tanggal, $jam_mulai, $jam_selesai];
 
         if ($exclude_booking_id) {
@@ -626,20 +629,24 @@ class Booking extends Model
         }
 
         $row = $this->query($sql, $params)->fetch();
+
         return ($row['cnt'] ?? 0) > 0;
     }
 
     # Cek apakah NIM/NIP peminjam sudah pernah booking ruangan ini pada tanggal yang sama
-    public function memberAlreadyBooked($nimnip, $room_id, $tanggal)
+    public function memberAlreadyBooked($nimnip, $tanggal)
     {
         $sql = "SELECT COUNT(*) AS cnt
                 FROM {$this->table}
-                WHERE nimnip_peminjam = ?
-                AND room_id = ?
-                AND tanggal = ?
-                AND status_booking IN ('Disetujui', 'Selesai')";
+                WHERE tanggal = ?
+                AND status_booking IN ('Disetujui','Selesai')
+                AND (
+                    nimnip_penanggung_jawab = ?
+                    OR FIND_IN_SET(?, nimnip_peminjam)
+                )";
 
-        $row = $this->query($sql, [$nimnip, $room_id, $tanggal])->fetch();
+        $row = $this->query($sql, [$tanggal, $nimnip, $nimnip])->fetch();
+
         return ($row['cnt'] ?? 0) > 0;
     }
 

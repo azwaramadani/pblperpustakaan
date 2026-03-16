@@ -1,35 +1,66 @@
 <?php
-$adminName     = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-$todayDate     = $todayDate ?? date('Y-m-d');
-$stats         = $stats ?? ['user_mustvalidate'=>0, 'user_today'=>0,'booking_today'=>0,'room_active'=>0,'user_total'=>0];
+// ===== BASIC DATA =====
+$adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$todayDate = $todayDate ?? date('Y-m-d');
 
-//pagination logic
-$pagination  = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($todayBookings)];
-$perPage     = (int)($pagination['limit'] ?? 10);
-$currentPage = (int)($pagination['page'] ?? 1);
-$totalPages  = max(1, (int)($pagination['total_pages'] ?? 1));
-$totalRows   = (int)($pagination['total'] ?? count($todayBookings));
+$stats = $stats ?? [
+    'user_mustvalidate' => 0,
+    'user_today' => 0,
+    'booking_today' => 0,
+    'room_active' => 0,
+    'user_total' => 0
+];
+
+// ===== PAGINATION DATA =====
+$pagination = $pagination ?? [
+    'page' => 1,
+    'total_pages' => 1,
+    'limit' => 10,
+    'total' => count($todayBookings)
+];
+
+$perPage     = (int)$pagination['limit'];
+$currentPage = (int)$pagination['page'];
+$totalPages  = max(1, (int)$pagination['total_pages']);
+$totalRows   = (int)$pagination['total'];
 
 $startRow = $totalRows ? (($currentPage - 1) * $perPage + 1) : 0;
 $endRow   = $totalRows ? min($startRow + $perPage - 1, $totalRows) : 0;
 
+
+// ===== PAGINATION QUERY =====
 $queryParams = $_GET ?? [];
 $queryParams['route'] = 'Admin/dashboard';
 unset($queryParams['page']);
+
 $baseQuery = http_build_query($queryParams);
 $baseQuery = $baseQuery ? ($baseQuery . '&') : 'route=Admin/dashboard&';
 
-$maxLinks   = 5;
-$startPage  = max(1, $currentPage - 2);
-$endPage    = min($totalPages, $currentPage + 2);
+
+// ===== PAGE WINDOW =====
+$maxLinks  = 5;
+$startPage = max(1, $currentPage - 2);
+$endPage   = min($totalPages, $currentPage + 2);
+
 if (($endPage - $startPage + 1) < $maxLinks) {
     $needed    = $maxLinks - ($endPage - $startPage + 1);
     $startPage = max(1, $startPage - $needed);
     $endPage   = min($totalPages, $startPage + $maxLinks - 1);
 }
-$noData        = $totalRows === 0;
-$disablePrev   = $noData || $currentPage <= 1;
-$disableNext   = $noData || $currentPage >= $totalPages;
+
+$noData      = $totalRows === 0;
+$disablePrev = $noData || $currentPage <= 1;
+$disableNext = $noData || $currentPage >= $totalPages;
+
+
+// ===== STATS CARD DATA =====
+$statCards = [
+    ['value'=>$stats['user_mustvalidate'],'label'=>'Akun perlu validasi','route'=>'Admin/dataAkun'],
+    ['value'=>$stats['user_today'],'label'=>'User baru hari ini','route'=>'Admin/dataAkun'],
+    ['value'=>$stats['user_total'],'label'=>'Total User','route'=>'Admin/dataAkun'],
+    ['value'=>$stats['booking_today'],'label'=>'Booking hari ini','route'=>'Admin/dashboard'],
+    ['value'=>$stats['room_active'],'label'=>'Ruangan Aktif','route'=>'Admin/dataruangan'],
+];
 ?>
 
 <!DOCTYPE html>
@@ -108,36 +139,14 @@ $disableNext   = $noData || $currentPage >= $totalPages;
  
       <!-- Stats Grid -->  
       <div class="stats-grid">
-        <a href="?route=Admin/dataAkun" class="stats-cardlink">
+      <?php foreach ($statCards as $card): ?>
+        <a href="?route=<?= $card['route'] ?>" class="stats-cardlink">
           <div class="stat-card">
-            <p class="stat-number"><?= (int)$stats['user_mustvalidate'] ?></p>
-            <p class="stat-label">Akun perlu validasi</p>
+            <p class="stat-number"><?= (int)$card['value'] ?></p>
+            <p class="stat-label"><?= $card['label'] ?></p>
           </div>
         </a>
-        <a href="?route=Admin/dataAkun" class="stats-cardlink">
-          <div class="stat-card">
-            <p class="stat-number"><?= (int)$stats['user_today'] ?></p>
-            <p class="stat-label">User baru hari ini</p>
-          </div>
-        </a>
-        <a href="?route=Admin/dataAkun" class="stats-cardlink">
-            <div class="stat-card">
-              <p class="stat-number"><?= (int)$stats['user_total'] ?></p>
-              <p class="stat-label">Total User</p>
-            </div>
-        </a>
-        <a href="?route=Admin/dashboard" class="stats-cardlink">
-          <div class="stat-card">
-            <p class="stat-number"><?= (int)$stats['booking_today'] ?></p>
-            <p class="stat-label">Booking hari ini</p>
-          </div>
-        </a>
-        <a href="?route=Admin/dataruangan" class="stats-cardlink">
-          <div class="stat-card">
-            <p class="stat-number"><?= (int)$stats['room_active'] ?></p>
-            <p class="stat-label">Ruangan Aktif</p>
-          </div>
-        </a>  
+      <?php endforeach; ?>
       </div>
 
       <!-- Tabel Data Booking -->

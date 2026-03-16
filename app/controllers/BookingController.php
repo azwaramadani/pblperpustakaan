@@ -409,8 +409,13 @@ Class bookingController{
         $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
 
         foreach ($nimsToCheck as $nimCheck) {
-            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['room_id'], $payload['tanggal'])) {
-                Session::set('flash_error', 'NIM/NIP ' . $nimCheck . ' sudah terdaftar di ruangan ini pada tanggal tersebut.');
+            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
+
+                Session::set(
+                    'flash_error',
+                    'NIM/NIP ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
+                );
+
                 header('Location: ?route=Booking/step1/' . $payload['room_id']);
                 exit;
             }

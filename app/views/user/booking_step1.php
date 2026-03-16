@@ -182,7 +182,6 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
       <!-- Informasi jadwal terpakai hari ini -->
       <div class="schedule-box">
         <h4>Waktu yang sudah dipinjam:</h4>
-        <p>Anda tidak bisa memilih jam pada rentang di bawah ini.</p>
         <?php if (!empty($todayIntervals)): ?>
           <table class="schedule-table">
             <thead>
