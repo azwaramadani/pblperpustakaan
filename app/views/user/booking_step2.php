@@ -340,6 +340,15 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
             return;
         }
 
+        // Cek apakah ada NIM anggota yang duplikat
+        const nimValues = anggotaInputs.map(i => i.value.trim());
+        const uniqueNims = new Set(nimValues);
+
+        if (uniqueNims.size !== nimValues.length) {
+            showWarning("Tidak boleh ada NIM anggota yang sama.");
+            return;
+        }
+
         // Update jumlah anggota
         const filledMembers = anggotaInputs.map(i => i.value.trim()).filter(v => v !== '');
         const total = 1 + filledMembers.length;
@@ -366,27 +375,48 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         submitBtn.disabled = true;
 
         fetch(bookingForm.action, {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-          .then(data => {
+              method: 'POST',
+              body: formData
+          })
+          .then(async res => {
 
-              if (data.success) {
-                  openModal();
-              } else {
-                  showWarning(data.message);
+              const text = await res.text();
+
+              try {
+                  return JSON.parse(text);
+              } catch (e) {
+                  console.error("Response bukan JSON:", text);
+                  throw new Error("Invalid JSON response");
               }
 
           })
-        .catch(error => {
-            console.error('Error:', error);
-            showWarning('Anda atau salah satu anggota peminjam sudah meminjam ruangan hari ini! coba lagi besok.');
-        })
-        .finally(() => {
-            submitBtn.innerText = originalBtnText;
-            submitBtn.disabled = false;
-        });
+          .then(data => {
+
+              if (data.success === true) {
+                  openModal();
+                  return;
+              }
+
+              if (data.message) {
+                  showWarning(data.message);
+              } else {
+                  showWarning("Terjadi kesalahan saat menyimpan booking.");
+              }
+
+          })
+          .catch(error => {
+
+              console.error("Fetch Error:", error);
+
+              showWarning("Terjadi kesalahan sistem. Silakan coba lagi.");
+
+          })
+          .finally(() => {
+
+              submitBtn.innerText = originalBtnText;
+              submitBtn.disabled = false;
+
+          });
     });
 
     // --- MODAL SUCCESS ---

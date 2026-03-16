@@ -200,7 +200,10 @@ Class bookingController{
         Session::preventCache();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=admin/dataRuangan');
+            jsonResponse([
+                'success' => false,
+                'message' => 'Request tidak valid.'
+            ]);
             exit;
         }
 
@@ -223,79 +226,93 @@ Class bookingController{
 
         foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
             if (empty($payload[$key])) {
-                Session::set('flash_error', 'Lengkapi semua field.');
-                header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'Lengkapi semua field.'
+                ]);
                 exit;
             }
         }
 
-        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
         $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
         if ($dateError !== null) {
-            Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => $dateError
+            ]);
             exit;
         }
 
-        // Validasi jam (harus 09:00-15:00 dan mulai < selesai)
         $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
         if ($timeError !== null) {
-            Session::set('flash_error', $timeError);
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => $timeError
+            ]);
             exit;
         }
 
-        // Minimal 1 anggota
         if (count($anggota) === 0) {
-            Session::set('flash_error', 'Tambahkan minimal 1 NIM/NIP anggota.');
-            header('Location: ?route=Booking/step1/' . $payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Tambahkan minimal 1 anggota.'
+            ]);
             exit;
         }
 
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) {
-            http_response_code(404);
-            exit('Ruangan tidak ditemukan.');
+            jsonResponse([
+                'success' => false,
+                'message' => 'Ruangan tidak ditemukan.'
+            ]);
+            exit;
         }
 
-        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max
         $maxCap      = (int)($room['kapasitas_max'] ?? 0);
         $minCap      = (int)($room['kapasitas_min'] ?? 0);
         $totalPeople = 1 + count($anggota);
 
         if ($maxCap > 0 && $totalPeople > $maxCap) {
-            Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam melebihi kapasitas ruangan.'
+            ]);
             exit;
         }
+
         if ($minCap > 0 && $totalPeople < $minCap) {
-            Session::set('flash_error', 'Jumlah peminjam belum memenuhi kapasitas minimum ruangan (' . $minCap . ' orang).');
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam belum memenuhi kapasitas minimum.'
+            ]);
             exit;
         }
 
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Waktu bentrok dengan peminjaman lain.'
+            ]);
             exit;
         }
 
-        // Cek setiap NIM (penanggung + semua anggota) supaya tidak double-book tanggal & ruangan yang sama
         $nimsToCheck   = $anggota;
         $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
 
         foreach ($nimsToCheck as $nimCheck) {
-            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['room_id'], $payload['tanggal'])) {
-                Session::set('flash_error', 'NIM/NIP ' . $nimCheck . ' sudah terdaftar di ruangan ini pada tanggal tersebut.');
-                header('Location: ?route=Booking/step1/' . $payload['room_id']);
+            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'NIM/NIP ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
+                ]);
                 exit;
             }
         }
 
         $payload['jumlah_peminjam'] = $totalPeople;
-        // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
-        
+
         $payload['admin_id']       = Session::get('admin_id');
         $payload['status_booking'] = 'Disetujui';
         $payload['waktu_booking']  = date('Y-m-d H:i:s');
@@ -303,8 +320,11 @@ Class bookingController{
 
         $bookingModel->createAdminBooking($payload);
 
-        Session::set('flash_success', 'Booking berhasil dibuat.');
-        header('Location: ?route=Admin/dataFromAdminCreateBooking');
+        jsonResponse([
+            'success' => true,
+            'message' => 'Booking berhasil dibuat'
+        ]);
+
         exit;
     }
 
@@ -313,8 +333,12 @@ Class bookingController{
     {
         Session::checkUserLogin();
         Session::preventCache();
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=User/ruangan');
+            jsonResponse([
+                'success' => false,
+                'message' => 'Request tidak valid.'
+            ]);
             exit;
         }
 
@@ -338,8 +362,10 @@ Class bookingController{
 
         foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
             if (empty($payload[$key])) {
-                Session::set('flash_error', 'Lengkapi semua field.');
-                header('Location: ?route=Booking/step1/'.$payload['room_id']);
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'Lengkapi semua field.'
+                ]);
                 exit;
             }
         }
@@ -351,80 +377,86 @@ Class bookingController{
                 'success' => false,
                 'message' => 'NIM berikut tidak terdaftar: ' . implode(', ', $invalidNims)
             ]);
+            exit;
         }
 
-        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
         $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
         if ($dateError !== null) {
-            Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => $dateError
+            ]);
             exit;
         }
 
-        // Validasi jam (harus 09:00-15:00 dan mulai < selesai)
         $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
         if ($timeError !== null) {
-            Session::set('flash_error', $timeError);
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => $timeError
+            ]);
             exit;
         }
 
-        // Buat validasi minimal input 1 anggota
         if (count($anggota) === 0) {
-            Session::set('flash_error', 'Tambahkan minimal 1 NIM/NIP anggota.');
-            header('Location: ?route=Booking/step1/' . $payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Tambahkan minimal 1 anggota.'
+            ]);
             exit;
         }
 
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) {
-            http_response_code(404);
-            exit('Ruangan tidak ditemukan.');
+            jsonResponse([
+                'success' => false,
+                'message' => 'Ruangan tidak ditemukan.'
+            ]);
+            exit;
         }
 
-        // Validasi kapasitas: total orang (1 PJ + anggota) tidak boleh melebihi kapasitas_max, dan harus >= kapasitas_min
         $maxCap      = (int)($room['kapasitas_max'] ?? 0);
         $minCap      = (int)($room['kapasitas_min'] ?? 0);
         $totalPeople = 1 + count($anggota);
 
         if ($maxCap > 0 && $totalPeople > $maxCap) {
-            Session::set('flash_error', 'Jumlah peminjam melebihi kapasitas ruangan (maksimal ' . $maxCap . ' orang).');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam melebihi kapasitas ruangan.'
+            ]);
             exit;
         }
+
         if ($minCap > 0 && $totalPeople < $minCap) {
-            Session::set('flash_error', 'Jumlah peminjam belum memenuhi kapasitas minimum ruangan (' . $minCap . ' orang).');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam belum memenuhi kapasitas minimum.'
+            ]);
             exit;
         }
 
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
-            header('Location: ?route=Booking/step1/'.$payload['room_id']);
+            jsonResponse([
+                'success' => false,
+                'message' => 'Waktu bentrok dengan peminjaman lain.'
+            ]);
             exit;
         }
 
-        // Cek setiap NIM (penanggung + semua anggota) supaya tidak double-book tanggal & ruangan yang sama
         $nimsToCheck   = $anggota;
         $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
 
         foreach ($nimsToCheck as $nimCheck) {
             if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
-
-                Session::set(
-                    'flash_error',
-                    'NIM/NIP ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
-                );
-
-                header('Location: ?route=Booking/step1/' . $payload['room_id']);
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'NIM/NIP ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
+                ]);
                 exit;
             }
         }
 
-        // buat count otomatis jumlah_peminjam walaupun NIM anggota yang diinput user ga sesuai sama jumlah peminjam yang dia input
         $payload['jumlah_peminjam'] = $totalPeople;
-
-        // Simpan semua NIM anggota ke satu kolom nimnip_peminjam (dipisah koma)
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         $payload['user_id']         = Session::get('user_id');
         $payload['status_booking']  = 'Disetujui';
@@ -438,8 +470,6 @@ Class bookingController{
             'message' => 'Booking berhasil dibuat'
         ]);
 
-        Session::set('flash_success', 'Booking berhasil dibuat.');
-        header('Location: ?route=User/riwayat');
         exit;
     }
 
