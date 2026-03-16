@@ -2,6 +2,9 @@
 # Composer autoload (Buat PHPSpreadsheet (admin buat laporan) dan PHPMailer (simulasi notif akun user udah siap dipakai))
 require_once __DIR__ . '/vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
+
 # ================================================
 # AUTOLOAD untuk semua class (Controller, Model, Core)
 # ================================================

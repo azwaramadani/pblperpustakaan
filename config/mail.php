@@ -1,10 +1,10 @@
 <?php
 return [
-    'host' => 'smtp.gmail.com',   // Mailpit SMTP
-    'port' => 587,          // default Mailpit
-    'username' => 'libroompnj@gmail.com',      // Mailpit tidak pakai autentikasi
-    'password' => 'hupt uwlg mlzb zbbn',
-    'from_email' => 'libroompnj@gmail.com',
-    'from_name' => 'LibroomPNJ - Sistem Peminjaman Ruangan'
+    'host' => $_ENV['MAIL_HOST'],
+    'port' => $_ENV['MAIL_PORT'],
+    'username' => $_ENV['MAIL_USERNAME'],
+    'password' => $_ENV['MAIL_PASSWORD'],
+    'from_email' => $_ENV['MAIL_FROM'],
+    'from_name' => 'LibroomPNJ - Sistem Peminjaman Ruangan Perpustakaan PNJ'
 ];
 ?>
