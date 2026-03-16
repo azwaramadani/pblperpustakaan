@@ -178,7 +178,7 @@ orang
     <div class="anggota-wrap" id="anggotaList">
 
     <div class="form-group anggota-item">
-    <label>NIM Anggota 1</label>
+    <label>NIP Anggota 1</label>
     <input class="input-line anggota-input" type="text" name="nim_anggota[]" required>
     </div>
 

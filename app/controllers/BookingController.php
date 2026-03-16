@@ -112,13 +112,14 @@ Class bookingController{
         
         $room    = $roomModel->findById($roomId);        
         if (!$room) { 
-            http_response_code(404); exit('Ruangan tidak ditemukan.'); 
+            http_response_code(404); 
+            exit('Ruangan tidak ditemukan.'); 
         }
-        if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
-            header('Location: ?route=User/ruangan'); exit;
+        if (strtolower($room['status'] ?? '') !== 'tersedia'){
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
         }
 
-        $adminId        = Session::get('admin_id');
         $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
         $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId);
 
@@ -188,8 +189,6 @@ Class bookingController{
             exit;
         }
 
-        $adminId = $adminModel->findById(Session::get('admin_id'));
-
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
@@ -212,6 +211,7 @@ Class bookingController{
 
         $anggotaInput = $_POST['nim_anggota'] ?? [];
         $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
+        $anggota      = array_unique($anggota);
 
         $payload = [
             'room_id'                 => (int)($_POST['room_id'] ?? 0),
@@ -297,14 +297,12 @@ Class bookingController{
             exit;
         }
 
-        $nimsToCheck   = $anggota;
-        $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
-
-        foreach ($nimsToCheck as $nimCheck) {
+        // hanya cek anggota, bukan penanggung jawab
+        foreach ($anggota as $nimCheck) {
             if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
                 jsonResponse([
                     'success' => false,
-                    'message' => 'NIM/NIP ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
+                    'message' => 'NIM/NIP anggota ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
                 ]);
                 exit;
             }

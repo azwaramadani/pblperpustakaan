@@ -215,7 +215,7 @@ $statCards = [
               <tr>
                 <th>No</th>
                 <th>Kode</th>
-                <th>Peminjam</th>
+                <th>Penanggung Jawab</th>
                 <th>Detail Akademik</th> <!-- Kolom Baru agar info Unit/Jurusan terlihat -->
                 <th>Ruangan</th>
                 <th>Waktu</th>

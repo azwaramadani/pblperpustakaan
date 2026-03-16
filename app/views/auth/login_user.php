@@ -47,12 +47,12 @@ unset($_SESSION['flash_error']);
             <form method="POST" class="login-form" action="?route=Auth/loginProcess">
                 
                 <div class="form-group">
-                    <label for="nim">NIM/NIP</label>
+                    <label for="nim">Username</label>
                     <input id="nim"
                            type="text"
                            name="nim_nip"
                            class="form-control"
-                           placeholder="Masukkan NIM/NIP"
+                           placeholder="Masukkan NIM/NIP..."
                            autocomplete="off"
                            required>
                 </div>
