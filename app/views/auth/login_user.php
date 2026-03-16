@@ -50,7 +50,7 @@ unset($_SESSION['flash_error']);
                     <label for="nim">Username</label>
                     <input id="nim"
                            type="text"
-                           name="nim_nip"
+                           name="username"
                            class="form-control"
                            placeholder="Masukkan NIM/NIP..."
                            autocomplete="off"
@@ -75,7 +75,10 @@ unset($_SESSION['flash_error']);
             <div class="register-footer">
                 Belum Punya Akun? <a href="?route=Auth/registerRole" class="btn-guest">Daftar</a>
             </div>
-
+            
+            <div class="register-footer">
+                Lupa Password? <a href="?route=Auth/forgotPassword" class="btn-guest">Klik ini</a>
+            </div>
         </div>
     </section>
 </div>

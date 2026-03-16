@@ -10,6 +10,88 @@ class AuthController
         require __DIR__ . '/../views/auth/login_user.php';
     }
 
+    public function forgotPassword()
+    {
+        require __DIR__ . '/../views/auth/forgot_password.php';
+    }
+
+    public function sendResetLink()
+    {
+        $email = trim($_POST['email'] ?? '');
+
+        $userModel = new User();
+        $user = $userModel->findByEmail($email);
+
+        if (!$user) {
+            Session::set("flash_error", "Email tidak ditemukan.");
+            header("Location: ?route=Auth/forgotPassword");
+            exit;
+        }
+
+
+        $token = bin2hex(random_bytes(32));
+        $expired = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+
+        $resetModel = new PasswordReset();
+        $resetModel->createToken($user['user_id'], $token, $expired);
+
+        $resetLink = app_config()['base_url'] . "?route=Auth/resetPassword&token=$token";
+
+        $body = "
+            <h3>Reset Password</h3>
+            <p>Klik link berikut untuk reset password:</p>
+            <a href='$resetLink'>$resetLink</a>
+            <p>Link ini berlaku selama 30 menit.</p>
+        ";
+
+        sendMail($user['email'], "Reset Password", $body);
+
+        Session::set("flash_success", "Link reset password telah dikirim ke email.");
+        header("Location: ?route=Auth/login");
+    }
+
+    public function resetPassword()
+    {
+        $token = $_GET['token'] ?? '';
+
+        $resetModel = new PasswordReset();
+        $reset = $resetModel->findValidToken($token);
+
+        if (!$reset) {
+            die("Token tidak valid atau sudah expired.");
+        }
+
+        require __DIR__ . '/../views/auth/reset_password.php';
+    }
+
+    public function updatePassword()
+    {
+        $token = $_POST['token'];
+        $password = $_POST['password'];
+        $confirm = $_POST['confirm_password'];
+
+        if ($password !== $confirm) {
+            die("Password tidak sama.");
+        }
+
+        $resetModel = new PasswordReset();
+        $reset = $resetModel->findValidToken($token);
+
+        if (!$reset) {
+            die("Token tidak valid.");
+        }
+
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        $userModel = new User();
+        $userModel->updatePassword($reset['user_id'], $hash);
+
+        $resetModel->markUsed($reset['id']);
+
+        Session::set("flash_success", "Password berhasil diubah.");
+        header("Location: ?route=Auth/login");
+    }
+    
     # BUAT LOGOUT
     public function logout()
     {
@@ -27,8 +109,8 @@ class AuthController
         }
 
         #sanitasi input
-        $nim_nip  = trim($_POST['nim_nip'] ?? '');
-        $username = trim($_POST['nim_nip'] ?? '');
+        $nim_nip  = trim($_POST['username'] ?? '');
+        $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
         #bikin objek dari masing2 class buat nentuin yang login admin apa user

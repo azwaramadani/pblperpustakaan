@@ -1,10 +1,10 @@
 <?php
-// untuk simulasi email, saat ini kami memakai mailpit, sebenarnya rencananya untuk production-ready, akan dikirim ke email asli
 return [
-    'host' => '127.0.0.1',   // Mailpit SMTP
-    'port' => 1025,          // default Mailpit
-    'username' => null,      // Mailpit tidak pakai autentikasi
-    'password' => null,
-    'from_email' => 'no-reply@rudyapp.local',
-    'from_name' => 'RUDY - Sistem Peminjaman Ruangan'
+    'host' => 'smtp.gmail.com',   // Mailpit SMTP
+    'port' => 587,          // default Mailpit
+    'username' => 'libroompnj@gmail.com',      // Mailpit tidak pakai autentikasi
+    'password' => 'hupt uwlg mlzb zbbn',
+    'from_email' => 'libroompnj@gmail.com',
+    'from_name' => 'LibroomPNJ - Sistem Peminjaman Ruangan'
 ];
+?>

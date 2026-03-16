@@ -14,21 +14,25 @@ function sendMail($to, $subject, $body)
     try {
 
         $mail->isSMTP();
-        $mail->Host = $mailConfig['host'];
-        $mail->Port = $mailConfig['port'];
-        $mail->SMTPAuth = false;
+        $mail->Host       = $mailConfig['host'];
+        $mail->Port       = $mailConfig['port'];
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $mailConfig['username'];
+        $mail->Password   = $mailConfig['password'];
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 
         $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
         $mail->addAddress($to);
 
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $mail->Body = $body;
+        $mail->Body    = $body;
 
         return $mail->send();
 
     } catch (Exception $e) {
-        return false;
+        echo "Mailer Error: " . $mail->ErrorInfo;
+        exit;
     }
 }
 

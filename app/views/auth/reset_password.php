@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Lupa Password</title>
+<title>Reset Password</title>
 
 <style>
 
@@ -17,7 +17,7 @@ body{
     height:100vh;
 }
 
-/* LEFT IMAGE */
+/* LEFT */
 
 .left{
     width:50%;
@@ -31,7 +31,7 @@ body{
     border-radius:16px;
 }
 
-/* RIGHT FORM */
+/* RIGHT */
 
 .right{
     width:50%;
@@ -78,16 +78,6 @@ button:hover{
     background:#ffb300;
 }
 
-.back{
-    text-align:center;
-    margin-top:15px;
-}
-
-.back a{
-    color:#00a5a5;
-    text-decoration:none;
-}
-
 </style>
 
 </head>
@@ -103,27 +93,25 @@ button:hover{
 
 <div class="card">
 
-<h2>Lupa Password</h2>
+<h2>Reset Password</h2>
 
-<p style="font-size:14px;color:#666;">
-Masukkan email akun anda. Kami akan mengirimkan link untuk reset password.
-</p>
+<form method="POST" action="?route=Auth/updatePassword">
 
-<form method="POST" action="?route=Auth/sendResetLink">
+<input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
 
 <div class="form-group">
-<input type="email" name="email" placeholder="Masukkan Email" required>
+<input type="password" name="password" placeholder="Password Baru" required>
+</div>
+
+<div class="form-group">
+<input type="password" name="confirm_password" placeholder="Konfirmasi Password" required>
 </div>
 
 <button type="submit">
-Kirim Link Reset
+Update Password
 </button>
 
 </form>
-
-<div class="back">
-<a href="?route=Auth/login">Kembali ke Login</a>
-</div>
 
 </div>
 

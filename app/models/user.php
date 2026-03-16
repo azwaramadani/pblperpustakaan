@@ -277,11 +277,16 @@ class User extends Model
         return $this->query($sql, [$nim_nip])->fetch();
     }
     
-    # cari user by email Bisa dipake buat validasi duplikasi email
     public function findByEmail($email)
     {
         $sql = "SELECT * FROM {$this->table} WHERE email = ? LIMIT 1";
         return $this->query($sql, [$email])->fetch();
+    }
+
+    public function updatePassword($user_id, $password)
+    {
+        $sql = "UPDATE {$this->table} SET password = ? WHERE user_id = ?";
+        return $this->query($sql, [$password, $user_id]);
     }
 
     public function isNIMExists($nim_nip): bool
