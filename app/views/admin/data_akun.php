@@ -1,5 +1,4 @@
 <?php
-$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
 //declare pagination
 $pagination        = $pagination ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($users)];
 $paginationregist  = $paginationregist ?? ['page'=>1, 'total_pages'=>1, 'limit'=>10, 'total'=>count($userregist)];
@@ -66,63 +65,6 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.9">
   <!-- FontAwesome Regular & Solid -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Style Khusus untuk Modal Hapus Baru -->
-  <style>
-    .modal-delete-custom {
-      text-align: center;
-      max-width: 340px !important; /* Ukuran lebih kecil sesuai desain */
-      border-radius: 24px !important;
-      padding: 32px 24px !important;
-    }
-    .modal-delete-icon {
-      font-size: 48px;
-      color: #ff4d4f; /* Warna merah icon */
-      margin-bottom: 20px;
-      display: inline-block;
-      padding: 10px;
-      border: 2px solid #fff; /* Opsional: memberi kesan rapi */
-    }
-    .modal-delete-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      margin: 0 0 24px 0;
-      line-height: 1.4;
-    }
-    .btn-delete-confirm {
-      width: 100%;
-      background: #ff4d4f;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
-      box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
-    }
-    .btn-delete-confirm:hover {
-      background: #e04345;
-    }
-    .btn-delete-cancel {
-      width: 100%;
-      background: #ffffff;
-      color: #374151;
-      border: 1px solid #d1d5db;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-delete-cancel:hover {
-      background: #f9fafb;
-    }
-  </style>
 </head>
 
 <body class="admin-body">

@@ -77,7 +77,7 @@ unset($_SESSION['flash_error']);
             </div>
             
             <div class="register-footer">
-                Lupa Password? <a href="?route=Auth/forgotPassword" class="btn-guest">Klik ini</a>
+                <a href="?route=Auth/forgotPassword" class="btn-guest">Lupa Password?</a>
             </div>
         </div>
     </section>

@@ -839,13 +839,13 @@ class AdminController {
         // buat kirim email-nya dari menunggu ke disetujui, ditolak ke disetujui
         if ($shouldSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
-            $subject = 'Akun RUDY Anda Sudah Disetujui oleh Admin';
+            $subject = 'Akun LibRoomPNJ Anda Sudah Disetujui oleh Admin';
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
-                        <p>Akun RUDY kamu sudah <strong>siap digunakan.</strong> Silahkan Login!</p>
+                        <p>Akun LibRoomPNJ kamu sudah <strong>siap digunakan.</strong> Silahkan Login!</p>
                         <p>Klik link berikut ini untuk login ke aplikasi: </p>
                         <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
-                        <p>Rudy Developers.</p>";
+                        <p>LibRoomPNJ</p>";
             
             // kirim email ke mailpit
             $sent = sendmail($email, $subject, $body);         
@@ -864,11 +864,11 @@ class AdminController {
         // buat kirim email dari menunggu ke ditolak, disetujui ke ditolak
         if ($ditolakSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
-            $subject = 'Akun RUDY Anda Ditolak oleh Admin';
+            $subject = 'Akun LibroomPNJ Anda Ditolak oleh Admin';
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
                         <p>Akun anda ditolak karena tidak mencantumkan bukti aktivasi Kubaca dengan benar, Segera hubungi Admin!</p>
-                        <p>Rudy Developers.</p>";
+                        <p>LibRoomPNJ.</p>";
             
             // kirim email ke mailpit
             $sent = sendmail($email, $subject, $body);         

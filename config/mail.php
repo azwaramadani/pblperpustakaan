@@ -5,6 +5,6 @@ return [
     'username' => $_ENV['MAIL_USERNAME'],
     'password' => $_ENV['MAIL_PASSWORD'],
     'from_email' => $_ENV['MAIL_FROM'],
-    'from_name' => 'LibroomPNJ - Sistem Peminjaman Ruangan Perpustakaan PNJ'
+    'from_name' => 'LibRoomPNJ - Sistem Peminjaman Ruangan Perpustakaan PNJ'
 ];
 ?>
