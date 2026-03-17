@@ -642,6 +642,15 @@ class AdminController {
         $adminId    = Session::get('admin_id');
         $admin      = $adminModel->findById($adminId);
         
+        #filter data akun regist
+        $sortDateRegist      = strtolower($_GET['sort_dateregist'] ?? 'desc');
+        $fromDateRegist      = $_GET['from_dateregist'] ?? '';
+        $toDateRegist        = $_GET['to_dateregist'] ?? '';
+        $jurusanSelRegist    = $_GET['jurusanregist'] ?? '';
+        $prodiSelRegist      = $_GET['program_studiregist'] ?? '';
+        $statusakunSelRegist = $_GET['status_akunregist'] ?? '';
+        $keywordRegist       = trim($_GET['keywordregist'] ?? ''); //buat serchbar
+
         #filter data akun
         $sortDate      = strtolower($_GET['sort_date'] ?? 'desc');
         $fromDate      = $_GET['from_date'] ?? '';
@@ -651,12 +660,23 @@ class AdminController {
         $jurusanSel    = $_GET['jurusan'] ?? '';
         $prodiSel      = $_GET['program_studi'] ?? '';
         $statusakunSel = $_GET['status_akun'] ?? '';
-        $keyword       = trim($_GET['keyword'] ?? ''); // kata kunci nama penanggung jawab
+        $keyword       = trim($_GET['keyword'] ?? ''); //buat searchbar
 
         # pagination setup
         $perPage = 10; // jumlah baris per halaman
         $pageReq = (int)($_GET['page'] ?? 1);
         $page    = $pageReq > 0 ? $pageReq : 1;
+
+        $paginationregist = $userModel->userregistgetAllSortedPaginated(
+                                $sortDateRegist, 
+                                $fromDateRegist ?: null, 
+                                $toDateRegist ?: null,
+                                $jurusanSelRegist ?: null,
+                                $prodiSelRegist ?: null,
+                                $statusakunSelRegist ?: null,
+                                $keywordRegist ?: null,
+                                $perPage,
+                                $page);
 
         $pagination = $userModel->usergetAllSortedPaginated(
                         $sortDate, 
@@ -669,19 +689,6 @@ class AdminController {
                         $keyword ?: null,
                         $perPage,
                         $page);
-
-        $paginationregist = $userModel->userregistgetAllSortedPaginated(
-                                $sortDate, 
-                                $fromDate ?: null, 
-                                $toDate ?: null,
-                                $roleSel ?: null,
-                                $unitSel ?: null,
-                                $jurusanSel ?: null,
-                                $prodiSel ?: null,
-                                $statusakunSel ?: null,
-                                $keyword ?: null,
-                                $perPage,
-                                $page);
         
         $userregist = $paginationregist['data'];               
         $users      = $pagination['data'];
@@ -691,6 +698,16 @@ class AdminController {
         $jurusanList     = $this->jurusanOptions();
         $prodiList       = $this->prodiOptions();
         $statusakunList  = $this->statusakunOptions();
+        
+        $filtersregist = [
+            'sort_dateregist'     => $sortDate,
+            'from_dateregist'     => $fromDate,
+            'to_dateregist'       => $toDate,
+            'jurusanregist'       => $jurusanSel,
+            'program_studiregist' => $prodiSel,
+            'status_akunregist'   => $statusakunSel,
+            'keywordregist'       => $keyword,
+        ];
 
         $filters = [
             'sort_date'     => $sortDate,

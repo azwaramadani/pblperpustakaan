@@ -140,63 +140,47 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <input type="hidden" name="route" value="Admin/dataAkun">
 
           <label>Urut tanggal</label>
-          <select name="sort_date">
-            <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
-            <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
+          <select name="sort_dateregist">
+            <option value="desc" <?= ($filtersregist['sort_dateregist'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
+            <option value="asc"  <?= ($filtersregist['sort_dateregist'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
           </select>
 
           <label>Dari</label>
-          <input type="date" name="from_date" value="<?= htmlspecialchars($filters['from_date']) ?>">
+          <input type="date" name="from_dateregist" value="<?= htmlspecialchars($filtersregist['from_dateregist']) ?>">
 
           <label>Sampai</label>
-          <input type="date" name="to_date" value="<?= htmlspecialchars($filters['to_date']) ?>">
-
-          <label>Role</label>
-          <select name="role">
-            <option value="">Semua</option>
-            <?php foreach ($roleList as $rl): ?>
-              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
-            <?php endforeach; ?>
-          </select>
-          
-          <label>Unit</label>
-          <select name="unit">
-            <option value="">Semua</option>
-            <?php foreach ($unitList as $unl): ?>
-              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
-            <?php endforeach; ?>
-          </select>
+          <input type="date" name="to_dateregist" value="<?= htmlspecialchars($filtersregist['to_dateregist']) ?>">
 
           <label>Jurusan</label>
-          <select name="jurusan">
+          <select name="jurusanregist">
             <option value="">Semua</option>
             <?php foreach ($jurusanList as $jrl): ?>
-              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filtersregist['jurusanregist']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
             <?php endforeach; ?>
           </select>
 
           <label>Program Studi</label>
-          <select name="program_studi">
+          <select name="program_studiregist">
             <option value="">Semua</option>
             <?php foreach ($prodiList as $prl): ?>
-              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filtersregist['program_studiregist']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
 
           <label>Status Akun</label>
-          <select name="status_akun">
+          <select name="status_akunregist">
             <option value="">Semua</option>
             <?php foreach ($statusakunList as $stl): ?>
-              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filters['status_akun']===$stl?'selected':'') ?>><?= htmlspecialchars($stl) ?></option>
+              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filtersregist['status_akunregist']===$stl?'selected':'') ?>><?= htmlspecialchars($stl) ?></option>
             <?php endforeach; ?>
           </select>
           
           <div class="search-bar" style="margin-left:auto;">
             <input
               type="text"
-              name="keyword"
+              name="keywordregist"
               placeholder="Cari nama atau NIM/NIP..."
-              value="<?= htmlspecialchars($filters['keyword']) ?>">
+              value="<?= htmlspecialchars($filtersregist['keywordregist']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                    stroke-linecap="round" stroke-linejoin="round">

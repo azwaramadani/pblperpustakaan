@@ -130,14 +130,12 @@ class User extends Model
 
     public function userregistgetAllSortedPaginated(
         string $sortOrder     = 'desc',
-        ?string $fromDate     = null,
-        ?string $toDate       = null,
-        ?string $role         = null,
-        ?string $unit         = null,
-        ?string $jurusan      = null,
-        ?string $programStudi = null,
-        ?string $statusAkun   = null,
-        ?string $searchName   = null, 
+        ?string $fromDateRegist     = null,
+        ?string $toDateRegist       = null,
+        ?string $jurusanRegist      = null,
+        ?string $programStudiRegist = null,
+        ?string $statusAkunRegist   = null,
+        ?string $searchNameRegist   = null, 
         int $limit            = 10,
         int $page             = 1
     ): array {
@@ -150,38 +148,30 @@ class User extends Model
 
         $where[] = "(user.status_akun IN('Menunggu', 'Ditolak', 'Diblokir'))";
 
-        if (!empty($fromDate)) {
+        if (!empty($fromDateRegist)) {
             $where[]  = "user.created_at >= ?";
-            $params[] = $fromDate;
+            $params[] = $fromDateRegist;
         }
-        if (!empty($toDate)) {
+        if (!empty($toDateRegist)) {
             $where[]  = "user.created_at <= ?";
-            $params[] = $toDate;
+            $params[] = $toDateRegist;
         }
-        if (!empty($role)) {
-            $where[]  = "user.role = ?";
-            $params[] = $role;
-        }
-        if (!empty($unit)) {
-            $where[]  = "user.unit = ?";
-            $params[] = $unit;
-        }
-        if (!empty($jurusan)) {
+        if (!empty($jurusanRegist)) {
             $where[]  = "user.jurusan = ?";
-            $params[] = $jurusan;
+            $params[] = $jurusanRegist;
         }
-        if (!empty($programStudi)) {
+        if (!empty($programStudiRegist)) {
             $where[]  = "user.program_studi = ?";
-            $params[] = $programStudi;
+            $params[] = $programStudiRegist;
         }
-        if (!empty($statusAkun)) {
+        if (!empty($statusAkunRegist)) {
             $where[]  = "user.status_akun = ?";
-            $params[] = $statusAkun;
+            $params[] = $statusAkunRegist;
         }
-        if (!empty($searchName)) {
+        if (!empty($searchNameRegist)) {
             // Cari di nama atau nim/nip user
             $where[]  = "(user.nim_nip LIKE ? OR user.nama LIKE ?)";
-            $like     = '%' . $searchName . '%';
+            $like     = '%' . $searchNameRegist . '%';
             $params[] = $like;
             $params[] = $like;
         }
