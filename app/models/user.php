@@ -19,7 +19,7 @@ class User extends Model
     // buat dashboard admin hitung semua user yang harus divalidasi atau status akunnya menunggu
     public function mustvalidateRegistered()
     {
-        $sql  = "SELECT COUNT(*) AS total FROM {$this->table} WHERE status_akun = 'Menunggu'";
+        $sql  = "SELECT COUNT(*) AS total FROM {$this->table} WHERE status_akun IN ('Menunggu', 'Ditolak')";
         $row  = $this->query($sql)->fetch();
         return (int)($row['total'] ?? 0);
     }

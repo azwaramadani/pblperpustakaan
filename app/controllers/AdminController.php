@@ -13,11 +13,8 @@ class AdminController {
         Session::preventCache();
 
         $admin  = $this->getAdminProfile();
-
         $stats = $this->getDashboardStats();
-
         $filters = $this->getDashboardFilters();
-
         $pagination = $this->getTodayBookings($filters);
 
         $todayBookings = $pagination['data'];
