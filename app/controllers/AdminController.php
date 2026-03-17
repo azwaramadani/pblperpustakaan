@@ -332,7 +332,6 @@ class AdminController {
         $admin   = $adminModel->findById($adminId);
 
         $roomModel = new Room();
-        $roomModel->refreshRoomStatus();
         $rooms   = $roomModel->getAllWithStats();
 
         $success = Session::get('flash_success');

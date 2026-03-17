@@ -90,8 +90,8 @@ class User extends Model
 
         // Hitung total baris buat pagination
         $countSql = "SELECT COUNT(*) AS total
-                     FROM {$this->table}
-                     {$whereSql}";
+                    FROM {$this->table}
+                    {$whereSql}";
         $totalRow = $this->query($countSql, $params)->fetch();
         $total    = (int)($totalRow['total'] ?? 0);
 

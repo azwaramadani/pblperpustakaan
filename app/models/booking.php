@@ -7,7 +7,7 @@ class Booking extends Model
 {
     protected $table = 'booking';
 
-    # method data booking buat admin, pake sorting trus pagination
+    # method data peminjaman admin, pake sorting trus pagination
     public function getAllSortedPaginated(
         string $sortOrder     = 'desc',
         ?string $fromDate     = null,
@@ -53,8 +53,9 @@ class Booking extends Model
         }
         if (!empty($searchName)) {
             // Cari di nama penanggung jawab (booking) atau nama user
-            $where[]  = "(u.nim_nip LIKE ? OR u.nama LIKE ? OR b.tanggal LIKE ?)";
+            $where[]  = "(b.kode_booking LIKE ? OR u.nim_nip LIKE ? OR u.nama LIKE ? OR b.tanggal LIKE ?)";
             $like     = '%' . $searchName . '%';
+            $params[] = $like;
             $params[] = $like;
             $params[] = $like;
             $params[] = $like;                                   

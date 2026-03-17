@@ -162,7 +162,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             <input
               type="text"
               name="keyword"
-              placeholder="Cari Nama, NIM/NIP PJ, atau Ruangan..."
+              placeholder="Cari Kode Booking, Nama/NIM/NIP PJ, Ruangan..."
               value="<?= htmlspecialchars($filters['keyword']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -200,7 +200,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
             </thead>
             <tbody>
               <?php if (empty($bookings)): ?>
-                <tr><td colspan="10" class="empty-row">Belum ada data booking.</td></tr>
+                <tr><td colspan="14" class="empty-row">Belum ada data booking.</td></tr>
               <?php else: ?>
                 <?php $rowNumber = $startRow ?: 1; ?>
                 <?php foreach ($bookings as $b): ?>
