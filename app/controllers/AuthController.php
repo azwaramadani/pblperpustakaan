@@ -132,6 +132,12 @@ class AuthController
             exit;
         }
 
+        if ($user['deleted_at']  !== null){
+            Session::set("flash_error", "Akun sudah dihapus, segera hubungi admin!");
+            header("Location: ?route=Auth/login");
+            exit;
+        }
+
         # VALIDASI 1: Akun tidak ditemukan
         if (!$user) {
             Session::set("flash_error", "Akun tidak ditemukan, silahkan daftar/register jika belum memiliki akun");
