@@ -860,7 +860,7 @@ class AdminController {
                         <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
                         <p>LibRoomPNJ</p>";
             
-            // kirim email ke mailpit
+            // kirim email 
             $sent = sendmail($email, $subject, $body);         
             
             // Tambahkan info hasil kirim email ke flash message
@@ -880,10 +880,11 @@ class AdminController {
             $subject = 'Akun LibroomPNJ Anda Ditolak oleh Admin';
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
-                        <p>Akun anda ditolak karena tidak mencantumkan bukti aktivasi Kubaca dengan benar, Segera hubungi Admin!</p>
+                        <p>Akun anda ditolak karena tidak mencantumkan bukti aktivasi Kubaca dengan benar!</p>
+                        <p>Klik link berikut untuk login dan merubah data registrasi:</p>
+                        <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
                         <p>LibRoomPNJ.</p>";
             
-            // kirim email ke mailpit
             $sent = sendmail($email, $subject, $body);         
             
             // Tambahkan info hasil kirim email ke flash message

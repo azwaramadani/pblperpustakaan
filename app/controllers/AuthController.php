@@ -153,9 +153,19 @@ class AuthController
 
         # VALIDASI 3: Status ditolak admin redirect ke page khusus edit data register 
         if ($user['status_akun'] == 'Ditolak') {
-            Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
-            header("Location: ?route=Auth/login");
-            exit;
+            if (!password_verify($password, $user['password'])){
+                Session::set("flash_error", "username atau password salah");
+                header("Location: ?route=Auth/login");
+                exit;
+            }
+
+            Session::set("user_id", $user['user_id']);
+            Session::set("nama", $user['nama']);
+
+            Session::regenerate();
+
+            header("Location: ?route=Auth/fixRegistration");
+            exit;   
         }
 
         # VALIDASI 4: Status masih menunggu belum divalidasi admin
@@ -186,6 +196,87 @@ class AuthController
         
         # Redirect user ke halaman home
         header("Location: ?route=User/home");
+        exit;
+    }
+
+    #buat editRegistration misal user akunnya ditolak lalu mau ubah bukti aktivasi kubaca
+    public function fixRegistration() {
+        $user_id = Session::get('user_id');
+
+        if(!$user_id){
+            header("Location: ?route=Auth/login");
+            exit;
+        }
+
+        $userModel = new user();
+        $user      = $userModel->findById($user_id);
+
+        if($user['status_akun'] !== 'Ditolak'){
+            header("Location: ?route=User/home");
+            exit;
+        }
+
+        require_once __DIR__ . '/../views/auth/fix_registration.php';
+    }
+
+    public function submitFixRegistration()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: ?route=Auth/login");
+            exit;
+        }
+
+        $user_id = Session::get('user_id');
+
+        if (!$user_id) {
+            header("Location: ?route=Auth/login");
+            exit;
+        }
+
+        $userModel = new User();
+        $user = $userModel->findById($user_id);
+
+        // pastikan hanya status Ditolak
+        if ($user['status_akun'] !== 'Ditolak') {
+            header("Location: ?route=User/home");
+            exit;
+        }
+
+        // VALIDASI FILE WAJIB ADA
+        if (!isset($_FILES['bukti']) || $_FILES['bukti']['error'] !== 0) {
+            Session::set("flash_error", "File bukti wajib diupload.");
+            header("Location: ?route=Auth/fixRegistration");
+            exit;
+        }
+
+        // UPLOAD FILE
+        $uploadDir = __DIR__ . "/../../storage/uploads/bukti_aktivasi/";
+        $fileName = uploadFile($_FILES['bukti'], $uploadDir);
+
+        if (!$fileName) {
+            Session::set("flash_error", "Upload gagal. Format harus jpg/png/pdf.");
+            header("Location: ?route=Auth/fixRegistration");
+            exit;
+        }
+
+        $pathDB = "storage/uploads/bukti_aktivasi/" . $fileName;
+
+        // hapus file lama 
+        if (!empty($user['bukti_aktivasi'])) {
+            $oldPath = __DIR__ . "/../../" . $user['bukti_aktivasi'];
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+        }
+
+        // UPDATE DATA
+        $userModel->updateAfterReject($user_id, $pathDB);
+
+        // LOGOUT (karena status jadi Menunggu)
+        session_destroy();
+
+        Session::set("flash_success", "Data berhasil diperbarui, silakan tunggu validasi admin.");
+        header("Location: ?route=Auth/login");
         exit;
     }
 

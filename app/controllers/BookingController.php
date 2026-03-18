@@ -686,7 +686,7 @@ Class bookingController{
         exit;
     }
 
-        private function findInvalidMemberNims(array $anggota, User $userModel): array
+    private function findInvalidMemberNims(array $anggota, User $userModel): array
     {
         // Hilangkan duplikat supaya pengecekan database tidak berulang.
         $uniqueNims = array_values(array_unique($anggota));

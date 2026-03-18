@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Reset Password</title>
-
 <style>
-
 body{
     margin:0;
     font-family: Arial, sans-serif;

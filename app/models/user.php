@@ -291,6 +291,17 @@ class User extends Model
         return (bool)$this->query($sql, [$email])->fetch();
     }
 
+    #buat submit page fix_registration.php
+    public function updateAfterReject($id, $bukti)
+    {
+        $sql = "UPDATE {$this->table}
+                SET bukti_aktivasi = ?, 
+                    status_akun = 'Menunggu',
+                    rejection_reason = NULL
+                WHERE user_id = ?";
+        return $this->query($sql, [$bukti, $id]);
+    }
+
     # Registrasi user mahasiswa
     public function registerMahasiswa($data)
     {
