@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Perbaiki Data Registrasi</title>
-
 <style>
 body{
     margin:0;
@@ -130,11 +129,11 @@ Silakan upload ulang bukti aktivasi Kubaca agar akun dapat diverifikasi kembali.
 </div>
 
 <!-- FLASH MESSAGE -->
-<?php if ($error = Session::get('flash_error')): ?>
+<?php if ($error = Session::flash('flash_error')): ?>
     <div class="error"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
-<?php if ($success = Session::get('flash_success')): ?>
+<?php if ($success = Session::flash('flash_success')): ?>
     <div class="success"><?= htmlspecialchars($success) ?></div>
 <?php endif; ?>
 

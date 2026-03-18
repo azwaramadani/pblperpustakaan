@@ -40,7 +40,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Peminjaman - Rudy</title>
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css?v=1.3">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleadmin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -100,6 +100,14 @@ $disableNext   = $noData || $currentPage >= $totalPages;
     </header>
 
     <main class="content">
+      <!-- Flash Messages -->
+      <?php if (!empty($flash['success'])): ?>
+        <div class="flash success"><?= htmlspecialchars($success) ?></div>
+      <?php endif; ?>
+      <?php if (!empty($flash['error'])): ?>
+        <div class="flash error"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
+
     <!-- Panel Data Booking -->
       <section class="panel">
         <div class="section-head">

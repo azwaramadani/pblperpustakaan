@@ -67,10 +67,11 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     </header>
 
     <main class="content">
-      <?php if (!empty($success)): ?>
+      <!-- Flash Messages -->
+      <?php if (!empty($flash['success'])): ?>
         <div class="flash success"><?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
-      <?php if (!empty($error)): ?>
+      <?php if (!empty($flash['error'])): ?>
         <div class="flash error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 

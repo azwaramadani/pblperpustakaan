@@ -1,6 +1,5 @@
 <?php
 $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-
 $img       = $room['gambar_ruangan'] ?? '';
 // Bangun URL gambar: jika sudah URL absolut, pakai langsung, jika relatif, prepend base_url
 $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['base_url'].'/'.ltrim($img,'/')) : '';
@@ -66,10 +65,11 @@ $imgUrl    = $img ? (preg_match('#^https?://#i', $img) ? $img : app_config()['ba
     </header>
 
     <main class="content">
-      <?php if (!empty($success)): ?>
+      <!-- Flash Messages -->
+      <?php if (!empty($flash['success'])): ?>
         <div class="flash success"><?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
-      <?php if (!empty($error)): ?>
+      <?php if (!empty($flash['error'])): ?>
         <div class="flash error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 

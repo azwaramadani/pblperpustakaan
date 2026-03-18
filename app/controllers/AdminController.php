@@ -28,9 +28,6 @@ class AdminController {
         
         $flash = $this->getFlashMessages();
 
-        $success = $flash['success'] ?? null;
-        $error   = $flash['error'] ?? null;
-
         // jangan lupa pakai require, karena kalau tidak, semua variabel controller yang dipanggil di views, gaakan bekerja.
         require __DIR__ . '/../views/admin/dashboard.php';
     }
@@ -86,19 +83,6 @@ class AdminController {
             $perPage,
             $filters['page']
         );
-    }
-
-    private function getFlashMessages(){
-        $success    = Session::get('flash_success');
-        $error      = Session::get('flash_error');
-
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
-
-        return [
-            'success'   => $success,
-            'error'     => $error
-        ];
     }
 
     //method handler data peminjaman admin
@@ -159,10 +143,7 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/data_peminjaman.php';
     }
@@ -281,10 +262,7 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/data_admincreatebooking.php';
     }
@@ -331,10 +309,7 @@ class AdminController {
         $roomModel = new Room();
         $rooms   = $roomModel->getAllWithStats();
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/data_ruangan.php';
     }
@@ -409,10 +384,7 @@ class AdminController {
         $adminId    = Session::get('admin_id');
         $admin      = $adminModel->findById($adminId);
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/add_ruangan.php';
     }
@@ -483,15 +455,12 @@ class AdminController {
             exit;
         }
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/edit_ruangan.php';
     }
 
-    # ini baru method yang menghandle semua data ruangan yang diupdate, untuk diupdate ke database
+    # method untuk simpan semua hasil edit ke database
     public function updateRuangan()
     {
         Session::checkAdminLogin();
@@ -718,10 +687,7 @@ class AdminController {
             'keyword'       => $keyword,
         ];
 
-        $success = Session::get('flash_success');
-        $error   = Session::get('flash_error');
-        Session::set('flash_success', null);
-        Session::set('flash_error', null);
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/admin/data_akun.php';
     }
@@ -1052,6 +1018,13 @@ class AdminController {
                 'Teknik Komputer dan Jaringan',
                 'Magister Rekayasa Teknologi Manufaktur',
                 'Magister Teknik Elektro'
+        ];
+    }
+
+    private function getFlashMessages(){
+        return [
+            'success'   => Session::flash('flash_success'),
+            'error'     => Session::flash('flash_error')
         ];
     }
 }

@@ -31,6 +31,20 @@ class Session
         return $_SESSION[$key] ?? null;
     }
 
+    public static function flash($key)
+    {
+        self::start();
+
+        if(!isset($_SESSION[$key])) {
+            return null;
+        }
+
+        $value = $_SESSION[$key];
+        unset($_SESSION[$key]);
+
+        return $value;
+    }
+
     public static function regenerate()
     {
         self::start();
