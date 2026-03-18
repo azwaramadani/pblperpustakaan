@@ -101,10 +101,10 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
     <main class="content">
       <!-- Flash Messages -->
-      <?php if (!empty($flash['success'])): ?>
+      <?php if (!empty($success = $flash['success'])): ?>
         <div class="flash success"><?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
-      <?php if (!empty($flash['error'])): ?>
+      <?php if (!empty($error = $flash['error'])): ?>
         <div class="flash error"><?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 

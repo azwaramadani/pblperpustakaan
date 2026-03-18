@@ -102,15 +102,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       </div>
     </header>
 
-    <main class="content">
-      <?php if (!empty($success)): ?>
-        <div class="flash success"><?= htmlspecialchars($success) ?></div>
-      <?php endif; ?>
-      <?php if (!empty($error)): ?>
-        <div class="flash error"><?= htmlspecialchars($error) ?></div>
-      <?php endif; ?>
-
-    
+    <main class="content">    
       <section class="panel">
         <div class="section-head">
           <div>
