@@ -1,9 +1,5 @@
 <?php
-$errors = $errors ?? [];
-$success = $success ?? null;
 $old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'program_studi' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
-$jurusanList = $jurusanList ?? [];
-$prodiList = $prodiList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +24,13 @@ $prodiList = $prodiList ?? [];
 
     <!-- BAGIAN KANAN: FORM -->
     <section class="auth-card form-panel">
+        <!-- Flash Messages -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error = $flash['error'])): ?>
+            <div class="flash error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         
         <h2>Daftar Mahasiswa</h2>
         

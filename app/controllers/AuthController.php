@@ -7,11 +7,13 @@ class AuthController
     #method buat redirect ke halaman login
     public function login()
     {
+        $flash = $this->getFlashMessages();
         require __DIR__ . '/../views/auth/login_user.php';
     }
 
     public function forgotPassword()
     {
+        $flash = $this->getFlashMessages();
         require __DIR__ . '/../views/auth/forgot_password.php';
     }
 
@@ -216,6 +218,8 @@ class AuthController
             exit;
         }
 
+        $flash = $this->getFlashMessages();
+
         require_once __DIR__ . '/../views/auth/fix_registration.php';
     }
 
@@ -275,7 +279,7 @@ class AuthController
         // LOGOUT (karena status jadi Menunggu)
         session_destroy();
 
-        Session::set("flash_success", "Data berhasil diperbarui, silakan tunggu validasi admin.");
+        Session::set("flash_success", "Data berhasil diperbarui, silahkan tunggu validasi admin.");
         header("Location: ?route=Auth/login");
         exit;
     }
@@ -320,9 +324,6 @@ class AuthController
 
     public function registerMahasiswa()
     {
-        $errors = [];
-        $success = Session::get('flash_success');
-        Session::set('flash_success', null);
         $jurusanList = $this->jurusanOptions();
         $prodiList = $this->prodiOptions();
 
@@ -405,14 +406,13 @@ class AuthController
             }
         }
 
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/auth/register_usermahasiswa.php';
     }
 
     public function registerDosen()
     {
-        $errors = [];
-        $success = Session::get('flash_success');
-        Session::set('flash_success', null);
         $jurusanList = $this->jurusanOptions();
 
         $old = [
@@ -475,14 +475,13 @@ class AuthController
             }
         }
 
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/auth/register_userdosen.php';
     }
 
     public function registerTendik()
     {
-        $errors = [];
-        $success = Session::get('flash_success');
-        Session::set('flash_success', null);
         $unitList = $this->unitOptions();
 
         $old = [
@@ -544,6 +543,8 @@ class AuthController
                 exit;
             }
         }
+
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/auth/register_usertendik.php';
     }
@@ -619,4 +620,10 @@ class AuthController
         ];
     }
 
+    private function getFlashMessages(){
+        return [
+            'success'   => Session::flash('flash_success'),
+            'error'     => Session::flash('flash_error')
+        ];
+    }
 }

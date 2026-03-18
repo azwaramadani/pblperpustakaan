@@ -86,4 +86,10 @@ class FeedbackController
         exit;
     }
 
+    private function getFlashMessages(){
+        return [
+            'success'   => Session::flash('flash_success'),
+            'error'     => Session::flash('flash_error')
+        ];
+    }
 }

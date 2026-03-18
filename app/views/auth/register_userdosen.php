@@ -5,13 +5,9 @@ if (empty($old) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $old = $_POST;
 }
 
-$errors = $errors ?? [];
-$success = $success ?? null;
 // Pastikan array $old memiliki semua key yang dibutuhkan untuk menghindari error 'Undefined index'
 $defaults = ['nim_nip' => '', 'jurusan' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
 $old = array_merge($defaults, $old ?? []);
-
-$jurusanList = $jurusanList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +17,6 @@ $jurusanList = $jurusanList ?? [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Dosen - Rudy Ruang Study</title>
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css">
-    <!-- Font Awesome untuk icon close modal -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="auth-body register-page">
@@ -36,6 +31,13 @@ $jurusanList = $jurusanList ?? [];
 
     <!-- BAGIAN KANAN: FORM (Scrollable) -->
     <section class="form-panel">
+        <!-- Flash Messages -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error = $flash['error'])): ?>
+            <div class="flash error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         <div class="form-content">
             <div class="form-header">
                 <h2>Daftar Dosen</h2>

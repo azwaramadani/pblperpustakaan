@@ -232,4 +232,11 @@ class UserController{
         // Gabungkan base URL dengan path gambar
         return $baseUrl . '/' . $gambar;
     }
+
+    private function getFlashMessages(){
+        return [
+            'success'   => Session::flash('flash_success'),
+            'error'     => Session::flash('flash_error')
+        ];
+    }
 }

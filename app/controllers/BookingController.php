@@ -780,5 +780,11 @@ Class bookingController{
         }
 
         return null;
-}
+    }
+    private function getFlashMessages(){
+            return [
+                'success'   => Session::flash('flash_success'),
+                'error'     => Session::flash('flash_error')
+            ];
+        }
 }

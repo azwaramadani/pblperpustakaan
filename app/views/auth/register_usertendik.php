@@ -4,14 +4,9 @@ if (empty($old) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $old = $_POST;
 }
 
-$errors = $errors ?? [];
-$success = $success ?? null;
-
 // Default values agar tidak error undefined index
 $defaults = ['nim_nip' => '', 'unit' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
 $old = array_merge($defaults, $old ?? []);
-
-$unitList = $unitList ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +32,13 @@ $unitList = $unitList ?? [];
 
     <!-- BAGIAN KANAN: FORM (Scrollable) -->
     <section class="form-panel">
+        <!-- Flash Messages -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error = $flash['error'])): ?>
+            <div class="flash error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
         <div class="form-content">
             <div class="form-header">
                 <h2>Daftar Tenaga Kependidikan</h2>
