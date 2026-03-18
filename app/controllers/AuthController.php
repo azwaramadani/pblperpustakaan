@@ -28,7 +28,6 @@ class AuthController
             exit;
         }
 
-
         $token = bin2hex(random_bytes(32));
         $expired = date('Y-m-d H:i:s', strtotime('+30 minutes'));
 
@@ -110,14 +109,14 @@ class AuthController
 
         #sanitasi input
         $nim_nip  = trim($_POST['username'] ?? '');
-        $username = trim($_POST['username'] ?? '');
+        $usernameAdmin = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
-        #bikin objek dari masing2 class buat nentuin yang login admin apa user
         $userModel = new User();
         $user = $userModel->findByNIMNIP($nim_nip);
+
         $adminModel = new Admin();
-        $admin = $adminModel->loginAdmin($username); 
+        $admin = $adminModel->loginAdmin($usernameAdmin); 
 
         # VALIDASI LOGIN ADMIN
         if ($admin) {
@@ -152,16 +151,16 @@ class AuthController
             exit;
         }
 
-        # VALIDASI 3: Status masih menunggu belum divalidasi admin
-        if ($user['status_akun'] == 'Menunggu') {
-            Session::set("flash_error", " Mohon menunggu, akun anda sedang divalidasi oleh admin. Status: " . $user['status_akun']);
+        # VALIDASI 3: Status ditolak admin redirect ke page khusus edit data register 
+        if ($user['status_akun'] == 'Ditolak') {
+            Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
             exit;
         }
 
-        # VALIDASI 4: Status ditolak admin
-        if ($user['status_akun'] == 'Ditolak') {
-            Session::set("flash_error", " Registrasi akun anda ditolak karena tidak melampirkan bukti aktivasi Kubaca dengan benar, segera hubungi admin. Status: " . $user['status_akun']);
+        # VALIDASI 4: Status masih menunggu belum divalidasi admin
+        if ($user['status_akun'] == 'Menunggu') {
+            Session::set("flash_error", " Mohon menunggu, akun anda sedang divalidasi oleh admin. Status: " . $user['status_akun']);
             header("Location: ?route=Auth/login");
             exit;
         }

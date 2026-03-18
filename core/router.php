@@ -2,10 +2,7 @@
 
 class Router
 {
-
-    public function run()
-    {
-
+    public function run(){
         $route = $_GET['route'] ?? 'home/index';
 
         $route = trim($route, '/');
@@ -42,5 +39,4 @@ class Router
 
         call_user_func_array([$controller, $methodName], $params);
     }
-
 }
