@@ -20,6 +20,7 @@ class UserController{
 
         require __DIR__ . '/../views/user/view_profile.php';
     }
+    
     public function home()
     {
         Session::checkUserLogin();
@@ -53,18 +54,15 @@ class UserController{
         $user  = $userModel->findById(Session::get('user_id'));
         $rooms = $roomModel->getAll();
 
-        // ambil ruangan yang sedang dipakai sekarang
         $busyRoomIds = $bookingModel->getBusyRoomIdsNow();
 
         foreach ($rooms as &$room) {
-
             $statusRaw = strtolower(trim($room['status'] ?? ''));
             $roomId    = (int)$room['room_id'];
 
             $isBusy = in_array($roomId, $busyRoomIds, true);
 
             if ($statusRaw === 'tersedia') {
-
                 if ($isBusy) {
                     // manipulasi view
                     $room['status_display'] = 'Sedang Dipinjam';
@@ -72,18 +70,15 @@ class UserController{
                 } else {
                     $room['status_display'] = 'Tersedia';
                     $room['status_class']   = 'available';
-                }
-
-            } else {
-
+                }} else {
                 // tidak tersedia dari admin
                 $room['status_display'] = 'Tidak Tersedia';
                 $room['status_class']   = 'unavailable';
-
             }
         }
-
         unset($room);
+
+        $flash = $this->getFlashMessages();
 
         require __DIR__ . '/../views/user/ruangan.php';
     }

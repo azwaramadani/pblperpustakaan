@@ -548,6 +548,7 @@ table.data-table tbody tr:hover {
     border-radius: 12px;
     margin-bottom: 16px;
     font-weight: 600;
+    text-align: center;
 }
 
 .flash.success {

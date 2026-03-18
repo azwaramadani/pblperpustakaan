@@ -1,10 +1,5 @@
 <?php
 $badgeText = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
-$err       = Session::get('flash_error');
-$success   = Session::get('flash_success');
-Session::set('flash_error', null);
-Session::set('flash_success', null);
-
 $isEdit = !empty($payload['booking_id'] ?? null);
 
 // Helper base_url untuk preview
@@ -31,28 +26,8 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $isEdit ? 'Ubah Peminjaman' : 'Pilih Tanggal & Jam' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css?v=1.2">
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css?v=1.3">
   <style>
-    /* Flash message */
-    .flash-message {
-      padding: 12px 14px;
-      border-radius: 4px;
-      margin: 0 0 12px 0;
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .flash-success {
-      background: #e5f6f3;
-      color: #0f766e;
-      border: 1px solid #b7e4dc;
-    }
-    .flash-warning {
-      background: #e5f6f3;
-      color: #0f766e;
-      border: 1px solid #b7e4dc;
-    }
-
     /* Modal warning custom */
     .modal-warning {
       position: fixed;
@@ -169,16 +144,11 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
 
     <div class="booking-card">
       <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
+      <!-- Flash Messages -->
+            <?php if (!empty($error = $flash['error'])): ?>
+                <div class="flash error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
 
-      <?php if ($success): ?>
-        <div class="flash-message flash-success"><?= htmlspecialchars($success) ?></div>
-      <?php endif; ?>
-      <?php if ($err): ?>
-        <div class="flash-message flash-warning">
-          <h4><?= htmlspecialchars($err) ?></h4>
-        </div>
-      <?php endif; ?>
-      
       <!-- Informasi jadwal terpakai hari ini -->
       <div class="schedule-box">
         <h4>Waktu yang sudah dipinjam:</h4>

@@ -1,11 +1,11 @@
 <?php
-// proses_booking.php
 require_once __DIR__ . '/../../core/Session.php';
 require_once __DIR__ . '/../../core/helper.php';
 
 date_default_timezone_set('Asia/Jakarta');
 
 Class bookingController{
+    #step1 sebenernya buat buka ruangan yang dipilih aja
     public function step1($roomId)
     {
         Session::checkUserLogin();
@@ -18,20 +18,25 @@ Class bookingController{
 
         $room = $roomModel->findById($roomId);      
         if (!$room) { 
-            http_response_code(404); exit('Ruangan tidak ditemukan.'); 
+            http_response_code(404); 
+            exit('Ruangan tidak ditemukan.'); 
         }
         if (!$room || strtolower($room['status'] ?? '') != 'tersedia') {
-            header('Location: ?route=User/ruangan'); exit;
+            Session::set("flash_error", "Ruangan Tidak Tersedia.");
+            header('Location: ?route=User/ruangan'); 
+            exit;
         }
 
         $user           = $userModel->findById(Session::get('user_id'));
         $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
         $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId); 
 
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/user/booking_step1.php';
     }
 
-    // Terima tanggal + jam dari step1, lalu tampilkan form detail di step2
+    #step 2 baru method handler sebenarnya untuk semua data peminjaman mulai dari tanggal dan jam
     public function step2()
     {
         Session::checkUserLogin();

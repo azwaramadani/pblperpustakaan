@@ -208,6 +208,25 @@ body {
     letter-spacing: 0.5px;
 }
 
+.flash {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.flash.success {
+    background: #e6f7f3;
+    color: #0f8f8c;
+    border: 1px solid #bce6dc;
+}
+
+.flash.error {
+    background: #fff2f0;
+    color: #c0392b;
+    border: 1px solid #f3c6bf;
+}
 
 /* ===== FORM CARD (Putih di tengah) ===== */
 .booking-card {

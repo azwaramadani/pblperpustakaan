@@ -39,41 +39,47 @@
 
 <main>
     <section class="title-section">
+        <!-- Flash Messages -->
+            <?php if (!empty($success = $flash['success'])): ?>
+                <div class="flash success"><?= htmlspecialchars($success) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($error = $flash['error'])): ?>
+                <div class="flash error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
         <h2 class="title">Daftar Ruangan</h2>
         <p class="subtitle">Lihat ketersediaan ruangan untuk belajar individu, diskusi kelompok, atau kegiatan akademik lainnya.</p>
     </section>
 
     <div class="room-container">
-    <?php if (empty($rooms)): ?>
-        <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
-    <?php else: ?>
-        <?php foreach ($rooms as $r): ?>
-            <?php
-              // Gunakan gambar_ruangan jika ada, fallback ke contohruangan.png
-              $imgPath = !empty($r['gambar_ruangan']) ? $r['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
-              $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
-            ?>
-            <div class="room-card">
-                <img src="<?= htmlspecialchars($imgUrl) ?>"
-                     alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">
-                <div class="room-info">
-                    <div class="room-header">
-                        <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
-                        <span class="status <?= htmlspecialchars($r['status_class'] ?? (($r['status'] == 'Tersedia') ? 'available' : 'unavailable')) ?>">
-                            <?= htmlspecialchars($r['status_display'] ?? $r['status']) ?>
-                        </span>
+        <?php if (empty($rooms)): ?>
+            <p class="no-room">Tidak ada ruangan tersedia saat ini.</p>
+        <?php else: ?>
+            <?php foreach ($rooms as $r): ?>
+                <?php
+                $imgPath = !empty($r['gambar_ruangan']) ? $r['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
+                $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath,'/');
+                ?>
+                <div class="room-card">
+                    <img src="<?= htmlspecialchars($imgUrl) ?>"
+                        alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" class="room-img">
+                    <div class="room-info">
+                        <div class="room-header">
+                            <h3><?= htmlspecialchars($r['nama_ruangan']) ?></h3>
+                            <span class="status <?= htmlspecialchars($r['status_class'] ?? (($r['status'] == 'Tersedia') ? 'available' : 'unavailable')) ?>">
+                                <?= htmlspecialchars($r['status_display'] ?? $r['status']) ?>
+                            </span>
+                        </div>
+                        <div class="room-details">
+                            <span class="capacity">
+                                <i class="fas fa-user"></i> <?= $r['kapasitas_min'] ?> - <?= $r['kapasitas_max'] ?> Orang
+                            </span>
+                        </div>
                     </div>
-                    <div class="room-details">
-                        <span class="capacity">
-                            <i class="fas fa-user"></i> <?= $r['kapasitas_min'] ?> - <?= $r['kapasitas_max'] ?> Orang
-                        </span>
-                    </div>
+                    <a href="?route=Booking/step1/<?= $r['room_id'] ?>" class="btn-book">Booking sekarang</a>
                 </div>
-                <a href="?route=Booking/step1/<?= $r['room_id'] ?>" class="btn-book">Booking sekarang</a>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 </main>
 
 <!-- FOOTER -->
