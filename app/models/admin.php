@@ -21,4 +21,10 @@ class Admin extends Model
         $sql = "SELECT * FROM {$this->table} WHERE admin_id = ?";
         return $this->query($sql, [$id])->fetch();
     }
+
+    public function findByEmailAdmin($email)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE email = ? LIMIT 1";
+        return $this->query($sql, [$email])->fetch();
+    }
 }

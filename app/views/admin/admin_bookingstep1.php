@@ -1,11 +1,6 @@
 <?php
-$adminName   = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
-
 $badgeText   = $puasPercent > 0 ? $puasPercent . '% Orang Puas' : 'Belum ada feedback';
-$err         = Session::get('flash_error');
-$success     = Session::get('flash_success');
-Session::set('flash_error', null);
-Session::set('flash_success', null);
+$isEdit    = !empty($payload['booking_id'] ?? null);
 
 // Helper function untuk base_url jika belum didefinisikan (untuk preview)
 if (!function_exists('app_config')) {
@@ -15,14 +10,9 @@ if (!function_exists('app_config')) {
 // Batas minimal tanggal = hari ini (Asia/Jakarta)
 $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d');
 
-// Batas jam diperbolehkan
-$minTime = '09:00';
-$maxTime = '15:00';
-
 // Bangun URL gambar ruangan
 $imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
 $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath, '/');
-
 ?>
 
 <!DOCTYPE html>
@@ -33,94 +23,8 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
   <title>Pilih Tanggal & Jam - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking1.css">
-  <style>
-    /* Flash message */
-    .flash-message {
-      padding: 12px 14px;
-      border-radius: 4px;
-      margin: 0 0 12px 0;
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-    .flash-success {
-      background: #e5f6f3;
-      color: #0f766e;
-      border: 1px solid #b7e4dc;
-    }
-    .flash-warning {
-      background: #e5f6f3;
-      color: #0f766e;
-      border: 1px solid #b7e4dc;
-    }
-
-    /* Modal warning custom */
-    .modal-warning {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .modal-warning.active { display: flex; }
-    .modal-card {
-      width: 320px;
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px 18px 16px;
-      text-align: center;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
-      animation: pop 0.18s ease-out;
-    }
-    @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      margin: 0 auto 12px;
-      display: grid;
-      place-items: center;
-      background: #ff5c5c;
-      color: #fff;
-      font-size: 28px;
-      font-weight: 700;
-    }
-    .modal-title {
-      font-size: 17px;
-      font-weight: 700;
-      margin: 0 0 10px;
-      color: #222;
-    }
-    .modal-text {
-      font-size: 14px;
-      margin: 0 0 16px;
-      color: #444;
-      line-height: 1.5;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-    }
-    .btn-modal-primary {
-      flex: 1;
-      background: #ff5c5c;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-      box-shadow: 0 6px 16px rgba(255,92,92,0.35);
-    }
-    .btn-modal-primary:hover { transform: translateY(-1px); }
-  </style>
 </head>
 <body>
-
 <header class="navbar">
     <div class="logo">
       <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
@@ -131,7 +35,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
       <div class="profile-trigger">
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="User">
         <div class="user-name">
-          <a href="?route=Admin/dataRuangan" style="text-decoration: none; color: black;"><p><?= htmlspecialchars($adminName) ?></p></a>
+          <a href="?route=Admin/dataRuangan" style="text-decoration: none; color: black;"><p><?= htmlspecialchars($admin['username']) ?></p></a>
         </div>
       </div>
     </div>
@@ -160,12 +64,12 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
     <div class="booking-card">
       <h3>Pilih tanggal dan jam peminjaman</h3>
 
-      <?php if ($success): ?>
-        <div class="flash-message flash-success"><?= htmlspecialchars($success) ?></div>
-      <?php endif; ?>
-      <?php if ($err): ?>
-        <div class="flash-message flash-warning"><?= htmlspecialchars($err) ?></div>
-      <?php endif; ?>
+      <!-- Flash error dititipkan ke JS untuk ditampilkan sebagai modal -->
+            <?php if (!empty($error = $flash['error'])): ?>
+                <script>
+                    window.__flashError = <?= json_encode(htmlspecialchars($error)) ?>;
+                </script>
+            <?php endif; ?>
       
       <!-- Informasi jadwal terpakai hari ini -->
       <div class="schedule-box">
@@ -193,11 +97,14 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         <?php endif; ?>
       </div>
 
-      <form action="?route=Booking/adminStep2" method="POST">
+      <form action="<?= $isEdit ? '?route=Booking/adminEditStep2' : '?route=Booking/adminStep2' ?>" method="POST">
+        <?php if ($isEdit): ?>
+            <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
+        <?php endif; ?>  
+          
         <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
         
         <div class="form-grid">
-            <!-- Tanggal -->
             <div class="form-group">
                 <label>Pilih tanggal</label>
                 <!-- Min di-set hari ini, weekend di-blok via JS -->
@@ -206,144 +113,89 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
                     name="tanggal"
                     class="input-line"
                     required
-                    min="<?= htmlspecialchars($todayMin) ?>">
+                    min="<?= htmlspecialchars($todayMin) ?>"
+                    value="<?= htmlspecialchars($payload['tanggal'] ?? '') ?>">
             </div>
 
             <!-- Jam Mulai & Selesai -->
             <div class="time-wrapper">
                 <div class="form-group time-box">
-                    <label>Pilih jam</label>
+                    <label>Jam mulai</label>
                     <input
                         type="time"
                         name="jam_mulai"
                         class="input-line"
                         required
-                        min="<?= htmlspecialchars($minTime) ?>"
-                        max="<?= htmlspecialchars($maxTime) ?>">
+                        value="<?= htmlspecialchars($payload['jam_mulai'] ?? '') ?>">
                 </div>
                 
                 <span class="sampai-text">Sampai</span>
 
                 <div class="form-group time-box">
-                    <label>Pilih jam</label>
+                    <label>Jam selesai</label>
                     <input
                         type="time"
                         name="jam_selesai"
                         class="input-line"
                         required
-                        min="<?= htmlspecialchars($minTime) ?>"
-                        max="<?= htmlspecialchars($maxTime) ?>">
+                        value="<?= htmlspecialchars($payload['jam_selesai'] ?? '') ?>">
                 </div>
             </div>
         </div>
 
         <!-- Tombol Aksi -->
         <div class="btn-action-row">
-            <a href="?route=admin/dataruangan" class="btn btn-back">Kembali</a>
-            <button type="?route=Booking/adminStep2" class="btn btn-next">Lanjut</button>
+            <a href="?route=<?= $isEdit ? 'Admin/dataFromAdminCreateBooking' : 'admin/dataRuangan' ?>" class="btn btn-back">Kembali</a>
+            <button type="submit" class="btn btn-next">
+              <?= $isEdit ? 'Lanjut ubah' : 'Lanjut' ?>
+            </button>
         </div>
       </form>
     </div>
   </main>
 
-<!-- MODAL WARNING (untuk validasi tanggal/jam) -->
-<div id="warningModal" class="modal-warning">
-    <div class="modal-card">
-        <div class="modal-icon">!</div>
-        <div class="modal-title">Perhatian</div>
-        <p class="modal-text" id="warningText">Pesan peringatan.</p>
-        <div class="modal-actions">
-            <button class="btn-modal-primary" type="button" onclick="closeWarning()">OK</button>
+<!-- =========================================================
+         MODAL: WARNING (flash error & validasi tanggal/jam)
+    ========================================================= -->
+    <div id="warningModal" class="modal-warning">
+        <div class="modal-card">
+            <div class="modal-icon">!</div>
+            <p class="modal-title">Perhatian</p>
+            <p class="modal-text" id="warningText">Pesan peringatan.</p>
+            <div class="modal-actions">
+                <button class="btn-modal-primary" type="button" onclick="closeWarning()">OK</button>
+            </div>
         </div>
     </div>
-</div>
 
 <script>
-  // Modal Warning
-  const warningModal = document.getElementById('warningModal');
-  const warningText = document.getElementById('warningText');
-  function showWarning(msg) {
-      warningText.textContent = msg;
-      warningModal.classList.add('active');
-  }
-  function closeWarning() {
-      warningModal.classList.remove('active');
-  }
-  warningModal.addEventListener('click', (e) => {
-      if (e.target === warningModal) closeWarning();
-  });
+        // ---------------------------------------------------------
+        // 1. MODAL WARNING (dipakai oleh flash error & validasi form)
+        // ---------------------------------------------------------
+        const warningModal = document.getElementById('warningModal');
+        const warningText  = document.getElementById('warningText');
 
-  // Blokir weekend & tanggal lampau di browser (frontend guard)
-  const tanggalInput = document.querySelector('input[name="tanggal"]');
-  const minDateStr = '<?= htmlspecialchars($todayMin) ?>';
-  const weekendMsg = 'Peminjaman tidak diperbolehkan pada hari Sabtu atau Minggu.';
-  const pastMsg = 'Tanggal peminjaman tidak boleh sebelum hari ini.';
+        function showWarning(msg) {
+            warningText.textContent = msg;
+            warningModal.classList.add('active');
+        }
 
-  function isWeekend(dateStr) {
-      const d = new Date(dateStr + 'T00:00:00');
-      const day = d.getDay(); // 0 = Minggu, 6 = Sabtu
-      return day === 0 || day === 6;
-  }
+        function closeWarning() {
+            warningModal.classList.remove('active');
+        }
 
-  function isPast(dateStr) {
-      return dateStr < minDateStr;
-  }
+        // Tutup modal jika klik di luar area kartu
+        warningModal.addEventListener('click', function (e) {
+            if (e.target === warningModal) closeWarning();
+        });
 
-  tanggalInput?.addEventListener('change', () => {
-      const val = tanggalInput.value;
-      if (!val) return;
-      if (isPast(val)) {
-          tanggalInput.value = '';
-          showWarning(pastMsg);
-          return;
-      }
-      if (isWeekend(val)) {
-          tanggalInput.value = '';
-          showWarning(weekendMsg);
-          return;
-      }
-  });
-
-  // Guard jam: hanya 09:00 - 15:00, jam selesai > jam mulai, durasi <= 3 jam
-  const jamMulaiInput = document.querySelector('input[name="jam_mulai"]');
-  const jamSelesaiInput = document.querySelector('input[name="jam_selesai"]');
-  const minTime = '<?= htmlspecialchars($minTime) ?>';
-  const maxTime = '<?= htmlspecialchars($maxTime) ?>';
-  const timeMsg = 'Peminjaman hanya boleh antara 09:00 - 15:00.';
-  const orderMsg = 'Jam selesai harus setelah jam mulai.';
-  const durationMsg = 'Durasi peminjaman maksimal 3 jam.';
-
-  function toMinutes(hhmm) {
-      const [h, m] = hhmm.split(':').map(Number);
-      return h * 60 + m;
-  }
-
-  function validateTime() {
-      const jm = jamMulaiInput.value;
-      const js = jamSelesaiInput.value;
-      if (!jm || !js) return;
-
-      if (jm < minTime || js > maxTime) {
-          jamMulaiInput.value = '';
-          jamSelesaiInput.value = '';
-          showWarning(timeMsg);
-          return;
-      }
-      if (js <= jm) {
-          jamSelesaiInput.value = '';
-          showWarning(orderMsg);
-          return;
-      }
-      const diff = toMinutes(js) - toMinutes(jm);
-      if (diff > 180) { // lebih dari 3 jam
-          jamSelesaiInput.value = '';
-          showWarning(durationMsg);
-          return;
-      }
-  }
-
-  jamMulaiInput?.addEventListener('change', validateTime);
-  jamSelesaiInput?.addEventListener('change', validateTime);
+        // ---------------------------------------------------------
+        // 2. FLASH ERROR — auto-trigger modal jika ada pesan dari server
+        //    window.__flashError diisi PHP di dalam .booking-card
+        // ---------------------------------------------------------
+        if (typeof window.__flashError !== 'undefined' && window.__flashError) {
+            showWarning(window.__flashError);
+        }
 </script>
 
 </body>

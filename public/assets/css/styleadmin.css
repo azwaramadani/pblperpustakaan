@@ -548,13 +548,12 @@ table.data-table tbody tr:hover {
     border-radius: 12px;
     margin-bottom: 16px;
     font-weight: 600;
-    text-align: center;
 }
 
 .flash.success {
     background: #e6f7f3;
     color: #0f8f8c;
-    border: 1px solid #bce6dc;
+    border: 1px solid #9cebd8;
 }
 
 .flash.error {

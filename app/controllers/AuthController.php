@@ -22,11 +22,11 @@ class AuthController
         $email = trim($_POST['email'] ?? '');
 
         $userModel = new User();
-        $user = $userModel->findByEmail($email);
+        $user      = $userModel->findByEmail($email);
 
         if (!$user) {
-            Session::set("flash_error", "Email tidak ditemukan.");
-            header("Location: ?route=Auth/forgotPassword");
+            Session::set('flash_error', 'Email tidak ditemukan.');
+            header('Location: ?route=Auth/forgotPassword');
             exit;
         }
 

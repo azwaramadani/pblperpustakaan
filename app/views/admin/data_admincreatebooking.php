@@ -180,7 +180,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= (int)$b['total_peminjam'] ?? '-'?></td>
                     <td><?= htmlspecialchars($b['nama_ruangan']?? '-') ?></td>
                     <td><?= $tanggal ?> | <?= $jamMulai ?> - <?= $jamSelesai ?></td>
-                    <td><?= htmlspecialchars($b['created_at']) ?></td>
+                    <td><?= htmlspecialchars(format_indo_date($b['created_at'])) ?></td>
                     <td>
                       <span class="status-chip status-<?= $statusKey ?>">
                         <?= htmlspecialchars($b['status_booking']) ?>

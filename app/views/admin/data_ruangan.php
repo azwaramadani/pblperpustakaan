@@ -117,8 +117,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
               </div>
               
               <div class="room-actions">
-                <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" style="object-fit:cover;">
-                
+                <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($r['nama_ruangan']) ?>" style="object-fit:cover;">        
                 <div class="action-buttons">
                   <a class="btn-action btn-edit" href="?route=Booking/adminStep1/<?= $r['room_id'] ?>">Booking</a>
                   <a class="btn-action btn-feedback" href="?route=Admin/feedbackRuangan/<?= $r['room_id'] ?>">Lihat Feedback</a>
@@ -165,6 +164,7 @@ $adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
     </form>
   </div>
 </div>
+
 <script>
     // --- SCRIPT MODAL HAPUS ---
     const modalDelete = document.getElementById('modalDelete');

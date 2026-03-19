@@ -92,7 +92,7 @@ Class bookingController{
                 $payload['jam_mulai'], 
                 $payload['jam_selesai']
         )){
-            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain. Silahkan pinjam selain waktu di tabel');
             header('Location: ?route=Booking/step1/'.$payload['room_id']); 
             exit;
         }
@@ -100,235 +100,6 @@ Class bookingController{
         $user = $userModel->findById(Session::get('user_id'));
 
         require __DIR__ . '/../views/user/booking_step2.php';
-    }
-
-    public function adminStep1($roomId)
-    {
-        Session::checkAdminLogin();
-        Session::preventCache();
-
-        $roomModel     = new Room();
-        $feedbackModel = new Feedback();
-        $adminModel    = new Admin();
-        $bookingModel  = new Booking();
-
-        $adminId = Session::get('admin_id');
-        $admin   = $adminModel->findById($adminId);
-        
-        $room    = $roomModel->findById($roomId);        
-        if (!$room) { 
-            http_response_code(404); 
-            exit('Ruangan tidak ditemukan.'); 
-        }
-        if (strtolower($room['status'] ?? '') !== 'tersedia'){
-            header('Location: ?route=Admin/dataRuangan');
-            exit;
-        }
-
-        $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
-        $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId);
-
-        require __DIR__ . '/../views/admin/admin_bookingstep1.php';
-    }
-
-    public function adminStep2()
-    {
-        Session::checkAdminLogin();
-        Session::preventCache();
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=Admin/dataRuangan'); 
-            exit; 
-            }
-
-        $payload = [
-            'room_id'    => (int)($_POST['room_id'] ?? 0),
-            'tanggal'    => trim($_POST['tanggal'] ?? ''),
-            'jam_mulai'  => trim($_POST['jam_mulai'] ?? ''),
-            'jam_selesai'=> trim($_POST['jam_selesai'] ?? ''),
-        ];
-
-        foreach (['room_id','tanggal','jam_mulai','jam_selesai'] as $key) {
-            if (empty($payload[$key])) {
-                Session::set('flash_error', 'Isi tanggal dan jam mulai/selesai.');
-                header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
-                exit;
-            }
-        }
-
-        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
-        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
-        if ($dateError !== null) {
-            Session::set('flash_error', $dateError);
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
-            exit;
-        }
-
-        // Validasi jam (harus 09:00-15:00 dan mulai < selesai)
-        $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
-        if ($timeError !== null) {
-            Session::set('flash_error', $timeError);
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
-            exit;
-        }
-
-        $roomModel    = new Room();
-        $bookingModel = new Booking();
-        $adminModel   = new Admin();
-
-        $adminId = Session::get('admin_id');
-        $admin   = $adminModel->findById($adminId);
-
-        $room = $roomModel->findById($payload['room_id']);
-        if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
-
-        // cek bentrok jadwal
-        if ($bookingModel->hasOverlap(
-                $payload['room_id'], 
-                $payload['tanggal'], 
-                $payload['jam_mulai'], 
-                $payload['jam_selesai']
-        )){
-            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
-            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
-            exit;
-        }
-
-        require __DIR__ . '/../views/admin/admin_bookingstep2.php';
-    }
-
-    // method handler untuk admin membuat booking
-    public function adminStore()
-    {
-        Session::checkAdminLogin();
-        Session::preventCache();
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Request tidak valid.'
-            ]);
-            exit;
-        }
-
-        $roomModel    = new Room();
-        $bookingModel = new Booking();
-
-        $anggotaInput = $_POST['nim_anggota'] ?? [];
-        $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
-        $anggota      = array_unique($anggota);
-
-        $payload = [
-            'room_id'                 => (int)($_POST['room_id'] ?? 0),
-            'tanggal'                 => trim($_POST['tanggal'] ?? ''),
-            'jam_mulai'               => trim($_POST['jam_mulai'] ?? ''),
-            'jam_selesai'             => trim($_POST['jam_selesai'] ?? ''),
-            'jumlah_peminjam'         => (int)($_POST['jumlah_peminjam'] ?? 0),
-            'nama_penanggung_jawab'   => trim($_POST['nama_penanggung_jawab'] ?? ''),
-            'nimnip_penanggung_jawab' => trim($_POST['nimnip_penanggung_jawab'] ?? ''),
-            'email_penanggung_jawab'  => trim($_POST['email_penanggung_jawab'] ?? ''),
-        ];
-
-        foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
-            if (empty($payload[$key])) {
-                jsonResponse([
-                    'success' => false,
-                    'message' => 'Lengkapi semua field.'
-                ]);
-                exit;
-            }
-        }
-
-        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
-        if ($dateError !== null) {
-            jsonResponse([
-                'success' => false,
-                'message' => $dateError
-            ]);
-            exit;
-        }
-
-        $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
-        if ($timeError !== null) {
-            jsonResponse([
-                'success' => false,
-                'message' => $timeError
-            ]);
-            exit;
-        }
-
-        if (count($anggota) === 0) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Tambahkan minimal 1 anggota.'
-            ]);
-            exit;
-        }
-
-        $room = $roomModel->findById($payload['room_id']);
-        if (!$room) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Ruangan tidak ditemukan.'
-            ]);
-            exit;
-        }
-
-        $maxCap      = (int)($room['kapasitas_max'] ?? 0);
-        $minCap      = (int)($room['kapasitas_min'] ?? 0);
-        $totalPeople = 1 + count($anggota);
-
-        if ($maxCap > 0 && $totalPeople > $maxCap) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Jumlah peminjam melebihi kapasitas ruangan.'
-            ]);
-            exit;
-        }
-
-        if ($minCap > 0 && $totalPeople < $minCap) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Jumlah peminjam belum memenuhi kapasitas minimum.'
-            ]);
-            exit;
-        }
-
-        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Waktu bentrok dengan peminjaman lain.'
-            ]);
-            exit;
-        }
-
-        // hanya cek anggota, bukan penanggung jawab
-        foreach ($anggota as $nimCheck) {
-            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
-                jsonResponse([
-                    'success' => false,
-                    'message' => 'NIM/NIP anggota ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
-                ]);
-                exit;
-            }
-        }
-
-        $payload['jumlah_peminjam'] = $totalPeople;
-        $payload['nimnip_peminjam'] = implode(',', $anggota);
-
-        $payload['admin_id']       = Session::get('admin_id');
-        $payload['status_booking'] = 'Disetujui';
-        $payload['waktu_booking']  = date('Y-m-d H:i:s');
-        $payload['kode_booking']   = generateBookingCode();
-
-        $bookingModel->createAdminBooking($payload);
-
-        jsonResponse([
-            'success' => true,
-            'message' => 'Booking berhasil dibuat'
-        ]);
-
-        exit;
     }
 
     // Method handler buat user create booking
@@ -476,6 +247,239 @@ Class bookingController{
         exit;
     }
 
+    public function adminStep1($roomId)
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        $adminId = Session::get('admin_id');
+
+        $roomModel     = new Room();
+        $feedbackModel = new Feedback();
+        $adminModel    = new Admin();
+        $bookingModel  = new Booking();
+
+        $admin   = $adminModel->findById($adminId);
+        $room    = $roomModel->findById($roomId); 
+
+        if (!$room) { 
+            http_response_code(404); 
+            exit('Ruangan tidak ditemukan.'); 
+        }
+        if (strtolower($room['status'] ?? '') !== 'tersedia'){
+            Session::set("flash_error", "Ruangan tidak tersedia! Silahkan ubah status jika ingin meminjam.");
+            header('Location: ?route=Admin/dataRuangan');
+            exit;
+        }
+
+        $puasPercent    = $feedbackModel->puasPercent($room['room_id']);
+        $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$roomId);
+
+        $flash = $this->getFlashMessages();
+
+        require __DIR__ . '/../views/admin/admin_bookingstep1.php';
+    }
+
+    public function adminStep2()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataRuangan'); 
+            exit; 
+            }
+
+        $payload = [
+            'room_id'    => (int)($_POST['room_id'] ?? 0),
+            'tanggal'    => trim($_POST['tanggal'] ?? ''),
+            'jam_mulai'  => trim($_POST['jam_mulai'] ?? ''),
+            'jam_selesai'=> trim($_POST['jam_selesai'] ?? ''),
+        ];
+
+        foreach (['room_id','tanggal','jam_mulai','jam_selesai'] as $key) {
+            if (empty($payload[$key])) {
+                Session::set('flash_error', 'Isi tanggal dan jam mulai/selesai.');
+                header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
+                exit;
+            }
+        }
+
+        // Validasi tanggal: tidak boleh lampau dan tidak boleh Sabtu/Minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            Session::set('flash_error', $dateError);
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
+        }
+
+        // Validasi jam (harus 09:00-15:00 dan mulai < selesai)
+        $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
+        if ($timeError !== null) {
+            Session::set('flash_error', $timeError);
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']);
+            exit;
+        }
+
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+        $adminModel   = new Admin();
+
+        $adminId = Session::get('admin_id');
+        $admin   = $adminModel->findById($adminId);
+
+        $room = $roomModel->findById($payload['room_id']);
+        if (!$room) { http_response_code(404); exit('Ruangan tidak ditemukan.'); }
+
+        // cek bentrok jadwal
+        if ($bookingModel->hasOverlap(
+                $payload['room_id'], 
+                $payload['tanggal'], 
+                $payload['jam_mulai'], 
+                $payload['jam_selesai']
+        )){
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain. Silahkan pinjam selain waktu di tabel');
+            header('Location: ?route=Booking/adminStep1/'.$payload['room_id']); 
+            exit;
+        }
+
+        require __DIR__ . '/../views/admin/admin_bookingstep2.php';
+    }
+
+    // method handler untuk admin membuat booking
+    public function adminStore()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Request tidak valid.'
+            ]);
+            exit;
+        }
+
+        $roomModel    = new Room();
+        $bookingModel = new Booking();
+
+        $anggotaInput = $_POST['nim_anggota'] ?? [];
+        $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
+        $anggota      = array_unique($anggota);
+
+        $payload = [
+            'room_id'                 => (int)($_POST['room_id'] ?? 0),
+            'tanggal'                 => trim($_POST['tanggal'] ?? ''),
+            'jam_mulai'               => trim($_POST['jam_mulai'] ?? ''),
+            'jam_selesai'             => trim($_POST['jam_selesai'] ?? ''),
+            'jumlah_peminjam'         => (int)($_POST['jumlah_peminjam'] ?? 0),
+            'nama_penanggung_jawab'   => trim($_POST['nama_penanggung_jawab'] ?? ''),
+            'nimnip_penanggung_jawab' => trim($_POST['nimnip_penanggung_jawab'] ?? ''),
+            'email_penanggung_jawab'  => trim($_POST['email_penanggung_jawab'] ?? ''),
+        ];
+
+        foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
+            if (empty($payload[$key])) {
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'Lengkapi semua field.'
+                ]);
+                exit;
+            }
+        }
+
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null) {
+            jsonResponse([
+                'success' => false,
+                'message' => $dateError
+            ]);
+            exit;
+        }
+
+        $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
+        if ($timeError !== null) {
+            jsonResponse([
+                'success' => false,
+                'message' => $timeError
+            ]);
+            exit;
+        }
+
+        if (count($anggota) === 0) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Tambahkan minimal 1 anggota.'
+            ]);
+            exit;
+        }
+
+        $room = $roomModel->findById($payload['room_id']);
+        if (!$room) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Ruangan tidak ditemukan.'
+            ]);
+            exit;
+        }
+
+        $maxCap      = (int)($room['kapasitas_max'] ?? 0);
+        $minCap      = (int)($room['kapasitas_min'] ?? 0);
+        $totalPeople = 1 + count($anggota);
+
+        if ($maxCap > 0 && $totalPeople > $maxCap) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam melebihi kapasitas ruangan.'
+            ]);
+            exit;
+        }
+
+        if ($minCap > 0 && $totalPeople < $minCap) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Jumlah peminjam belum memenuhi kapasitas minimum.'
+            ]);
+            exit;
+        }
+
+        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Waktu bentrok dengan peminjaman lain.'
+            ]);
+            exit;
+        }
+
+        // hanya cek anggota, bukan penanggung jawab
+        foreach ($anggota as $nimCheck) {
+            if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
+                jsonResponse([
+                    'success' => false,
+                    'message' => 'NIM/NIP anggota ' . $nimCheck . ' sudah memiliki booking pada tanggal tersebut.'
+                ]);
+                exit;
+            }
+        }
+
+        $payload['jumlah_peminjam'] = $totalPeople;
+        $payload['nimnip_peminjam'] = implode(',', $anggota);
+
+        $payload['admin_id']       = Session::get('admin_id');
+        $payload['status_booking'] = 'Disetujui';
+        $payload['waktu_booking']  = date('Y-m-d H:i:s');
+        $payload['kode_booking']   = generateBookingCode();
+
+        $bookingModel->createAdminBooking($payload);
+
+        jsonResponse([
+            'success' => true,
+            'message' => 'Booking berhasil dibuat'
+        ]);
+
+        exit;
+    }
+
     public function cancel($bookingId)
     {
         Session::checkUserLogin();
@@ -503,6 +507,7 @@ Class bookingController{
                 Session::set('flash_error', 'Akun anda diblokir karena telah membatalkan booking 3x dalam 1 hari.');
             } else {
                 Session::set('flash_success', 'Booking berhasil dibatalkan.');
+                header('Location: ?route=User/riwayat');
             }
         } else {
             Session::set('flash_error', 'Booking tidak bisa dibatalkan untuk status ini.');
@@ -527,10 +532,14 @@ Class bookingController{
         $feedbackModel = new Feedback();
 
         $booking = $bookingModel->findForEdit($bookingId, $userId);
-        if (!$booking) { http_response_code(404); exit('Booking tidak ditemukan.'); }
+        if (!$booking) { 
+            http_response_code(404); 
+            exit('Booking tidak ditemukan.'); 
+        }
         if ($booking['status_booking'] !== 'Disetujui') {
             Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
-            header('Location: ?route=User/riwayat'); exit;
+            header('Location: ?route=User/riwayat'); 
+            exit;
         }
 
         $room        = $roomModel->findById((int)$booking['room_id']); // ruangan tetap
@@ -556,7 +565,8 @@ Class bookingController{
         Session::preventCache();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=User/riwayat'); exit;
+            header('Location: ?route=User/riwayat'); 
+            exit;
         }
 
         $bookingId  = (int)($_POST['booking_id'] ?? 0);
@@ -576,19 +586,25 @@ Class bookingController{
         $feedbackModel= new Feedback();
 
         $booking = $bookingModel->findForEdit($bookingId, $userId);
-        if (!$booking) { http_response_code(404); exit('Booking tidak ditemukan.'); }
+        if (!$booking) { 
+            http_response_code(404); 
+            exit('Booking tidak ditemukan.'); 
+        }
+
         if ($booking['status_booking'] !== 'Disetujui') {
             Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
             header('Location: ?route=User/riwayat'); exit;
         }
 
-        $roomId = (int)$booking['room_id']; // ruangan tetap
+        // ruangan tetap
+        $roomId = (int)$booking['room_id']; 
         $room   = $roomModel->findById($roomId);
 
         // Cek bentrok jadwal; exclude booking ini sendiri
         if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
             Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+            header('Location: ?route=Booking/editForm/'.$bookingId); 
+            exit;
         }
 
         $payload = [
@@ -604,9 +620,118 @@ Class bookingController{
         if (empty($initialMembers)) { $initialMembers = ['']; }
 
         $user        = $userModel->findById($userId);
-        $puasPercent = $feedbackModel->puasPercent($roomId); // opsional jika mau dipakai lagi
+        $puasPercent = $feedbackModel->puasPercent($roomId); 
 
         require __DIR__ . '/../views/user/booking_step2.php';
+    }
+
+    public function adminEditForm($bookingId)
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+        
+        $bookingId = (int)$bookingId;
+        $adminId   = Session::get('admin_id');
+
+        $bookingModel  = new Booking();
+        $roomModel     = new Room();
+        $adminModel    = new Admin();
+        $feedbackModel = new Feedback();
+
+        $booking = $bookingModel->findForEdit($bookingId, $adminId);
+
+        if (!$booking) { 
+            http_response_code(404); 
+            exit('Booking tidak ditemukan.'); 
+        }
+        if ($booking['status_booking'] !== 'Disetujui') {
+            Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
+            header('Location: ?route=Admin/dataFromAdminCreateBooking'); 
+            exit;
+        }
+
+        $room        = $roomModel->findById((int)$booking['room_id']); // ruangan tetap
+        $puasPercent = $feedbackModel->puasPercent($booking['room_id']);
+        $admin       = $adminModel->findById($adminId);
+
+        // Data lama untuk isi otomatis form
+        $payload = [
+            'booking_id' => $booking['booking_id'],
+            'room_id'    => $booking['room_id'],
+            'tanggal'    => $booking['tanggal'],
+            'jam_mulai'  => $booking['jam_mulai'],
+            'jam_selesai'=> $booking['jam_selesai'],
+        ];
+
+        require __DIR__ . '/../views/admin/admin_bookingstep1.php';
+    }
+
+    public function adminEditStep2()
+    {
+        Session::checkAdminLogin();
+        Session::preventCache();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ?route=Admin/dataFromAdminCreateBooking'); 
+            exit;
+        }
+
+        $bookingId  = (int)($_POST['booking_id'] ?? 0);
+        $tanggal    = trim($_POST['tanggal'] ?? '');
+        $jamMulai   = trim($_POST['jam_mulai'] ?? '');
+        $jamSelesai = trim($_POST['jam_selesai'] ?? '');
+        $adminId    = Session::get('admin_id');
+
+        if (!$bookingId || !$tanggal || !$jamMulai || !$jamSelesai) {
+            Session::set('flash_error', 'Lengkapi tanggal dan jam.');
+            header('Location: ?route=Booking/adminEditForm/'.$bookingId); 
+            exit;
+        }
+
+        $bookingModel = new Booking();
+        $roomModel    = new Room();
+        $adminModel   = new Admin();
+        $feedbackModel= new Feedback();
+
+        $booking = $bookingModel->findForEdit($bookingId, $adminId);
+        if (!$booking) { 
+            http_response_code(404); 
+            exit('Booking tidak ditemukan.'); 
+        }
+
+        if ($booking['status_booking'] !== 'Disetujui') {
+            Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
+            header('Location: ?route=Admin/dataFromAdminCreateBooking'); 
+            exit;
+        }
+
+        // ruangan tetap
+        $roomId = (int)$booking['room_id']; 
+        $room   = $roomModel->findById($roomId);
+
+        // Cek bentrok jadwal; exclude booking ini sendiri
+        if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
+            header('Location: ?route=Booking/adminEditForm/'.$bookingId); 
+            exit;
+        }
+
+        $payload = [
+            'booking_id' => $bookingId,
+            'room_id'    => $roomId,
+            'tanggal'    => $tanggal,
+            'jam_mulai'  => $jamMulai,
+            'jam_selesai'=> $jamSelesai,
+        ];
+
+        // Isi awal daftar anggota dari data lama
+        $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
+        if (empty($initialMembers)) { $initialMembers = ['']; }
+
+        $admin = $adminModel->findById($adminId);
+        $puasPercent = $feedbackModel->puasPercent($roomId); 
+
+        require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
     // Simpan hasil edit (hanya tanggal/jam/email/anggota, ruangan tetap)
@@ -733,7 +858,7 @@ Class bookingController{
 
         $dayNumber = (int)$date->format('N'); // 1=Senin ... 6=Sabtu, 7=Minggu
         if ($dayNumber >= 6) {
-            return 'Peminjaman tidak diperbolehkan pada hari Sabtu atau Minggu.';
+            return 'Peminjaman tidak diperbolehkan pada hari Sabtu dan Minggu.';
         }
 
         return null;
