@@ -94,7 +94,6 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
         <div class="booking-card">
             <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
-            <!-- Flash error dititipkan ke JS untuk ditampilkan sebagai modal -->
             <?php if (!empty($error = $flash['error'])): ?>
                 <script>
                     window.__flashError = <?= json_encode(htmlspecialchars($error)) ?>;

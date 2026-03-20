@@ -31,6 +31,19 @@ class Session
         return $_SESSION[$key] ?? null;
     }
 
+    public static function setOld($data)
+    {
+        self::start();
+        $_SESSION['_old_input'] = $data;
+    }
+
+    public static function getOld()
+    {
+        self::start();
+        $data = $_SESSION['_old_input'] ?? [];
+        unset($_SESSION['_old_input']);
+        return $data;
+    }
     public static function flash($key)
     {
         self::start();
