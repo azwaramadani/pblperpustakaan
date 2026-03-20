@@ -73,7 +73,7 @@ Class bookingController{
             exit;
         }
 
-        // Validasi jam (harus 09:00-15:00 dan mulai < selesai, gaboleh > 3 jam)
+        // Validasi jam (harus 09:00-15:00 dan mulai < selesai, gaboleh > 3 jam, gaboleh pesan jam istirahat)
         $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
         if ($timeError !== null) {
             Session::set('flash_error', $timeError);
@@ -640,35 +640,6 @@ Class bookingController{
         require __DIR__ . '/../views/user/booking_step2.php';
     }
 
-    public function editStep2Form()
-    {
-        Session::checkUserLogin();
-
-        $flash = $this->getFlashMessages();
-        $old   = Session::getOld();
-
-        if (empty($old)) {
-            header('Location: ?route=User/riwayat');
-            exit;
-        }
-
-        $bookingModel  = new Booking();
-        $roomModel     = new Room();
-        $userModel     = new User();
-        $feedbackModel = new Feedback();
-
-        $room = $roomModel->findById($old['room_id']);
-        $user = $userModel->findById(Session::get('user_id'));
-
-        $payload = $old;
-
-        $initialMembers = $old['nim_anggota'] ?? [''];
-
-        $puasPercent = $feedbackModel->puasPercent($old['room_id']);
-
-        require __DIR__ . '/../views/user/booking_step2.php';
-    }
-
     // Simpan hasil edit (hanya tanggal/jam/email/anggota, ruangan tetap)
     public function update()
     {
@@ -677,6 +648,7 @@ Class bookingController{
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             jsonResponse(['success' => false, 'message' => 'Request tidak valid.']);
+            exit;
         }
 
         $bookingId  = (int)($_POST['booking_id'] ?? 0);
@@ -685,7 +657,7 @@ Class bookingController{
         $jamSelesai = trim($_POST['jam_selesai'] ?? '');
         $emailPj    = trim($_POST['email_penanggung_jawab'] ?? '');
 
-        // 🔥 NORMALISASI FORMAT JAM (WAJIB TARUH DI SINI)
+        // NORMALISASI FORMAT JAM 
         $jamMulai   = substr($jamMulai, 0, 5);
         $jamSelesai = substr($jamSelesai, 0, 5);
 
@@ -699,10 +671,12 @@ Class bookingController{
         $booking = $bookingModel->findForEdit($bookingId, $userId);
         if (!$booking) {
             jsonResponse(['success' => false, 'message' => 'Booking tidak ditemukan.']);
+            exit;
         }
 
         if ($booking['status_booking'] !== 'Disetujui') {
             jsonResponse(['success' => false, 'message' => 'Tidak bisa edit booking ini.']);
+            exit;
         }
 
         $roomId = (int)$booking['room_id'];
@@ -710,30 +684,36 @@ Class bookingController{
 
         if (!$room) {
             jsonResponse(['success' => false, 'message' => 'Ruangan tidak ditemukan.']);
+            exit;
         }
 
         // VALIDASI STEP 1
         if (!$tanggal || !$jamMulai || !$jamSelesai) {
             jsonResponse(['success' => false, 'message' => 'Lengkapi tanggal dan jam.']);
+            exit;
         }
 
         $dateError = $this->validateTanggalPeminjaman($tanggal);
         if ($dateError) {
             jsonResponse(['success' => false, 'message' => $dateError]);
+            exit;
         }
 
         $timeError = $this->validateJamPeminjaman($jamMulai, $jamSelesai, $tanggal);
         if ($timeError) {
             jsonResponse(['success' => false, 'message' => $timeError]);
+            exit;
         }
 
         if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
             jsonResponse(['success' => false, 'message' => 'Waktu bentrok dengan peminjaman lain.']);
+            exit;
         }
 
         // VALIDASI STEP 2
         if (!$emailPj || !filter_var($emailPj, FILTER_VALIDATE_EMAIL)) {
             jsonResponse(['success' => false, 'message' => 'Email tidak valid.']);
+            exit;
         }
 
         $userModel = new User();
@@ -745,14 +725,17 @@ Class bookingController{
                 'success' => false,
                 'message' => 'NIM berikut tidak terdaftar: ' . implode(', ', $invalidNims)
             ]);
+            exit;
         }
 
         if (count($anggota) === 0) {
             jsonResponse(['success' => false, 'message' => 'Minimal 1 anggota.']);
+            exit;
         }
 
         if (count($anggota) !== count(array_unique($anggota))) {
             jsonResponse(['success' => false, 'message' => 'NIM anggota tidak boleh sama.']);
+            exit;
         }
 
         // KAPASITAS
@@ -762,10 +745,12 @@ Class bookingController{
 
         if ($maxCap > 0 && $totalPeople > $maxCap) {
             jsonResponse(['success' => false, 'message' => 'Melebihi kapasitas ruangan.']);
+            exit;
         }
 
         if ($minCap > 0 && $totalPeople < $minCap) {
             jsonResponse(['success' => false, 'message' => 'Belum memenuhi kapasitas minimum.']);
+            exit;
         }
 
         // SAVE
@@ -785,6 +770,8 @@ Class bookingController{
             'success' => true,
             'message' => 'Booking berhasil diperbarui.'
         ]);
+        
+        exit;
     }
 
     public function adminEditForm($bookingId)
@@ -947,61 +934,62 @@ Class bookingController{
 
 
     private function validateJamPeminjaman(string $jamMulai, string $jamSelesai, string $tanggal): ?string
-{
-        $tz = new DateTimeZone('Asia/Jakarta');
-        $start = DateTime::createFromFormat('H:i', $jamMulai, $tz);
-        $end   = DateTime::createFromFormat('H:i', $jamSelesai, $tz);
+    {
+            $tz = new DateTimeZone('Asia/Jakarta');
+            $start = DateTime::createFromFormat('H:i', $jamMulai, $tz);
+            $end   = DateTime::createFromFormat('H:i', $jamSelesai, $tz);
 
-        if (!$start || !$end) {
-            return 'Format jam tidak valid.';
-        }
-
-        $allowedStart = DateTime::createFromFormat('H:i', '09:00', $tz);
-        $allowedEnd   = DateTime::createFromFormat('H:i', '15:00', $tz);
-
-        if ($start < $allowedStart || $end > $allowedEnd) {
-            return 'Peminjaman hanya boleh antara 09:00 - 15:00.';
-        }
-
-        if ($end <= $start) {
-            return 'Jam selesai harus setelah jam mulai.';
-        }
-
-        $diffMinutes = ($end->getTimestamp() - $start->getTimestamp()) / 60;
-
-        if ($diffMinutes > 180) {
-            return 'Durasi peminjaman maksimal 3 jam.';
-        }
-
-        // BLOK JAM ISTIRAHAT
-        $breakStart = DateTime::createFromFormat('H:i', '11:30', $tz);
-        $breakEnd   = DateTime::createFromFormat('H:i', '12:30', $tz);
-
-        if (!($end <= $breakStart || $start >= $breakEnd)) {
-            return 'Tidak bisa memesan ruangan untuk jam istirahat (11:30 - 12:30).';
-        }
-
-        // BLOK JAM YANG SUDAH LEWAT HARI INI
-        if ($tanggal === date('Y-m-d')) {
-            $now = new DateTime('now', $tz);
-
-            if ($start < $now) {
-                return 'Tidak bisa memesan jam yang sudah berlalu.';
+            if (!$start || !$end) {
+                return 'Format jam tidak valid.';
             }
-        }
 
-        return null;
+            $allowedStart = DateTime::createFromFormat('H:i', '09:00', $tz);
+            $allowedEnd   = DateTime::createFromFormat('H:i', '15:00', $tz);
+
+            if ($start < $allowedStart || $end > $allowedEnd) {
+                return 'Peminjaman hanya boleh antara 09:00 - 15:00.';
+            }
+
+            if ($end <= $start) {
+                return 'Jam selesai harus setelah jam mulai.';
+            }
+
+            $diffMinutes = ($end->getTimestamp() - $start->getTimestamp()) / 60;
+
+            if ($diffMinutes > 180) {
+                return 'Durasi peminjaman maksimal 3 jam.';
+            }
+
+            // BLOK JAM ISTIRAHAT
+            $breakStart = DateTime::createFromFormat('H:i', '11:30', $tz);
+            $breakEnd   = DateTime::createFromFormat('H:i', '12:30', $tz);
+
+            if ($start >= $breakStart && $end <= $breakEnd) {
+                return 'Tidak bisa memesan ruangan untuk jam istirahat (11:30 - 12:30).';
+            }
+
+            // BLOK JAM YANG SUDAH LEWAT HARI INI
+            if ($tanggal === date('Y-m-d')) {
+                $now = new DateTime('now', $tz);
+
+                if ($start < $now) {
+                    return 'Tidak bisa memesan jam yang sudah berlalu.';
+                }
+            }
+
+            return null;
     }
+
     private function getFlashMessages(){
-            return [
-                'success'   => Session::flash('flash_success'),
-                'error'     => Session::flash('flash_error')
-            ];
-        }
+        return [
+            'success'   => Session::flash('flash_success'),
+            'error'     => Session::flash('flash_error')
+        ];
+    }
 
     private function jsonResponse($data) {
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 }

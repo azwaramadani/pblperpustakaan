@@ -187,8 +187,13 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         <div class="anggota-wrap" id="anggotaList">
           <?php $idx = 1; foreach ($initialMembers as $val): ?>
             <div class="form-group anggota-item">
-              <label>NIM Anggota <?= $idx ?></label>
-              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" required>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <label>NIM Anggota <?= $idx ?></label>
+                <button type="button" class="remove-btn" style="background:#ff5c5c;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;">
+                  Hapus
+                </button>
+              </div>
+              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>">
             </div>
           <?php $idx++; endforeach; ?>
         </div>
@@ -278,181 +283,236 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
 </div>
 
   <script>
-    const anggotaList = document.getElementById('anggotaList');
-    const addBtn = document.getElementById('addAnggota');
-    const jumlahHidden = document.getElementById('jumlahPeminjam');
-    const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
-    const bookingForm = document.getElementById('bookingForm');
-    let anggotaCount = <?= $idx - 1 ?>;
+  /* =========================================================
+   * INITIAL SETUP (AMBIL ELEMENT & STATE AWAL)
+   * ========================================================= */
+  const anggotaList     = document.getElementById('anggotaList');
+  const addBtn          = document.getElementById('addAnggota');
+  const jumlahHidden    = document.getElementById('jumlahPeminjam');
+  const jumlahDisplay   = document.querySelector('input[name="jumlah_peminjam_display"]');
+  const bookingForm     = document.getElementById('bookingForm');
 
-    // batas kapasitas
-    const kapasitasMax = <?= $kapasitasMax ?>;
-    const kapasitasMin = <?= $kapasitasMin ?>;
-    const maxAnggota = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
-    const kapasitasMaxMsg = kapasitasMax > 0
-      ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
-      : 'Jumlah anggota tidak dibatasi.';
-    const kapasitasMinMsg = kapasitasMin > 0
-      ? `Jumlah peminjam harus minimal ${kapasitasMin} orang.`
-      : '';
+  // Jumlah anggota saat ini (diambil dari PHP render awal)
+  let anggotaCount = <?= $idx - 1 ?>;
 
-    // Modal warning
-    const warningModal = document.getElementById('warningModal');
-    const warningText = document.getElementById('warningText');
-    function showWarning(msg) {
-        warningText.textContent = msg;
-        warningModal.classList.add('active');
+  /* =========================================================
+   * KONFIGURASI KAPASITAS (DARI BACKEND)
+   * ========================================================= */
+  const kapasitasMax = <?= $kapasitasMax ?>;
+  const kapasitasMin = <?= $kapasitasMin ?>;
+  const maxAnggota   = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
+
+  const kapasitasMaxMsg = kapasitasMax > 0
+    ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
+    : 'Jumlah anggota tidak dibatasi.';
+
+  const kapasitasMinMsg = kapasitasMin > 0
+    ? `Jumlah peminjam harus minimal ${kapasitasMin} orang.`
+    : '';
+
+  /* =========================================================
+   * MODAL WARNING (UNTUK VALIDASI FRONTEND)
+   * ========================================================= */
+  const warningModal = document.getElementById('warningModal');
+  const warningText  = document.getElementById('warningText');
+
+  function showWarning(message) {
+    warningText.textContent = message;
+    warningModal.classList.add('active');
+  }
+
+  function closeWarning() {
+    warningModal.classList.remove('active');
+  }
+
+  // Tutup modal jika klik area luar
+  warningModal.addEventListener('click', (e) => {
+    if (e.target === warningModal) closeWarning();
+  });
+
+  /* =========================================================
+   * TAMBAH FIELD ANGGOTA (DYNAMIC FORM)
+   * ========================================================= */
+  function addAnggotaField(value = '') {
+    // Validasi batas maksimum anggota
+    if (anggotaCount >= maxAnggota && maxAnggota !== Infinity) {
+      showWarning(kapasitasMaxMsg);
+      return;
     }
-    function closeWarning() {
-        warningModal.classList.remove('active');
-    }
-    warningModal.addEventListener('click', (e) => {
-        if (e.target === warningModal) closeWarning();
+
+    anggotaCount++;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'form-group anggota-item';
+
+    wrapper.innerHTML = `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <label style="flex:1;">NIM Anggota ${anggotaCount}</label>
+        <button type="button" class="remove-btn"
+          style="background:#ff5c5c;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;">
+          Hapus
+        </button>
+      </div>
+      <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="${value}" required>
+    `;
+
+    anggotaList.appendChild(wrapper);
+  }
+
+  /* =========================================================
+   * REINDEX LABEL SETELAH HAPUS
+   * ========================================================= */
+  function reindexAnggota() {
+    const items = document.querySelectorAll('.anggota-item');
+
+    // Update jumlah anggota berdasarkan DOM terbaru
+    anggotaCount = items.length;
+
+    // Reset numbering label
+    items.forEach((item, index) => {
+      const label = item.querySelector('label');
+      label.textContent = `NIM Anggota ${index + 1}`;
     });
+  }
 
-    function addAnggotaField(value = '') {
-      // Cegah tambah field jika sudah mencapai batas anggota
-      if (anggotaCount >= maxAnggota && maxAnggota !== Infinity) {
-        showWarning(kapasitasMaxMsg);
+  /* =========================================================
+   * EVENT: TAMBAH & HAPUS ANGGOTA
+   * ========================================================= */
+
+  // Tambah anggota
+  addBtn.addEventListener('click', () => addAnggotaField(''));
+
+  // Hapus anggota (pakai event delegation karena elemen dinamis)
+  anggotaList.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('remove-btn')) return;
+
+    // Minimal harus ada 1 anggota
+    if (anggotaCount <= 1) {
+      showWarning("Minimal harus ada 1 anggota.");
+      return;
+    }
+
+    const item = e.target.closest('.anggota-item');
+    item.remove();
+
+    reindexAnggota();
+  });
+
+  /* =========================================================
+   * SUBMIT FORM (AJAX + VALIDASI)
+   * ========================================================= */
+  bookingForm.addEventListener('submit', function(event) {
+    event.preventDefault(); // Hindari reload
+
+    const anggotaInputs = Array.from(document.querySelectorAll('.anggota-input'));
+
+    // Validasi: tidak boleh kosong
+    const anyEmpty = anggotaInputs.some(inp => inp.value.trim() === '');
+    if (anyEmpty) {
+      showWarning('Isi semua NIM anggota, tidak boleh ada yang kosong.');
+      return;
+    }
+
+    // Validasi: tidak boleh duplikat
+    const nimValues  = anggotaInputs.map(i => i.value.trim());
+    const uniqueNims = new Set(nimValues);
+
+    if (uniqueNims.size !== nimValues.length) {
+      showWarning("Tidak boleh ada NIM anggota yang sama.");
+      return;
+    }
+
+    // Hitung total peminjam (1 PJ + anggota)
+    const filledMembers = nimValues.filter(v => v !== '');
+    const total = 1 + filledMembers.length;
+
+    // Validasi kapasitas
+    if (kapasitasMax > 0 && total > kapasitasMax) {
+      showWarning(kapasitasMaxMsg);
+      return;
+    }
+
+    if (kapasitasMin > 0 && total < kapasitasMin) {
+      showWarning(kapasitasMinMsg);
+      return;
+    }
+
+    // Sinkronisasi ke input hidden (source of truth backend)
+    jumlahHidden.value  = total;
+    jumlahDisplay.value = total;
+
+    const formData  = new FormData(bookingForm);
+    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerText;
+
+    // UX: loading state
+    submitBtn.innerText = 'Menyimpan...';
+    submitBtn.disabled  = true;
+
+    fetch(bookingForm.action, {
+      method: 'POST',
+      body: formData
+    })
+    .then(async res => {
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        console.error("Response bukan JSON:", text);
+        throw new Error("Invalid JSON response");
+      }
+    })
+    .then(data => {
+      if (data.success === true) {
+        openModal();
         return;
       }
-      anggotaCount += 1;
-      const div = document.createElement('div');
-      div.className = 'form-group anggota-item';
-      div.innerHTML = `
-        <label>NIM Anggota ${anggotaCount}</label>
-        <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="${value}" required>
-      `;
-      anggotaList.appendChild(div);
-    }
 
-    addBtn.addEventListener('click', () => addAnggotaField(''));
-
-    // --- LOGIKA SUBMIT DENGAN AJAX ---
-    bookingForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah reload halaman
-
-        // Pastikan semua NIM anggota terisi
-        const anggotaInputs = Array.from(document.querySelectorAll('.anggota-input'));
-        const anyEmpty = anggotaInputs.some(inp => inp.value.trim() === '');
-        if (anyEmpty) {
-            showWarning('Isi semua NIM anggota, tidak boleh ada yang kosong.');
-            return;
-        }
-
-        // Cek apakah ada NIM anggota yang duplikat
-        const nimValues = anggotaInputs.map(i => i.value.trim());
-        const uniqueNims = new Set(nimValues);
-
-        if (uniqueNims.size !== nimValues.length) {
-            showWarning("Tidak boleh ada NIM anggota yang sama.");
-            return;
-        }
-
-        // Update jumlah anggota
-        const filledMembers = anggotaInputs.map(i => i.value.trim()).filter(v => v !== '');
-        const total = 1 + filledMembers.length;
-
-        // Validasi kapasitas max & min
-        if (kapasitasMax > 0 && total > kapasitasMax) {
-            showWarning(kapasitasMaxMsg);
-            return;
-        }
-        if (kapasitasMin > 0 && total < kapasitasMin) {
-            showWarning(kapasitasMinMsg);
-            return;
-        }
-
-        jumlahHidden.value  = total;
-        jumlahDisplay.value = total;
-
-        const formData = new FormData(bookingForm);
-        const submitBtn = bookingForm.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.innerText;
-        
-        // Ubah teks tombol jadi loading
-        submitBtn.innerText = 'Menyimpan...'; 
-        submitBtn.disabled = true;
-
-        fetch(bookingForm.action, {
-              method: 'POST',
-              body: formData
-          })
-          .then(async res => {
-
-              const text = await res.text();
-
-              try {
-                  return JSON.parse(text);
-              } catch (e) {
-                  console.error("Response bukan JSON:", text);
-                  throw new Error("Invalid JSON response");
-              }
-
-          })
-          .then(data => {
-
-              if (data.success === true) {
-                  openModal();
-                  return;
-              }
-
-              if (data.message) {
-                  showWarning(data.message);
-              } else {
-                  showWarning("Terjadi kesalahan saat menyimpan booking.");
-              }
-
-          })
-          .catch(error => {
-
-              console.error("Fetch Error:", error);
-
-              showWarning("Terjadi kesalahan sistem. Silakan coba lagi.");
-
-          })
-          .finally(() => {
-
-              submitBtn.innerText = originalBtnText;
-              submitBtn.disabled = false;
-
-          });
+      showWarning(data.message || "Terjadi kesalahan saat menyimpan booking.");
+    })
+    .catch(err => {
+      console.error("Fetch Error:", err);
+      showWarning("Terjadi kesalahan sistem. Silakan coba lagi.");
+    })
+    .finally(() => {
+      submitBtn.innerText = originalText;
+      submitBtn.disabled  = false;
     });
+  });
 
-    // --- MODAL SUCCESS ---
-    const successModal = document.getElementById('successModal');
+  /* =========================================================
+   * MODAL SUCCESS
+   * ========================================================= */
+  const successModal = document.getElementById('successModal');
 
-    function openModal() {
-        successModal.classList.add('active');
-    }
+  function openModal() {
+    successModal.classList.add('active');
+  }
 
-    function closeModal() {
-        successModal.classList.remove('active');
-    }
+  function closeModal() {
+    successModal.classList.remove('active');
+  }
 
-    successModal.addEventListener('click', (e) => {
-        if (e.target === successModal) {
-            closeModal();
-        }
-    });
-    // -- MODAL LOGOUT -->
-    const logoutModal = document.getElementById('logoutModal');
+  successModal.addEventListener('click', (e) => {
+    if (e.target === successModal) closeModal();
+  });
 
-    function showLogoutModal() {
-        logoutModal.classList.add('active');
-    }
+  /* =========================================================
+   * MODAL LOGOUT
+   * ========================================================= */
+  const logoutModal = document.getElementById('logoutModal');
 
-    function closeLogoutModal() {
-        logoutModal.classList.remove('active');
-    }
+  function showLogoutModal() {
+    logoutModal.classList.add('active');
+  }
 
-    // Tutup jika klik di luar area putih
-    logoutModal.addEventListener('click', (e) => {
-        if (e.target === logoutModal) {
-            closeLogoutModal();
-        }
-    });
+  function closeLogoutModal() {
+    logoutModal.classList.remove('active');
+  }
 
+  logoutModal.addEventListener('click', (e) => {
+    if (e.target === logoutModal) closeLogoutModal();
+  });
   </script>
 </body>
 </html>
