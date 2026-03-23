@@ -575,6 +575,7 @@ Class bookingController{
         $room        = $roomModel->findById((int)$booking['room_id']); // ruangan tetap sama tidak boleh ganti
         $puasPercent = $feedbackModel->puasPercent($booking['room_id']); //buat nampilin rating ruangan
         $user        = $userModel->findById($userId);
+        $todayIntervals = $bookingModel->getTodayIntervalsByRoom((int)$booking['room_id']); //buat menampilkan tabel waktu yang udah dipinjam user lain
 
         $flash = $this->getFlashMessages(); 
         $old   = Session::getOld();  
@@ -659,6 +660,24 @@ Class bookingController{
             'jam_mulai'  => $jamMulai,
             'jam_selesai'=> $jamSelesai,
         ];
+
+        //validasi tanggal: tidak boleh lampau dan tidak boleh sabtu/minggu
+        $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
+        if ($dateError !== null){
+            Session::set('flash_error', $dateError);
+            Session::setOld($payload);
+            header('Location: ?route=Booking/editForm/'. $bookingId);
+            exit;
+        }
+
+        //validasi jam (harus 09:00-15:00 dan mulai < selesai, gaboleh > 3 jam, gaboleh pesan jam istirahat)
+        $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
+        if ($timeError !== null){
+            Session::set('flash_error', $timeError);
+            Session::setOld($payload);
+            header('Location: ?route=Booking/editForm/'. $bookingId);
+            exit;
+        }
 
         // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
         $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
@@ -960,10 +979,12 @@ Class bookingController{
         $date->setTime(0, 0, 0);
         $today = new DateTime('today', $tz);
 
+        //validasi tidak boleh tanggal lampau
         if ($date < $today) {
             return 'Tanggal peminjaman tidak boleh sebelum hari ini.';
         }
 
+        //validasi tidak boleh weekend
         $dayNumber = (int)$date->format('N'); // 1=Senin ... 6=Sabtu, 7=Minggu
         if ($dayNumber >= 6) {
             return 'Peminjaman tidak diperbolehkan pada hari Sabtu dan Minggu.';
