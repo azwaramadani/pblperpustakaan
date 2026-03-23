@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../core/helper.php';
 date_default_timezone_set('Asia/Jakarta');
 
 Class bookingController{
+
     #step1 sebenernya buat buka ruangan yang dipilih aja
     public function step1($roomId)
     {
@@ -44,10 +45,11 @@ Class bookingController{
         Session::preventCache();
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ?route=User/ruangan'); 
+            header('Location: ?route=User/step1'); 
             exit; 
             }
-
+        
+        //payload data dari form bookingstep1 (tanggal dan jam), di html pakai hidden input
         $payload = [
             'room_id'    => (int)($_POST['room_id'] ?? 0),
             'tanggal'    => trim($_POST['tanggal'] ?? ''),
@@ -55,6 +57,7 @@ Class bookingController{
             'jam_selesai'=> trim($_POST['jam_selesai'] ?? ''),
         ];
 
+        //validasi misal tiba-tiba tanggal dan jam peminjaman user kosong
         foreach (['room_id','tanggal','jam_mulai','jam_selesai'] as $key) {
             if (empty($payload[$key])) {
                 Session::set('flash_error', 'Isi tanggal dan jam mulai/selesai.');
@@ -139,6 +142,7 @@ Class bookingController{
             'email_penanggung_jawab'  => trim($_POST['email_penanggung_jawab'] ?? ''),
         ];
 
+        // validasi field
         foreach (['room_id','tanggal','jam_mulai','jam_selesai','nama_penanggung_jawab','nimnip_penanggung_jawab','email_penanggung_jawab'] as $key) {
             if (empty($payload[$key])) {
                 jsonResponse([
@@ -148,9 +152,18 @@ Class bookingController{
                 exit;
             }
         }
+        
+        //validasi minimal 1 anggota
+        if (count($anggota) === 0) {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Tambahkan minimal 1 anggota.'
+            ]);
+            exit;
+        }
 
+        //validasi supaya NIM peminjam wajib ada di database
         $invalidNims = $this->findInvalidMemberNims($anggota, $userModel);
-
         if (!empty($invalidNims)) {
             jsonResponse([
                 'success' => false,
@@ -159,6 +172,7 @@ Class bookingController{
             exit;
         }
 
+        //validasi tanggal tidak weekend
         $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);
         if ($dateError !== null) {
             jsonResponse([
@@ -168,6 +182,7 @@ Class bookingController{
             exit;
         }
 
+        //validasi jam tidak pas istirahat, diluar jam 9.00-15.00, tidak lebih dari 3 jam juga
         $timeError = $this->validateJamPeminjaman($payload['jam_mulai'], $payload['jam_selesai'], $payload['tanggal']);
         if ($timeError !== null) {
             jsonResponse([
@@ -177,14 +192,7 @@ Class bookingController{
             exit;
         }
 
-        if (count($anggota) === 0) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Tambahkan minimal 1 anggota.'
-            ]);
-            exit;
-        }
-
+        //validasi ruangan tiba tiba dihapus admin
         $room = $roomModel->findById($payload['room_id']);
         if (!$room) {
             jsonResponse([
@@ -194,10 +202,20 @@ Class bookingController{
             exit;
         }
 
+        //validasi tiba-tiba ruangan diganti sama admin statusnya
+        if (strtolower($room['status'] ?? '') !== 'tersedia') {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Ruangan sedang tidak tersedia.'
+            ]);
+            exit;
+        }
+
         $maxCap      = (int)($room['kapasitas_max'] ?? 0);
         $minCap      = (int)($room['kapasitas_min'] ?? 0);
         $totalPeople = 1 + count($anggota);
 
+        //validasi tiba-tiba kapasitas ruangan dikurangin sama admin
         if ($maxCap > 0 && $totalPeople > $maxCap) {
             jsonResponse([
                 'success' => false,
@@ -206,6 +224,7 @@ Class bookingController{
             exit;
         }
 
+        //validasi tiba-tiba kapasitas ruangan ditambah sama admin
         if ($minCap > 0 && $totalPeople < $minCap) {
             jsonResponse([
                 'success' => false,
@@ -214,6 +233,7 @@ Class bookingController{
             exit;
         }
 
+        //validasi waktu peminjaman bentrok sama peminjaman user lain
         if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
             jsonResponse([
                 'success' => false,
@@ -222,9 +242,9 @@ Class bookingController{
             exit;
         }
 
+        //validasi gaboleh meminjam ruangan 2 kali sehari
         $nimsToCheck   = $anggota;
         $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
-
         foreach ($nimsToCheck as $nimCheck) {
             if ($bookingModel->memberAlreadyBooked($nimCheck, $payload['tanggal'])) {
                 jsonResponse([
@@ -242,6 +262,7 @@ Class bookingController{
         $payload['waktu_booking']   = date('Y-m-d H:i:s');
         $payload['kode_booking']    = generateBookingCode();
 
+        //simpan ke database
         $bookingModel->createUserBooking($payload);
 
         jsonResponse([
@@ -537,18 +558,22 @@ Class bookingController{
         $feedbackModel = new Feedback();
 
         $booking = $bookingModel->findForEdit($bookingId, $userId);
+
+        //validasi booking tidak ditemukan
         if (!$booking) { 
             http_response_code(404); 
             exit('Booking tidak ditemukan.'); 
         }
+
+        //cuman booking disetujui yang bisa diedit
         if ($booking['status_booking'] !== 'Disetujui') {
             Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
             header('Location: ?route=User/riwayat'); 
             exit;
         }
 
-        $room        = $roomModel->findById((int)$booking['room_id']); // ruangan tetap
-        $puasPercent = $feedbackModel->puasPercent($booking['room_id']);
+        $room        = $roomModel->findById((int)$booking['room_id']); // ruangan tetap sama tidak boleh ganti
+        $puasPercent = $feedbackModel->puasPercent($booking['room_id']); //buat nampilin rating ruangan
         $user        = $userModel->findById($userId);
 
         $flash = $this->getFlashMessages(); 
@@ -582,9 +607,11 @@ Class bookingController{
         $jamSelesai = substr(trim($_POST['jam_selesai'] ?? ''), 0, 5);
         $userId     = Session::get('user_id');
 
+        //validasi misal tanggal dan jam tiba-tiba kosong
         if (!$bookingId || !$tanggal || !$jamMulai || !$jamSelesai) {
             Session::set('flash_error', 'Lengkapi tanggal dan jam.');
-            header('Location: ?route=Booking/editForm/'.$bookingId); exit;
+            header('Location: ?route=Booking/editForm/'.$bookingId); 
+            exit;
         }
 
         $bookingModel = new Booking();
@@ -592,23 +619,25 @@ Class bookingController{
         $userModel    = new User();
         $feedbackModel= new Feedback();
 
+        //validasi tiba-tiba booking tidak ditemukan
         $booking = $bookingModel->findForEdit($bookingId, $userId);
         if (!$booking) { 
             http_response_code(404); 
             exit('Booking tidak ditemukan.'); 
         }
 
+        //validasi misal tiba-tiba status bookingnya diubah sama admin
         if ($booking['status_booking'] !== 'Disetujui') {
             Session::set('flash_error', 'Hanya booking berstatus Disetujui yang bisa diubah.');
             header('Location: ?route=User/riwayat'); 
             exit;
         }
 
-        // ruangan tetap
+        // validasi ruangan gaboleh ganti
         $roomId = (int)$booking['room_id']; 
         $room   = $roomModel->findById($roomId);
 
-        // Cek bentrok jadwal; exclude booking ini sendiri
+        // validasi cek bentrok jadwal, exclude booking ini sendiri
         if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
             Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
             Session::setOld([
@@ -622,6 +651,7 @@ Class bookingController{
             exit;
         }
 
+        //payload data dari form tanggal dan jam pake hidden input di html
         $payload = [
             'booking_id' => $bookingId,
             'room_id'    => $roomId,
@@ -630,7 +660,7 @@ Class bookingController{
             'jam_selesai'=> $jamSelesai,
         ];
 
-        // Isi awal daftar anggota dari data lama
+        // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
         $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
         if (empty($initialMembers)) { $initialMembers = ['']; }
 
@@ -683,8 +713,18 @@ Class bookingController{
         $room   = $roomModel->findById($roomId);
 
         if (!$room) {
-            jsonResponse(['success' => false, 'message' => 'Ruangan tidak ditemukan.']);
+            jsonResponse([
+                'success' => false, 
+                'message' => 'Ruangan tidak ditemukan.']);
             exit;
+        }
+
+        if (strtolower($room['status'] ?? '') !== 'tersedia') {
+            jsonResponse([
+                'success' => false,
+                'message' => 'Ruangan sedang tidak tersedia.'
+            ]);
+            exit; 
         }
 
         // VALIDASI STEP 1
@@ -770,7 +810,7 @@ Class bookingController{
             'success' => true,
             'message' => 'Booking berhasil diperbarui.'
         ]);
-        
+
         exit;
     }
 

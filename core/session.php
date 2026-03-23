@@ -44,6 +44,7 @@ class Session
         unset($_SESSION['_old_input']);
         return $data;
     }
+    
     public static function flash($key)
     {
         self::start();
