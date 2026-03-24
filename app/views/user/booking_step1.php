@@ -10,7 +10,7 @@ if (!function_exists('app_config')) {
 // Batas minimal tanggal = hari ini (Asia/Jakarta)
 $todayMin = (new DateTime('now', new DateTimeZone('Asia/Jakarta')))->format('Y-m-d');
 
-// Bangun URL gambar ruangan (fallback ke contoh jika kosong)
+//URL gambar ruangan (fallback ke pict contoh kalo kosong)
 $imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
 $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_url'] . '/' . ltrim($imgPath, '/');
 ?>
@@ -62,28 +62,26 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
     </header>
 
     <!-- =========================================================
-         MAIN CONTENT
+        MAIN CONTENT
     ========================================================= -->
     <main class="main-container">
-
         <!-- Info Ruangan -->
         <div class="room-header">
             <div class="room-img-container">
-                <img src="<?= htmlspecialchars($imgUrl) ?>"
-                     alt="<?= htmlspecialchars($room['nama_ruangan']) ?>"
-                     style="object-fit: cover;">
+                <img src="<?= htmlspecialchars($imgUrl) ?>" alt="<?= htmlspecialchars($room['nama_ruangan']) ?>">
             </div>
             <div class="room-info">
                 <h1><?= htmlspecialchars($room['nama_ruangan']) ?></h1>
                 <p><?= htmlspecialchars($room['deskripsi']) ?></p>
                 <p class="capacity">
-                    Kapasitas : <?= htmlspecialchars($room['kapasitas_min']) ?>
+                    <strong>Kapasitas : <?= htmlspecialchars($room['kapasitas_min']) ?>
                     - <?= htmlspecialchars($room['kapasitas_max']) ?> orang
+                    </strong>
                 </p>
             </div>
         </div>
 
-        <!-- Badge Feedback -->
+        <!-- persentase puas -->
         <div class="badge-wrapper">
             <div class="puas-badge">
                 <?= htmlspecialchars($badgeText) ?>
@@ -94,6 +92,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
         <div class="booking-card">
             <h3><?= $isEdit ? 'Ubah jadwal peminjaman' : 'Pilih tanggal dan jam peminjaman' ?></h3>
 
+            <!-- Flash error dari php (Session::set('flash_error')) dititipkan ke JS untuk ditampilkan sebagai modal -->
             <?php if (!empty($error = $flash['error'])): ?>
                 <script>
                     window.__flashError = <?= json_encode(htmlspecialchars($error)) ?>;
@@ -132,7 +131,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
                     <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
                 <?php endif; ?>
 
-                <!-- Ruangan tidak bisa diubah dari form ini -->
+                <!-- Room id dari ruangan yang dipilih -->
                 <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
 
                 <div class="form-grid">
@@ -147,7 +146,8 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
                             min="<?= htmlspecialchars($todayMin) ?>"
                             value="<?= htmlspecialchars($payload['tanggal'] ?? '') ?>">
                     </div>
-
+                    
+                    <!-- Jam mulai & selesai -->
                     <div class="time-wrapper">
                         <div class="form-group time-box">
                             <label>Jam mulai</label>
@@ -159,7 +159,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
                                 value="<?= htmlspecialchars($payload['jam_mulai'] ?? '') ?>">
                         </div>
 
-                        <span class="sampai-text">Sampai</span>
+                        <span class="sampai-text">-</span>
 
                         <div class="form-group time-box">
                             <label>Jam selesai</label>
@@ -171,12 +171,13 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
                                 value="<?= htmlspecialchars($payload['jam_selesai'] ?? '') ?>">
                         </div>
                     </div>
-
                 </div>
                 
                 <!-- Tombol aksi -->
                 <div class="btn-action-row">
-                    <a href="?route=<?= $isEdit ? 'User/riwayat' : 'User/ruangan' ?>" class="btn btn-back">Kembali</a>
+                    <a href="?route=<?= $isEdit ? 'User/riwayat' : 'User/ruangan' ?>" class="btn btn-back">
+                        Kembali
+                    </a>
                     <button type="submit" class="btn btn-next">
                         <?= $isEdit ? 'Lanjut Ubah' : 'Lanjut' ?>
                     </button>
@@ -274,7 +275,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
             if (e.target === warningModal) closeWarning();
         });
 
-
+        
         // ---------------------------------------------------------
         // 2. FLASH ERROR — auto-trigger modal jika ada pesan dari server
         //    window.__flashError diisi PHP di dalam .booking-card

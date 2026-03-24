@@ -29,7 +29,7 @@ class Room extends Model
         return (int)($row['total'] ?? 0);
     }
 
-    #buat admin data ruangan
+    #method buat panel admin page data ruangan
     public function getAllWithStats()
     {
         $sql = "SELECT

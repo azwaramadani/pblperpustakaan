@@ -1,386 +1,407 @@
 <?php
-$adminName = $admin['username'] ?? ($admin['nama'] ?? 'Admin');
+$adminName = $admin['username'] ?? 'Admin tidak ditemukan';
 
-$initialMembers = [''];
+// Session error handler
+$err = Session::get('flash_error');
+Session::set('flash_error', null);
 
+$isEdit = !empty($payload['booking_id'] ?? null);
+
+// Payload data dari database, total peminjam ketika create booking
+$defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMembers)));
+
+// Batas kapasitas ruangan dari database
 $kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
 $kapasitasMin = (int)($room['kapasitas_min'] ?? 0);
-$maxAnggota   = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
+// Maksimal anggota = kapasitasMax ruangan - 1 (karena 1 ini untuk penanggung jawab)
+$maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
+
+// Bangun URL gambar ruangan
 $imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
 $imgUrl  = preg_match('#^https?://#i', $imgPath)
-          ? $imgPath
-          : app_config()['base_url'].'/'.ltrim($imgPath,'/');
+    ? $imgPath
+    : app_config()['base_url'] . '/' . ltrim($imgPath, '/');
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-
-<meta charset="UTF-8">
-<title>Lengkapi Data Peminjaman - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
-
-<style>
-
-.modal-warning{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.6);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:9999;
-}
-
-.modal-warning.active{
-display:flex;
-}
-
-.modal-card{
-width:320px;
-background:#fff;
-border-radius:14px;
-padding:20px 18px 16px;
-text-align:center;
-box-shadow:0 20px 45px rgba(0,0,0,0.18);
-}
-
-.modal-icon{
-width:58px;
-height:58px;
-border-radius:50%;
-margin:0 auto 12px;
-display:grid;
-place-items:center;
-background:#ff5c5c;
-color:#fff;
-font-size:28px;
-font-weight:700;
-}
-
-.modal-title{
-font-size:17px;
-font-weight:700;
-margin:0 0 10px;
-}
-
-.modal-text{
-font-size:14px;
-margin:0 0 16px;
-}
-
-.btn-modal-primary{
-background:#ff5c5c;
-color:#fff;
-border:none;
-border-radius:10px;
-padding:10px 12px;
-font-weight:700;
-cursor:pointer;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <title>
+        <?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?>
+        - <?= htmlspecialchars($room['nama_ruangan']) ?>
+    </title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css">
 </head>
 
 <body>
-<header class="navbar">
 
-<div class="logo">
-  <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
-  <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
-</div>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40">
+            <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40">
+        </div>
 
-<div class="profile-dropdown">
-<div class="profile-trigger">
+        <div class="profile-dropdown">
+            <div class="profile-trigger">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png">
+                <div class="user-name">
+                    <a href="?route=Admin/dataRuangan" style="text-decoration:none; color:black;">
+                        <p><?= htmlspecialchars($adminName) ?></p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
 
-<img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png">
+    <main>
 
-<div class="user-name">
-<a href="?route=Admin/dataRuangan" style="text-decoration:none;color:black;">
-<p><?= htmlspecialchars($adminName) ?></p>
-</a>
-</div>
+        <div class="room-header">
+            <div class="room-image-container">
+                <img src="<?= htmlspecialchars($imgUrl) ?>" class="room-image" style="object-fit: cover;">
+            </div>
 
-</div>
-</div>
+            <div class="room-details">
+                <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
+                <p><?= htmlspecialchars($room['deskripsi'] ?? 'Tidak ada deskripsi ruangan') ?></p>
 
-</header>
+                <p class="capacity">
+                  <strong>
+                    Kapasitas:
+                    <?= htmlspecialchars($room['kapasitas_min']) ?>
+                    -
+                    <?= htmlspecialchars($room['kapasitas_max']) ?>
+                    orang
+                  </strong>
+                </p>
 
-<main>
+                <h3>Waktu Peminjaman:</h3>
+                <p>Tanggal: <strong><?= htmlspecialchars($payload['tanggal']) ? date('d M Y', strtotime($payload['tanggal'])) : '-' ?></strong></p>
+                <p>Jam: <strong><?= htmlspecialchars($payload['jam_mulai']) ?></strong> - <strong><?= htmlspecialchars($payload['jam_selesai']) ?></strong></p>
 
-<div class="room-header">
+                <p style="margin-top: 8px; font-weight: 600;">
+                    Maks anggota: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot penanggung jawab).
+                </p>
+            </div>
+        </div>
 
-<div class="room-image-container">
-<img src="<?= htmlspecialchars($imgUrl) ?>" class="room-image" style="object-fit:cover;">
-</div>
+        <div class="card">
+            <h1><?= $isEdit ? 'Ubah data peminjaman' : 'Lengkapi data peminjaman' ?></h1>
 
-<div class="room-details">
+            <!-- flash error -->
+            <?php if ($err): ?>
+              <div class="alert-error"><?= htmlspecialchars($err) ?></div>
+            <?php endif; ?>
 
-<h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
+            <form action="<?= $isEdit ? '?route=Booking/adminUpdate' : '?route=Booking/adminStore' ?>" method="POST" id="bookingForm">
+                <?php if ($isEdit) : ?>
+                  <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
+                <?php endif; ?>  
+                <input type="hidden" name="room_id"     value="<?= htmlspecialchars($payload['room_id']) ?>">
+                <input type="hidden" name="tanggal"     value="<?= htmlspecialchars($payload['tanggal']) ?>">
+                <input type="hidden" name="jam_mulai"   value="<?= htmlspecialchars($payload['jam_mulai']) ?>">
+                <input type="hidden" name="jam_selesai" value="<?= htmlspecialchars($payload['jam_selesai']) ?>">
+                <input type="hidden" name="jumlah_peminjam" id="jumlahPeminjam" value="<?= htmlspecialchars($defaultJumlah) ?>">
 
-<p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
+                <div class="form-group">
+                    <label>Nama penanggung jawab</label>
+                    <input class="input-line" type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($payload['nama_penanggung_jawab']) ?>" required>
+                </div>
 
-<p class="capacity">
-Kapasitas:
-<?= htmlspecialchars($room['kapasitas_min']) ?>
--
-<?= htmlspecialchars($room['kapasitas_max']) ?>
-orang
-</p>
+                <div class="form-group">
+                    <label>NIM/NIP penanggung jawab</label>
+                    <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($payload['nimnip_penanggung_jawab']) ?>" required>
+                </div>
 
-<h3>Waktu Peminjaman:</h3>
+                <div class="form-group">
+                    <label>Email penanggung jawab</label>
+                    <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($payload['email_penanggung_jawab']) ?>" required>
+                </div>
 
-<p>Tanggal: <strong><?= htmlspecialchars($payload['tanggal']) ? date('d M Y', strtotime($payload['tanggal'])) : '-' ?></strong></p>
-<p>Jam: <strong><?= htmlspecialchars($payload['jam_mulai']) ?> </strong> - <strong> <?= htmlspecialchars($payload['jam_selesai']) ?> </strong></p>
+                <div class="form-group">
+                    <label>Jumlah peminjam</label>
+                    <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" required>
+                </div>
 
-<p style="margin-top:8px;font-weight:600;"> Maks anggota:<?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?>(1 slot penanggung jawab).</p>
+                <div class="anggota-wrap" id="anggotaList">
+                  <?php $idx = 1; foreach ($initialMembers as $val) : ?>
+                    <div class="form-group anggota-item">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                          <label>NIM/NIP Anggota <?= $idx ?></label>
+                          <button type="button" class="remove-btn" style="background:#ff5c5c;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;">
+                            Hapus
+                          </button>
+                        </div>
+                        <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" required>
+                    </div>
+                    <?php 
+                      $idx++;
+                      endforeach;
+                    ?>
+                </div>
 
-</div>
-</div>
+                <button type="button" class="add-btn" id="addAnggota">+ Tambah Anggota</button>
 
-<div class="card">
-    <h1>Lengkapi Data Peminjaman</h1>
+                <div class="actions">
+                    <a href="?route=<?= $isEdit ? ('Booking/adminEditForm/' . urlencode($payload['booking_id'])) : ('Booking/adminStep1/' . urlencode($payload['room_id'])) ?>" class="btn-back">
+                        Kembali
+                    </a>
+                    <button type="submit" class="btn-save">
+                        <?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?>
+                    </button>
+                </div>
+            </form>
+        </div>
 
-    <form action="?route=Booking/adminStore" method="POST" id="bookingForm">
+    </main>
 
-    <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>">
-    <input type="hidden" name="tanggal" value="<?= htmlspecialchars($payload['tanggal']) ?>">
-    <input type="hidden" name="jam_mulai" value="<?= htmlspecialchars($payload['jam_mulai']) ?>">
-    <input type="hidden" name="jam_selesai" value="<?= htmlspecialchars($payload['jam_selesai']) ?>">
-
-    <input type="hidden" name="jumlah_peminjam" id="jumlahPeminjam">
-
-    <div class="form-group">
-    <label>Nama penanggung jawab</label>
-    <input class="input-line" type="text" name="nama_penanggung_jawab" required>
+    <!-- WARNING MODAL -->
+    <div id="warningModal" class="modal-warning">
+        <div class="modal-card">
+            <div class="modal-icon">!</div>
+            <div class="modal-title">Perhatian</div>
+            <p id="warningText" class="modal-text"></p>
+            <button class="btn-modal-primary" onclick="closeWarning()">OK</button>
+        </div>
     </div>
 
-    <div class="form-group">
-    <label>NIM/NIP penanggung jawab</label>
-    <input class="input-line" type="text" name="nimnip_penanggung_jawab" required>
+    <!-- MODAL SUCCESS -->
+    <div id="successModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div class="success-icon-container">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h2 class="modal-title">Booking berhasil disimpan</h2>
+        <div class="modal-actions">
+            <a href="?route=Admin/dataFromAdminCreateBooking$refresh=<?= time() ?>" class="btn-modal btn-modal-yellow">Kembali ke data booking admin</a>
+            <a href="?route=Admin/dataRuangan" class="btn-modal btn-modal-white">Lihat data ruangan</a>
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-    <label>Email penanggung jawab</label>
-    <input class="input-line" type="email" name="email_penanggung_jawab" required>
-    </div>
-
-    <div class="form-group">
-    <label>Jumlah peminjam</label>
-    <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="2">
-    </div>
-
-    <div class="anggota-wrap" id="anggotaList">
-
-    <div class="form-group anggota-item">
-    <label>NIP Anggota 1</label>
-    <input class="input-line anggota-input" type="text" name="nim_anggota[]" required>
-    </div>
-
-    </div>
-
-    <button type="button" class="add-btn" id="addAnggota">+ Tambah Anggota</button>
-
-    <div class="actions">
-
-    <a href="?route=Booking/adminStep1/<?= urlencode($payload['room_id']) ?>" class="btn-back">
-    Kembali
-    </a>
-
-    <button type="submit" class="btn-save">
-    Simpan
-    </button>
-    </div>
-    </form>
-</div>
-
-</main>
-
-<!-- WARNING MODAL -->
-
-<div id="warningModal" class="modal-warning">
-
-<div class="modal-card">
-
-<div class="modal-icon">!</div>
-
-<div class="modal-title">Perhatian</div>
-
-<p id="warningText" class="modal-text"></p>
-
-<button class="btn-modal-primary" onclick="closeWarning()">OK</button>
-
-</div>
-
-</div>
-
-<!-- SUCCESS MODAL -->
-
-<div id="successModal" class="modal-overlay">
-
-<div class="modal-content">
-
-<div class="success-icon-container">
-
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-
-<polyline points="20 6 9 17 4 12"></polyline>
-
-</svg>
-
-</div>
-
-<h2 class="modal-title">Booking berhasil disimpan</h2>
-
-<div class="modal-actions">
-
-<a href="?route=Admin/dataFromAdminCreateBooking" class="btn-modal btn-modal-yellow">
-Kembali ke data booking
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-const anggotaList = document.getElementById("anggotaList");
-const addBtn = document.getElementById("addAnggota");
-const bookingForm = document.getElementById("bookingForm");
-
-const jumlahHidden = document.getElementById("jumlahPeminjam");
-const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
-
-let anggotaCount = 1;
-
-const kapasitasMax = <?= $kapasitasMax ?>;
-const kapasitasMin = <?= $kapasitasMin ?>;
-const maxAnggota   = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
-
-function showWarning(msg){
-
-document.getElementById("warningText").textContent = msg;
-
-document.getElementById("warningModal").classList.add("active");
-
-}
-
-function closeWarning(){
-
-document.getElementById("warningModal").classList.remove("active");
-
-}
-
-function addAnggotaField(){
-
-if(maxAnggota !== Infinity && anggotaCount >= maxAnggota){
-
-showWarning("Jumlah anggota melebihi kapasitas");
-
-return;
-
-}
-
-anggotaCount++;
-
-const div=document.createElement("div");
-
-div.className="form-group anggota-item";
-
-div.innerHTML=`
-<label>NIM Anggota ${anggotaCount}</label>
-<input class="input-line anggota-input" type="text" name="nim_anggota[]" required>
-`;
-
-anggotaList.appendChild(div);
-
-}
-
-addBtn.addEventListener("click",addAnggotaField);
-
-bookingForm.addEventListener("submit",function(e){
-
-e.preventDefault();
-
-const anggotaInputs = Array.from(document.querySelectorAll(".anggota-input"));
-
-const anyEmpty = anggotaInputs.some(inp => inp.value.trim()==="");
-
-if(anyEmpty){
-
-showWarning("Isi semua NIM anggota.");
-
-return;
-
-}
-
-const filledMembers = anggotaInputs.map(i=>i.value.trim());
-
-const total = 1 + filledMembers.length;
-
-if(kapasitasMax>0 && total>kapasitasMax){
-
-showWarning("Jumlah peminjam melebihi kapasitas ruangan.");
-
-return;
-
-}
-
-if(kapasitasMin>0 && total<kapasitasMin){
-
-showWarning("Jumlah peminjam kurang dari kapasitas minimum.");
-
-return;
-
-}
-
-jumlahHidden.value = total;
-
-jumlahDisplay.value = total;
-
-const formData = new FormData(bookingForm);
-
-fetch(bookingForm.action,{
-
-method:"POST",
-
-body:formData
-
-})
-.then(res=>res.json())
-
-.then(data=>{
-
-if(data.success){
-
-document.getElementById("successModal").classList.add("active");
-
-}else{
-
-showWarning(data.message);
-
-}
-
-})
-
-.catch(err=>{
-
-console.error(err);
-
-showWarning("Terjadi kesalahan sistem.");
-
-});
-
-});
-
-</script>
+    <script>
+        /* =========================================================
+        * INITIAL SETUP (AMBIL ELEMENT & STATE AWAL)
+        * ========================================================= */
+        const anggotaList   = document.getElementById("anggotaList");
+        const addBtn        = document.getElementById("addAnggota");
+        const bookingForm   = document.getElementById("bookingForm");
+        const jumlahHidden  = document.getElementById("jumlahPeminjam");
+        const jumlahDisplay = document.querySelector('input[name="jumlah_peminjam_display"]');
+
+        // Jumlah anggota saat ini (diambil dari PHP render awal)
+        let anggotaCount = <?= $idx - 1 ?>;
+
+        /* =========================================================
+        * KONFIGURASI KAPASITAS (DARI BACKEND (database))
+        * ========================================================= */
+        const kapasitasMax = <?= $kapasitasMax ?>;
+        const kapasitasMin = <?= $kapasitasMin ?>;
+        const maxAnggota   = <?= $maxAnggota === PHP_INT_MAX ? 'Infinity' : $maxAnggota ?>;
+
+        const kapasitasMaxMsg = kapasitasMax > 0
+          ? `Jumlah anggota tidak boleh melebihi ${maxAnggota} (kapasitas total ${kapasitasMax} orang).`
+          : 'Jumlah anggota tidak dibatasi.';
+
+        const kapasitasMinMsg = kapasitasMin > 0
+          ? `Jumlah peminjam harus minimal ${kapasitasMin} orang.`
+          : '';
+
+        /* =========================================================
+        * MODAL WARNING (UNTUK VALIDASI FRONTEND)
+        * ========================================================= */
+        const warningModal = document.getElementById('warningModal');
+        const warningText  = document.getElementById('warningText');
+
+        function showWarning(message) {
+          warningText.textContent = message;
+          warningModal.classList.add('active');
+        }
+
+        function closeWarning() {
+          warningModal.classList.remove('active');
+        }
+
+        // Tutup modal jika klik area luar
+        warningModal.addEventListener('click', (e) => {
+          if (e.target === warningModal) closeWarning();
+        });
+
+        /* =========================================================
+        * TAMBAH FIELD ANGGOTA (DYNAMIC FORM)
+        * ========================================================= */
+        function addAnggotaField(value = '') {
+        // Validasi batas maksimum anggota
+        if (anggotaCount >= maxAnggota && maxAnggota !== Infinity) {
+          showWarning(kapasitasMaxMsg);
+          return;
+        }
+
+        anggotaCount++;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-group anggota-item';
+
+        wrapper.innerHTML = `
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <label style="flex:1;">NIM/NIP Anggota ${anggotaCount}</label>
+            <button type="button" class="remove-btn"
+              style="background:#ff5c5c;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;">
+              Hapus
+            </button>
+          </div>
+          <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="${value}" required>
+        `;
+
+        anggotaList.appendChild(wrapper);
+      }
+
+      /* =========================================================
+      * REINDEX LABEL SETELAH HAPUS
+      * ========================================================= */
+      function reindexAnggota() {
+        const items = document.querySelectorAll('.anggota-item');
+
+        // Update jumlah anggota berdasarkan DOM terbaru
+        anggotaCount = items.length;
+
+        // Reset numbering label
+        items.forEach((item, index) => {
+          const label = item.querySelector('label');
+          label.textContent = `NIM/NIP Anggota ${index + 1}`;
+        });
+      }
+
+      /* =========================================================
+      * EVENT: TAMBAH & HAPUS ANGGOTA
+      * ========================================================= */
+
+      // Tambah anggota
+      addBtn.addEventListener('click', () => addAnggotaField(''));
+
+      // Hapus anggota (pakai event delegation karena elemen dinamis)
+      anggotaList.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('remove-btn')) return;
+
+        // Minimal harus ada 1 anggota
+        if (anggotaCount <= 1) {
+          showWarning("Minimal harus ada 1 anggota.");
+          return;
+        }
+
+        const item = e.target.closest('.anggota-item');
+        item.remove();
+
+        reindexAnggota();
+      });
+
+      /* =========================================================
+      * SUBMIT FORM (AJAX + VALIDASI)
+      * ========================================================= */
+      bookingForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Hindari reload
+
+        const anggotaInputs = Array.from(document.querySelectorAll('.anggota-input'));
+
+        // Validasi: tidak boleh kosong
+        const anyEmpty = anggotaInputs.some(inp => inp.value.trim() === '');
+        if (anyEmpty) {
+          showWarning('Isi semua NIM/NIP anggota, tidak boleh ada yang kosong.');
+          return;
+        }
+
+        // Validasi: tidak boleh duplikat
+        const nimValues  = anggotaInputs.map(i => i.value.trim());
+        const uniqueNims = new Set(nimValues);
+
+        if (uniqueNims.size !== nimValues.length) {
+          showWarning("Tidak boleh ada NIM/NIP anggota yang sama.");
+          return;
+        }
+
+        // Hitung total peminjam (1 PJ + anggota)
+        const filledMembers = nimValues.filter(v => v !== '');
+        const total = 1 + filledMembers.length;
+
+        // Validasi kapasitas
+        if (kapasitasMax > 0 && total > kapasitasMax) {
+          showWarning(kapasitasMaxMsg);
+          return;
+        }
+
+        if (kapasitasMin > 0 && total < kapasitasMin) {
+          showWarning(kapasitasMinMsg);
+          return;
+        }
+
+        // Sinkronisasi ke input hidden (source of truth backend)
+        jumlahHidden.value  = total;
+        jumlahDisplay.value = total;
+
+        const formData  = new FormData(bookingForm);
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerText;
+
+        // UX: loading state
+        submitBtn.innerText = 'Menyimpan...';
+        submitBtn.disabled  = true;
+
+        fetch(bookingForm.action, {
+          method: 'POST',
+          body: formData
+        })
+        .then(async res => {
+          const text = await res.text();
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            console.error("Response bukan JSON:", text);
+            throw new Error("Invalid JSON response");
+          }
+        })
+        .then(data => {
+          if (data.success === true) {
+            openModal();
+            return;
+          }
+
+          showWarning(data.message || "Terjadi kesalahan saat menyimpan booking.");
+        })
+        .catch(err => {
+          console.error("Fetch Error:", err);
+          showWarning("Terjadi kesalahan sistem. Silakan coba lagi.");
+        })
+        .finally(() => {
+          submitBtn.innerText = originalText;
+          submitBtn.disabled  = false;
+        });
+      });
+
+      /* =========================================================
+      * MODAL SUCCESS
+      * ========================================================= */
+      const successModal = document.getElementById('successModal');
+
+      function openModal() {
+        successModal.classList.add('active');
+      }
+
+      function closeModal() {
+        successModal.classList.remove('active');
+      }
+
+      successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) closeModal();
+      });
+
+    </script>
 
 </body>
 </html>

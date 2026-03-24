@@ -6,7 +6,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 Class bookingController{
 
-    #step1 sebenernya buat buka ruangan yang dipilih aja
+    //handler untuk menampilkan form 1 (tanggal & waktu) dari ruangan yang dipilih, makanya pakai parameter $roomId 
     public function step1($roomId)
     {
         Session::checkUserLogin();
@@ -113,6 +113,18 @@ Class bookingController{
             Session::setOld($payload);
             header('Location: ?route=Booking/step1/'.$payload['room_id']); 
             exit;
+        }
+
+        //BUAT EDIT BOOKING STEP2
+        // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
+        $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
+
+        //fallback kalau misalnya initial member kosong, yaudah pakai '' aja
+        if (empty($initialMembers)) {
+            $initialMembers = ['']; 
+        }
+        if (!isset($initialMembers) || !is_array($initialMembers)) {
+            $initialMembers = [''];
         }
 
         require __DIR__ . '/../views/user/booking_step2.php';
@@ -395,6 +407,18 @@ Class bookingController{
             exit;
         }
 
+        //BUAT EDIT BOOKING STEP2
+        // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
+        $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
+
+        //fallback kalau misalnya initial member kosong, yaudah pakai '' aja
+        if (empty($initialMembers)) {
+            $initialMembers = ['']; 
+        }
+        if (!isset($initialMembers) || !is_array($initialMembers)) {
+            $initialMembers = [''];
+        }
+        
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
@@ -731,7 +755,14 @@ Class bookingController{
 
         // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
         $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
-        if (empty($initialMembers)) { $initialMembers = ['']; }
+
+        //fallback kalau misalnya initial member kosong, yaudah pakai '' aja
+        if (empty($initialMembers)) {
+            $initialMembers = ['']; 
+        }
+        if (!isset($initialMembers) || !is_array($initialMembers)) {
+            $initialMembers = [''];
+        }
 
         $user        = $userModel->findById($userId);
         $puasPercent = $feedbackModel->puasPercent($roomId); 
@@ -1060,7 +1091,14 @@ Class bookingController{
 
         // initialMembers berfungsi untuk load data peminjam yang udah diisi ketika bikin booking pertama kali
         $initialMembers = $bookingModel->splitMembers($booking['nimnip_peminjam'] ?? '');
-        if (empty($initialMembers)) { $initialMembers = ['']; }
+
+        //fallback kalau misalnya initial member kosong, yaudah pakai '' aja
+        if (empty($initialMembers)) { 
+            $initialMembers = ['']; 
+        }
+        if (!isset($initialMembers) || !is_array($initialMembers)) {
+            $initialMembers = [''];
+        }
 
         $admin = $adminModel->findById($adminId);
         $puasPercent = $feedbackModel->puasPercent($roomId); 

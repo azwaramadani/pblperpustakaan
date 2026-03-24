@@ -5,22 +5,19 @@ Session::set('flash_error', null);
 
 $isEdit = !empty($payload['booking_id'] ?? null);
 
-if (!isset($initialMembers) || !is_array($initialMembers)) {
-    $initialMembers = [''];
-}
-
+//payload data dari database, total peminjam ketika create booking 
 $defaultJumlah = $booking['jumlah_peminjam'] ?? (1 + max(1, count($initialMembers)));
 
-// Batas kapasitas ruangan dari backend
+// Batas kapasitas ruangan dari database
 $kapasitasMax = (int)($room['kapasitas_max'] ?? 0);
 $kapasitasMin = (int)($room['kapasitas_min'] ?? 0);
-// Maksimal anggota = kapasitasMax - 1 (karena 1 untuk penanggung jawab). Jika 0/negatif, anggap tak terbatas.
+
+// Maksimal anggota = kapasitasMax - 1 (karena 1 untuk penanggung jawab). 
 $maxAnggota = $kapasitasMax > 0 ? max(0, $kapasitasMax - 1) : PHP_INT_MAX;
 
 // Bangun URL gambar ruangan
 $imgPath = !empty($room['gambar_ruangan']) ? $room['gambar_ruangan'] : 'public/assets/image/contohruangan.png';
 $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base_url'].'/'.ltrim($imgPath, '/');
-
 ?>
 
 <!DOCTYPE html>
@@ -28,75 +25,14 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?> - <?= htmlspecialchars($room['nama_ruangan']) ?></title>
+  <title>
+    <?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?>
+    - <?= htmlspecialchars($room['nama_ruangan']) ?>
+  </title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css?v=1.7">
-  <style>
-    /* Modal warning khusus kapasitas/validasi */
-    .modal-warning {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .modal-warning.active { display: flex; }
-    .modal-card {
-      width: 320px;
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px 18px 16px;
-      text-align: center;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
-      animation: pop 0.18s ease-out;
-    }
-    @keyframes pop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      margin: 0 auto 12px;
-      display: grid;
-      place-items: center;
-      background: #ff5c5c;
-      color: #fff;
-      font-size: 28px;
-      font-weight: 700;
-    }
-    .modal-title {
-      font-size: 17px;
-      font-weight: 700;
-      margin: 0 0 10px;
-      color: #222;
-    }
-    .modal-text {
-      font-size: 14px;
-      margin: 0 0 16px;
-      color: #444;
-      line-height: 1.5;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-    }
-    .btn-modal-primary {
-      flex: 1;
-      background: #ff5c5c;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-      box-shadow: 0 6px 16px rgba(255,92,92,0.35);
-    }
-    .btn-modal-primary:hover { transform: translateY(-1px); }
-  </style>
+  <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylebooking2.css?v=1.8">
 </head>
+
 <body>
 
   <!-- Navbar -->
@@ -129,17 +65,29 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
   </header>
 
   <main>
+
     <div class="room-header">
       <div class="room-image-container">
         <img src="<?= htmlspecialchars($imgUrl) ?>" alt="Ruangan" class="room-image" style="object-fit:cover;">
       </div>
+
       <div class="room-details">
         <h2><?= htmlspecialchars($room['nama_ruangan']) ?></h2>
-        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Ruangan Study.') ?></p>
-        <p class="capacity">Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?> - <?= htmlspecialchars($room['kapasitas_max']) ?> orang</p>
+        <p><?= htmlspecialchars($room['deskripsi'] ?? 'Tidak ada deskripsi ruangan.') ?></p>
+
+        <p class="capacity">
+          <strong>
+          Kapasitas: <?= htmlspecialchars($room['kapasitas_min']) ?>
+          - 
+          <?= htmlspecialchars($room['kapasitas_max']) ?> 
+          orang
+          </strong>
+        </p>
+
         <h3>Waktu Peminjaman:</h3>
         <p>Tanggal: <strong><?= htmlspecialchars($payload['tanggal']) ? date('d M Y', strtotime($payload['tanggal'])) : '-' ?></strong></p>
         <p>Jam: <strong><?= htmlspecialchars($payload['jam_mulai']) ?> </strong> - <strong> <?= htmlspecialchars($payload['jam_selesai']) ?> </strong></p>
+        
         <p style="margin-top:8px;font-weight:600;">
           Maks anggota: <?= $kapasitasMax > 0 ? $maxAnggota : 'tidak dibatasi' ?> (1 slot untuk penanggung jawab).
           <?= $kapasitasMin > 0 ? ' Minimal total peminjam: ' . $kapasitasMin . ' orang.' : '' ?>
@@ -148,8 +96,9 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
     </div>
 
     <div class="card">
-      <h1><?= $isEdit ? 'Ubah Data Peminjaman' : 'Lengkapi Data Peminjaman' ?></h1>
+      <h1><?= $isEdit ? 'Ubah data peminjaman' : 'Lengkapi data peminjaman' ?></h1>
 
+      <!-- flash error -->
       <?php if ($err): ?>
         <div class="alert-error"><?= htmlspecialchars($err) ?></div>
       <?php endif; ?>
@@ -170,7 +119,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
         </div>
 
         <div class="form-group">
-          <label>NIM penanggung jawab</label>
+          <label>NIM/NIP penanggung jawab</label>
           <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($user['nim_nip']) ?>" readonly>
         </div>
 
@@ -193,16 +142,23 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
                   Hapus
                 </button>
               </div>
-              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>">
+              <input class="input-line anggota-input" type="text" name="nim_anggota[]" value="<?= htmlspecialchars($val) ?>" required>
             </div>
-          <?php $idx++; endforeach; ?>
+          <?php 
+          $idx++; 
+          endforeach; 
+          ?>
         </div>
 
         <button type="button" class="add-btn" id="addAnggota">+ Tambah Anggota</button>
 
         <div class="actions">
-          <a href="?route=<?= $isEdit ? ('Booking/editForm/' . urlencode($payload['booking_id'])) : ('Booking/step1/' . urlencode($payload['room_id'])) ?>" class="btn-back">Kembali</a>
-          <button type="submit" class="btn-save"><?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?></button>
+          <a href="?route=<?= $isEdit ? ('Booking/editForm/' . urlencode($payload['booking_id'])) : ('Booking/step1/' . urlencode($payload['room_id'])) ?>" class="btn-back">
+            Kembali
+          </a>
+          <button type="submit" class="btn-save">
+            <?= $isEdit ? 'Simpan Perubahan' : 'Simpan' ?>
+          </button>
         </div>
       </form>
     </div>
@@ -296,7 +252,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath) ? $imgPath : app_config()['base
   let anggotaCount = <?= $idx - 1 ?>;
 
   /* =========================================================
-   * KONFIGURASI KAPASITAS (DARI BACKEND)
+   * KONFIGURASI KAPASITAS (DARI BACKEND (database))
    * ========================================================= */
   const kapasitasMax = <?= $kapasitasMax ?>;
   const kapasitasMin = <?= $kapasitasMin ?>;
