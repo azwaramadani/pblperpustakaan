@@ -98,6 +98,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath)
             <?php endif; ?>
 
             <form action="<?= $isEdit ? '?route=Booking/adminUpdate' : '?route=Booking/adminStore' ?>" method="POST" id="bookingForm">
+
                 <?php if ($isEdit) : ?>
                   <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
                 <?php endif; ?>  

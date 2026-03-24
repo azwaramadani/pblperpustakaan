@@ -653,13 +653,13 @@ Class bookingController{
 
         // Payload ini gunanya untuk mengambil data dari database ketika kita pertama kali create booking
         // disini pakai $old karena juga berfungsi untuk ambil data dari Session::setOld() ketika redirect saat kena error
-        $payload = !empty($old) ? $old : [
-            'booking_id' => $booking['booking_id'],
-            'room_id'    => $booking['room_id'],
-            'tanggal'    => $booking['tanggal'],
-            'jam_mulai'  => $booking['jam_mulai'],
-            'jam_selesai'=> $booking['jam_selesai'],
-        ];         
+        $payload = array_merge([
+            'booking_id'    => $booking['booking_id'],
+            'room_id'       => $booking['room_id'],
+            'tanggal'       => $booking['tanggal'],
+            'jam_mulai'     => $booking['jam_mulai'],
+            'jam_selesai'   => $booking['jam_selesai'],
+        ], $old ?? []);         
 
         require __DIR__ . '/../views/user/booking_step1.php';
     }
@@ -992,7 +992,7 @@ Class bookingController{
         
         // Payload ini gunanya untuk mengambil data dari database ketika kita pertama kali create booking
         // disini pakai $old karena juga berfungsi untuk ambil data dari Session::setOld() ketika redirect saat kena error
-        $payload = !empty($old) ? $old : [
+        $payload = array_merge([
             'booking_id'                => $booking['booking_id'],
             'room_id'                   => $booking['room_id'],
             'tanggal'                   => $booking['tanggal'],
@@ -1001,7 +1001,7 @@ Class bookingController{
             'nama_penanggung_jawab'     => $booking['nama_penanggung_jawab'],
             'nimnip_penanggung_jawab'   => $booking['nimnip_penanggung_jawab'],
             'email_penanggung_jawab'    => $booking['email_penanggung_jawab'],
-        ];
+        ], $old ?? []);
 
         require __DIR__ . '/../views/admin/admin_bookingstep1.php';
     }
@@ -1143,7 +1143,7 @@ Class bookingController{
         $roomModel    = new Room();
 
         //validasi booking tidak ditemukan
-        $booking = $bookingModel->findForEdit($bookingId, $adminId);
+        $booking = $bookingModel->findForEditAdmin($bookingId, $adminId);
         if (!$booking) {
             jsonResponse([
                 'success' => false, 
