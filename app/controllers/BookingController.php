@@ -651,9 +651,8 @@ Class bookingController{
         $flash = $this->getFlashMessages(); 
         $old   = Session::getOld();  
 
-        //ini dipakai misalnya kena redirect, maka pakai data old
-        //yaitu data request pertama sebelum kena flash error
-        //kalau gaada data old, maka ambil data dari database
+        // Payload ini gunanya untuk mengambil data dari database ketika kita pertama kali create booking
+        // disini pakai $old karena juga berfungsi untuk ambil data dari Session::setOld() ketika redirect saat kena error
         $payload = !empty($old) ? $old : [
             'booking_id' => $booking['booking_id'],
             'room_id'    => $booking['room_id'],
@@ -991,15 +990,17 @@ Class bookingController{
         $flash = $this->getFlashMessages(); 
         $old   = Session::getOld();
         
-        //ini dipakai misalnya kena redirect, maka pakai data old
-        //yaitu data request pertama sebelum kena flash error
-        //kalau gaada data old, maka ambil data dari database
+        // Payload ini gunanya untuk mengambil data dari database ketika kita pertama kali create booking
+        // disini pakai $old karena juga berfungsi untuk ambil data dari Session::setOld() ketika redirect saat kena error
         $payload = !empty($old) ? $old : [
-            'booking_id' => $booking['booking_id'],
-            'room_id'    => $booking['room_id'],
-            'tanggal'    => $booking['tanggal'],
-            'jam_mulai'  => $booking['jam_mulai'],
-            'jam_selesai'=> $booking['jam_selesai'],
+            'booking_id'                => $booking['booking_id'],
+            'room_id'                   => $booking['room_id'],
+            'tanggal'                   => $booking['tanggal'],
+            'jam_mulai'                 => $booking['jam_mulai'],
+            'jam_selesai'               => $booking['jam_selesai'],
+            'nama_penanggung_jawab'     => $booking['nama_penanggung_jawab'],
+            'nimnip_penanggung_jawab'   => $booking['nimnip_penanggung_jawab'],
+            'email_penanggung_jawab'    => $booking['email_penanggung_jawab'],
         ];
 
         require __DIR__ . '/../views/admin/admin_bookingstep1.php';
@@ -1019,6 +1020,9 @@ Class bookingController{
         $tanggal    = trim($_POST['tanggal'] ?? '');
         $jamMulai   = substr(trim($_POST['jam_mulai'] ?? ''), 0, 5);
         $jamSelesai = substr(trim($_POST['jam_selesai'] ?? ''), 0, 5);
+        $namaPj     = trim($_POST['nama_penanggung_jawab'] ?? '');
+        $nimnipPj   = trim($_POST['nimnip_penanggung_jawab'] ?? '');
+        $emailPj    = trim($_POST['email_penanggung_jawab'] ?? '');
         $adminId    = Session::get('admin_id');
 
         //validasi misal tanggal dan jam tiba-tiba kosong
@@ -1051,28 +1055,26 @@ Class bookingController{
         $roomId = (int)$booking['room_id']; 
         $room   = $roomModel->findById($roomId);
 
-        // Cek bentrok jadwal, exclude booking ini sendiri
-        if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
-            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
-            Session::setOld([
-                'booking_id' => $bookingId,
-                'room_id'    => $roomId,
-                'tanggal'    => $tanggal,
-                'jam_mulai'  => $jamMulai,
-                'jam_selesai'=> $jamSelesai,
-            ]);
-            header('Location: ?route=Booking/adminEditForm/'.$bookingId);
-            exit;
-        }
-
-        //payload data dari form tanggal dan jam pake hidden input di html
+        //payload data dari form tanggal dan jam pake hidden input di html\
+        //disini nama, nimnip, emailpj juga dipayload supaya di edit form ke-2, data pj tetep ada dan ambil dari database
         $payload = [
             'booking_id' => $bookingId,
             'room_id'    => $roomId,
             'tanggal'    => $tanggal,
             'jam_mulai'  => $jamMulai,
             'jam_selesai'=> $jamSelesai,
+            'nama_penanggung_jawab'     => $namaPj,
+            'nimnip_penanggung_jawab'   => $nimnipPj,
+            'email_penanggung_jawab'    => $emailPj,
         ];
+
+        // Cek bentrok jadwal, exclude booking ini sendiri
+        if ($bookingModel->hasOverlap($roomId, $tanggal, $jamMulai, $jamSelesai, $bookingId)) {
+            Session::set('flash_error', 'Waktu bentrok dengan peminjaman lain.');
+            Session::setOld($payload);
+            header('Location: ?route=Booking/adminEditForm/'.$bookingId);
+            exit;
+        }
 
         //validasi tanggal: tidak boleh lampau dan tidak boleh sabtu/minggu
         $dateError = $this->validateTanggalPeminjaman($payload['tanggal']);

@@ -120,12 +120,17 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath)
 
             <!-- Form input tanggal & jam -->
             <form action="<?= $isEdit ? '?route=Booking/adminEditStep2' : '?route=Booking/adminStep2' ?>" method="POST">
+                
+                <!-- hidden input untuk simpan data buat form selanjutnya -->
                 <?php if ($isEdit): ?>
                     <input type="hidden" name="booking_id" value="<?= htmlspecialchars($payload['booking_id']) ?>">
-                <?php endif; ?>
-
-                <!-- Room ID dari ruangan yang dipilih -->
-                <input type="hidden" name="room_id" value="<?= $room['room_id'] ?>">
+                    <input type="hidden" name="room_id" value="<?= htmlspecialchars($payload['room_id']) ?>">
+                    <input type="hidden" name="nama_penanggung_jawab" value="<?= htmlspecialchars($payload['nama_penanggung_jawab']) ?>">
+                    <input type="hidden" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($payload['nimnip_penanggung_jawab']) ?>">
+                    <input type="hidden" name="email_penanggung_jawab" value="<?= htmlspecialchars($payload['email_penanggung_jawab']) ?>">
+                <?php else: ?>
+                    <input type="hidden" name="room_id" value="<?= htmlspecialchars($room['room_id'])?>">
+                <?php endif; ?>                
 
                 <div class="form-grid">
                     <div class="form-group">
