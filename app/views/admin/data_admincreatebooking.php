@@ -190,8 +190,13 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                       <button class="aksi-btn js-open-status"
                               data-id="<?= $b['booking_id'] ?>"
                               data-status="<?= htmlspecialchars($b['status_booking']) ?>">
-                        <i class="fa-solid fa-pen-to-square"></i> Ubah
+                        <i class="fa-solid fa-pen-to-square"></i> Ubah Status
                       </button>
+                      <?php if ($b['status_booking'] == 'Disetujui') : ?>
+                      <a href="?route=Booking/adminEditForm/<?= urlencode($b['booking_id']) ?>" class="aksi-btn edit">
+                        <i class="fa-solid fa-pen-to-square"></i> Ubah data                     
+                      </a>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endforeach; ?>

@@ -109,22 +109,22 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath)
 
                 <div class="form-group">
                     <label>Nama penanggung jawab</label>
-                    <input class="input-line" type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($payload['nama_penanggung_jawab']) ?>" required>
+                    <input class="input-line" type="text" name="nama_penanggung_jawab" value="<?= htmlspecialchars($payload['nama_penanggung_jawab'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label>NIM/NIP penanggung jawab</label>
-                    <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($payload['nimnip_penanggung_jawab']) ?>" required>
+                    <input class="input-line" type="text" name="nimnip_penanggung_jawab" value="<?= htmlspecialchars($payload['nimnip_penanggung_jawab'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label>Email penanggung jawab</label>
-                    <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($payload['email_penanggung_jawab']) ?>" required>
+                    <input class="input-line" type="email" name="email_penanggung_jawab" value="<?= htmlspecialchars($payload['email_penanggung_jawab'] ?? '') ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label>Jumlah peminjam</label>
-                    <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah) ?>" required>
+                    <input class="input-line" type="number" name="jumlah_peminjam_display" min="2" value="<?= htmlspecialchars($defaultJumlah ?? '') ?>" required>
                 </div>
 
                 <div class="anggota-wrap" id="anggotaList">
@@ -180,7 +180,7 @@ $imgUrl  = preg_match('#^https?://#i', $imgPath)
         </div>
         <h2 class="modal-title">Booking berhasil disimpan</h2>
         <div class="modal-actions">
-            <a href="?route=Admin/dataFromAdminCreateBooking$refresh=<?= time() ?>" class="btn-modal btn-modal-yellow">Kembali ke data booking admin</a>
+            <a href="?route=Admin/dataFromAdminCreateBooking" class="btn-modal btn-modal-yellow">Kembali ke data booking admin</a>
             <a href="?route=Admin/dataRuangan" class="btn-modal btn-modal-white">Lihat data ruangan</a>
         </div>
       </div>

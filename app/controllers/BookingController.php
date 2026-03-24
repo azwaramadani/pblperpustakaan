@@ -418,7 +418,7 @@ Class bookingController{
         if (!isset($initialMembers) || !is_array($initialMembers)) {
             $initialMembers = [''];
         }
-        
+
         require __DIR__ . '/../views/admin/admin_bookingstep2.php';
     }
 
@@ -969,7 +969,7 @@ Class bookingController{
         $feedbackModel = new Feedback();
 
         // untuk mengambil id booking yang mau diedit
-        $booking = $bookingModel->findForEdit($bookingId, $adminId);
+        $booking = $bookingModel->findForEditAdmin($bookingId, $adminId);
 
         //validasi booking tidak ditemukan
         if (!$booking) { 
@@ -988,6 +988,9 @@ Class bookingController{
         $puasPercent = $feedbackModel->puasPercent($booking['room_id']); //buat nampilin rating ruangan
         $admin       = $adminModel->findById($adminId); //
 
+        $flash = $this->getFlashMessages(); 
+        $old   = Session::getOld();
+        
         //ini dipakai misalnya kena redirect, maka pakai data old
         //yaitu data request pertama sebelum kena flash error
         //kalau gaada data old, maka ambil data dari database
@@ -1031,7 +1034,7 @@ Class bookingController{
         $feedbackModel= new Feedback();
 
         //validasi tiba-tiba booking tidak ditemukan
-        $booking = $bookingModel->findForEdit($bookingId, $adminId);
+        $booking = $bookingModel->findForEditAdmin($bookingId, $adminId);
         if (!$booking) { 
             http_response_code(404); 
             exit('Booking tidak ditemukan.'); 
