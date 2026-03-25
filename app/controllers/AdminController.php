@@ -797,12 +797,12 @@ class AdminController {
         // kirim email ke user dengan role Mahasiswa, status sebelumnya dari menunggu dan ditolak, dan diubah menjadi disetujui
         $shouldSendEmail = (
             $role === 'Mahasiswa' &&
-            ($oldStatus === 'Menunggu' || $oldStatus === 'Ditolak') &&
+            ($oldStatus === 'Menunggu' || $oldStatus === 'Ditolak' || $oldStatus === 'Diblokir') &&
             $status === 'Disetujui' &&
             $email !== ''
         );
 
-        // kirim email ke user dengan role mahasiswa, status sebelumnya dari Menunggu dan Disetujui, dan diubah menjad ditolak 
+        // kirim email ke user dengan role mahasiswa, status sebelumnya dari Menunggu dan Disetujui, dan diubah menjadi ditolak 
         $ditolakSendEmail = (
             $role === 'Mahasiswa' &&
             ($oldStatus === 'Menunggu' || $oldStatus === 'Disetujui') &&

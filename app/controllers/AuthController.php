@@ -350,7 +350,7 @@ class AuthController
             $sessionCaptcha = $_SESSION['captcha_code'] ?? '';
 
             if ($inputCaptcha !== $sessionCaptcha) {
-                $errors[] = 'Kode keamanan (Captcha) salah atau tidak sesuai.';
+                $errors[] = 'nan (Captcha) salah atau tidak sesuai.';
             }
 
             if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || 
