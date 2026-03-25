@@ -23,6 +23,9 @@
 
         <h2>Daftar Mahasiswa</h2>
         <!-- Flash Messages -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
         <?php if (!empty($error = $flash['error'])): ?>
             <div class="flash error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
@@ -96,7 +99,7 @@
     </section>
 </div>
 
-<?php if (!empty($success == $flash['success'])): ?>
+<?php if ($success): ?>
 <div class="modal-backdrop show-modal" id="successModal">
     <div class="modal-card custom-success-card">
         <!-- Close Button (X) -->
