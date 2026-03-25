@@ -187,7 +187,7 @@ Class bookingController{
         if (!empty($invalidNims)) {
             jsonResponse([
                 'success' => false,
-                'message' => 'NIM berikut tidak terdaftar: ' . implode(', ', $invalidNims)
+                'message' => 'NIM/NIP berikut belum mempunyai akun LibRoomPNJ: ' . implode(', ', $invalidNims)
             ]);
             exit;
         }
@@ -895,7 +895,7 @@ Class bookingController{
         if (!empty($invalidNims)) {
             jsonResponse([
                 'success' => false,
-                'message' => 'NIM/NIP berikut tidak terdaftar: ' . implode(', ', $invalidNims)
+                'message' => 'NIM/NIP berikut belum mempunyai akun LibRoomPNJ: ' . implode(', ', $invalidNims)
             ]);
             exit;
         }

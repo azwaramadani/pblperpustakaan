@@ -140,7 +140,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dataAkun">
 
-          <label>Urut tanggal</label>
+          <label>Urut waktu dibuat</label>
           <select name="sort_dateregist">
             <option value="desc" <?= ($filtersregist['sort_dateregist'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
             <option value="asc"  <?= ($filtersregist['sort_dateregist'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>
@@ -300,7 +300,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/dataAkun">
 
-          <label>Urut tanggal</label>
+          <label>Urut waktu dibuat</label>
           <select name="sort_date">
             <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru &uarr;</option>
             <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama &darr;</option>

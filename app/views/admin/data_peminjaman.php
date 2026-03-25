@@ -121,7 +121,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
         <form class="filter-bar" method="GET" action="">
           <input type="hidden" name="route" value="Admin/datapeminjaman">
 
-          <label>Urut tanggal</label>
+          <label>Urut waktu peminjaman</label>
           <select name="sort_date">
             <option value="desc" <?= ($filters['sort_date'] === 'desc') ? 'selected' : '' ?>>Terbaru</option>
             <option value="asc"  <?= ($filters['sort_date'] === 'asc')  ? 'selected' : '' ?>>Terlama</option>
