@@ -1,15 +1,3 @@
-<?php
-// Logika Perbaikan: Fallback ke $_POST jika $old kosong saat submit
-// Ini mencegah tulisan hilang jika validasi gagal
-if (empty($old) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $old = $_POST;
-}
-
-// Pastikan array $old memiliki semua key yang dibutuhkan untuk menghindari error 'Undefined index'
-$defaults = ['nim_nip' => '', 'jurusan' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
-$old = array_merge($defaults, $old ?? []);
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -31,26 +19,18 @@ $old = array_merge($defaults, $old ?? []);
 
     <!-- BAGIAN KANAN: FORM (Scrollable) -->
     <section class="form-panel">
-        <!-- Flash Messages -->
-        <?php if (!empty($success = $flash['success'])): ?>
-            <div class="flash success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-        <?php if (!empty($error = $flash['error'])): ?>
-            <div class="flash error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
+
         <div class="form-content">
             <div class="form-header">
                 <h2>Daftar Dosen</h2>
             </div>
 
-            <?php if (!empty($errors)): ?>
-                <div class="auth-error">
-                    <ul style="margin:0; padding-left:18px;">
-                        <?php foreach ($errors as $err): ?>
-                            <li><?= htmlspecialchars($err) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
+            <!-- Flash Messages -->
+            <?php if (!empty($success = $flash['success'])): ?>
+                <div class="flash success"><?= htmlspecialchars($success) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($error = $flash['error'])): ?>
+                <div class="flash error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <form class="login-form" method="POST" action="?route=Auth/registerDosen">
@@ -58,7 +38,7 @@ $old = array_merge($defaults, $old ?? []);
                 <!-- Field NIP -->
                 <div class="form-group">
                     <label for="nim_nip">NIP</label>
-                    <input id="nim_nip" type="text" name="nim_nip" class="form-control" placeholder="Masukkan NIP" value="<?= htmlspecialchars($old['nim_nip']) ?>" required>
+                    <input id="nim_nip" type="text" name="nim_nip" class="form-control" placeholder="Masukkan NIP" value="<?= htmlspecialchars($old['nim_nip'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Jurusan -->
@@ -68,7 +48,7 @@ $old = array_merge($defaults, $old ?? []);
                         <select id="jurusan" name="jurusan" class="form-control select-input" required>
                             <option value="">Pilih Jurusan</option>
                             <?php foreach ($jurusanList as $jurusan): ?>
-                                <option value="<?= htmlspecialchars($jurusan) ?>" <?= $old['jurusan'] === $jurusan ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($jurusan) ?>" <?= $old['jurusan'] ?? '' === $jurusan ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($jurusan) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -79,19 +59,19 @@ $old = array_merge($defaults, $old ?? []);
                 <!-- Field Nama -->
                 <div class="form-group">
                     <label for="nama">Nama Lengkap</label>
-                    <input id="nama" type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="<?= htmlspecialchars($old['nama']) ?>" required>
+                    <input id="nama" type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="<?= htmlspecialchars($old['nama'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field No HP -->
                 <div class="form-group">
                     <label for="no_hp">No. Hp</label>
-                    <input id="no_hp" type="text" name="no_hp" class="form-control" placeholder="Masukkan Nomor HP" value="<?= htmlspecialchars($old['no_hp']) ?>" required>
+                    <input id="no_hp" type="text" name="no_hp" class="form-control" placeholder="Masukkan Nomor HP" value="<?= htmlspecialchars($old['no_hp'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Email -->
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input id="email" type="email" name="email" class="form-control" placeholder="Masukkan Email" autocomplete="off" value="<?= htmlspecialchars($old['email']) ?>" required>
+                    <input id="email" type="email" name="email" class="form-control" placeholder="Masukkan Email" autocomplete="off" value="<?= htmlspecialchars($old['email'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Password -->

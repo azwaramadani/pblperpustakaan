@@ -458,67 +458,112 @@ class AuthController
     {
         $jurusanList = $this->jurusanOptions();
 
-        $old = [
-            'nim_nip' => '',
-            'jurusan' => '',
-            'nama'    => '',
-            'no_hp'   => '',
-            'email'   => ''
-        ];
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $old['nim_nip'] = trim($_POST['nim_nip'] ?? '');
-            $old['jurusan'] = trim($_POST['jurusan'] ?? '');
-            $old['nama']    = trim($_POST['nama'] ?? '');
-            $old['no_hp']   = trim($_POST['no_hp'] ?? '');
-            $old['email']   = trim($_POST['email'] ?? '');
-            $password       = $_POST['password'] ?? '';
-            $confirmPassword= $_POST['confirm_password'] ?? '';
 
-            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || $confirmPassword === '') {
-                $errors[] = 'Semua kolom wajib diisi.';
+            $old = [
+                'nim_nip'        => trim($_POST['nim_nip'] ?? ''),
+                'jurusan'        => trim($_POST['jurusan'] ?? ''),
+                'nama'           => trim($_POST['nama'] ?? ''),
+                'no_hp'          => trim($_POST['no_hp'] ?? ''),
+                'email'          => trim($_POST['email'] ?? ''),
+            ];
+
+            $password        = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            // ================= VALIDASI =================
+            // CAPTCHA
+            if (($$_POST['captcha_input'] ?? '') !== ($_SESSION['captcha_code'] ?? '')) {
+                Session::set('flash_error', 'Captcha salah atau tidak sesuai.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
             }
 
-            if ($old['email'] && !filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Format email tidak valid.';
+            // REQUIRED FIELD
+            foreach ($old as $key => $value) {
+                if ($value === '') {
+                    Session::set('flash_error', 'Semua kolom wajib diisi.');
+                    Session::setOld($old);
+                    header("Location: ?route=Auth/registerDosen");
+                    exit;
+                }
             }
 
+            if ($password === '' || $confirmPassword === '') {
+                Session::set('flash_error', 'Password wajib diisi.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
+            }
+
+            // EMAIL FORMAT
+            if (!filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
+                Session::set('flash_error', 'Format email tidak valid.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
+            }
+
+            // PASSWORD MATCH
             if ($password !== $confirmPassword) {
-                $errors[] = 'Konfirmasi password tidak sesuai.';
+                Session::set('flash_error', 'Konfirmasi password tidak sesuai.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
             }
 
+            // PASSWORD LENGTH
             if (strlen($password) < 8) {
-                $errors[] = 'password kurang dari 8 karakter.';
+                Session::set('flash_error', 'Password minimal 8 karakter.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
             }
 
             $userModel = new User();
 
+            // NIM DUPLICATE
             if ($userModel->isNIMExists($old['nim_nip'])) {
-                $errors[] = 'NIM/NIP sudah terdaftar.';
-            }
-
-            if ($userModel->isEmailExists($old['email'])) {
-                $errors[] = 'Email sudah terdaftar.';
-            }
-
-            if (empty($errors)) {
-                $userModel->registerDosen([
-                    'nim_nip'  => $old['nim_nip'],
-                    'jurusan'  => $old['jurusan'],
-                    'nama'     => $old['nama'],
-                    'no_hp'    => $old['no_hp'],
-                    'email'    => $old['email'],
-                    'password' => $password,
-                    'role'     => 'Dosen'
-                ]);
-
-                Session::set('flash_success', 'Berhasil Membuat Akun!');
+                Session::set('flash_error', 'NIP sudah terdaftar.');
+                Session::setOld($old);
                 header("Location: ?route=Auth/registerDosen");
                 exit;
             }
+
+            // EMAIL DUPLICATE
+            if ($userModel->isEmailExists($old['email'])) {
+                Session::set('flash_error', 'Email sudah terdaftar.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerDosen");
+                exit;
+            }
+
+            // ================= SUCCESS =================
+            $userModel->registerDosen([
+                'nim_nip'         => $old['nim_nip'],
+                'jurusan'         => $old['jurusan'],
+                'nama'            => $old['nama'],
+                'no_hp'           => $old['no_hp'],
+                'email'           => $old['email'],
+                'password'        => $password,
+                'role'            => 'Dosen',
+            ]);
+
+            Session::set('flash_success', 'Berhasil Membuat Akun! Silahkan Login.');
+            header("Location: ?route=Auth/registerDosen");
+            exit;
         }
 
+        // ================= GET REQUEST =================
         $flash = $this->getFlashMessages();
+        $old   = Session::getOld() ?? [
+            'nim_nip'        => '',
+            'jurusan'        => '',
+            'nama'           => '',
+            'no_hp'          => '',
+            'email'          => ''
+        ];
 
         require __DIR__ . '/../views/auth/register_userdosen.php';
     }

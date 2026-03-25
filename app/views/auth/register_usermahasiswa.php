@@ -48,7 +48,7 @@
             <select id="jurusan" name="jurusan" class="select-input" required>
                 <option value="">Pilih Jurusan</option>
                 <?php foreach ($jurusanList as $jurusan): ?>
-                    <option value="<?= htmlspecialchars($jurusan) ?>" <?= $old['jurusan'] === $jurusan ? 'selected' : '' ?>>
+                    <option value="<?= htmlspecialchars($jurusan) ?>" <?= $old['jurusan'] ?? '' === $jurusan ? 'selected' : '' ?>>
                         <?= htmlspecialchars($jurusan) ?>
                     </option>
                 <?php endforeach; ?>
@@ -58,7 +58,7 @@
             <select id="program_studi" name="program_studi" class="select-input" required>
                 <option value="">Pilih Program Studi</option>
                 <?php foreach ($prodiList as $prodi): ?>
-                    <option value="<?= htmlspecialchars($prodi) ?>" <?= $old['program_studi'] === $prodi ? 'selected' : '' ?>>
+                    <option value="<?= htmlspecialchars($prodi) ?>" <?= $old['program_studi'] ?? ''=== $prodi ? 'selected' : '' ?>>
                         <?= htmlspecialchars($prodi) ?>
                     </option>
                 <?php endforeach; ?>
