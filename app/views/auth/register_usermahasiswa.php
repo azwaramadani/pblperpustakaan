@@ -1,7 +1,3 @@
-<?php
-$old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'program_studi' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -24,47 +20,26 @@ $old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'program_studi' => '', 'nama' 
 
     <!-- BAGIAN KANAN: FORM -->
     <section class="auth-card form-panel">
+
+        <h2>Daftar Mahasiswa</h2>
         <!-- Flash Messages -->
-        <?php if (!empty($success = $flash['success'])): ?>
-            <div class="flash success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
         <?php if (!empty($error = $flash['error'])): ?>
             <div class="flash error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-        
-        <h2>Daftar Mahasiswa</h2>
-        
-        <!-- Error Messages -->
-        <?php if (!empty($errors)): ?>
-            <div class="auth-error">
-                <ul style="margin:0; padding-left:18px;">
-                    <?php foreach ($errors as $err): ?>
-                        <li><?= htmlspecialchars($err) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-
-        <!-- Success Message -->
-        <?php if ($success): ?>
-            <div class="auth-success" style="background:#d1fae5; color:#065f46; padding:12px; border-radius:8px; margin-bottom:20px; text-align:center;">
-                <?= htmlspecialchars($success) ?>
-            </div>
         <?php endif; ?>
 
         <form id="registerForm" class="login-form" method="POST" enctype="multipart/form-data" action="?route=Auth/registerMahasiswa">
             
             <label for="nim_nip">NIM</label>
-            <input id="nim_nip" type="text" name="nim_nip" placeholder="Masukkan NIM" value="<?= htmlspecialchars($old['nim_nip']) ?>" required>
+            <input id="nim_nip" type="text" name="nim_nip" placeholder="Masukkan NIM" value="<?= htmlspecialchars($old['nim_nip'] ?? '') ?>" required>
 
             <label for="nama">Nama Lengkap</label>
-            <input id="nama" type="text" name="nama" placeholder="Masukkan Nama Lengkap" value="<?= htmlspecialchars($old['nama']) ?>" required>
+            <input id="nama" type="text" name="nama" placeholder="Masukkan Nama Lengkap" value="<?= htmlspecialchars($old['nama'] ?? '') ?>" required>
 
             <label for="no_hp">No. Handphone</label>
-            <input id="no_hp" type="tel" name="no_hp" placeholder="Contoh: 08123456789" value="<?= htmlspecialchars($old['no_hp']) ?>" required>
+            <input id="no_hp" type="tel" name="no_hp" placeholder="Contoh: 08123456789" value="<?= htmlspecialchars($old['no_hp'] ?? '') ?>" required>
 
             <label for="email">Email</label>
-            <input id="email" type="email" name="email" placeholder="email@contoh.com" autocomplete="off" value="<?= htmlspecialchars($old['email']) ?>" required>
+            <input id="email" type="email" name="email" placeholder="email@contoh.com" autocomplete="off" value="<?= htmlspecialchars($old['email'] ?? '') ?>" required>
 
             <label for="jurusan">Jurusan</label>
             <select id="jurusan" name="jurusan" class="select-input" required>
@@ -121,7 +96,7 @@ $old = $old ?? ['nim_nip' => '', 'jurusan' => '', 'program_studi' => '', 'nama' 
     </section>
 </div>
 
-<?php if ($success): ?>
+<?php if (!empty($success == $flash['success'])): ?>
 <div class="modal-backdrop show-modal" id="successModal">
     <div class="modal-card custom-success-card">
         <!-- Close Button (X) -->

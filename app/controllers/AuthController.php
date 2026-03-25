@@ -325,88 +325,131 @@ class AuthController
     public function registerMahasiswa()
     {
         $jurusanList = $this->jurusanOptions();
-        $prodiList = $this->prodiOptions();
-
-        $old = [
-            'nim_nip' => '',
-            'jurusan' => '',
-            'program_studi' => '',
-            'nama'    => '',
-            'no_hp'   => '',
-            'email'   => ''
-        ];
+        $prodiList   = $this->prodiOptions();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $old['nim_nip'] = trim($_POST['nim_nip'] ?? '');
-            $old['jurusan'] = trim($_POST['jurusan'] ?? '');
-            $old['program_studi'] = trim($_POST['program_studi'] ?? '');
-            $old['nama']    = trim($_POST['nama'] ?? '');
-            $old['no_hp']   = trim($_POST['no_hp'] ?? '');
-            $old['email']   = trim($_POST['email'] ?? '');
-            $password       = $_POST['password'] ?? '';
-            $confirmPassword= $_POST['confirm_password'] ?? '';
 
-            $inputCaptcha = $_POST['captcha_input'] ?? '';
-            $sessionCaptcha = $_SESSION['captcha_code'] ?? '';
+            $old = [
+                'nim_nip'        => trim($_POST['nim_nip'] ?? ''),
+                'jurusan'        => trim($_POST['jurusan'] ?? ''),
+                'program_studi'  => trim($_POST['program_studi'] ?? ''),
+                'nama'           => trim($_POST['nama'] ?? ''),
+                'no_hp'          => trim($_POST['no_hp'] ?? ''),
+                'email'          => trim($_POST['email'] ?? ''),
+            ];
 
-            if ($inputCaptcha !== $sessionCaptcha) {
-                $errors[] = 'nan (Captcha) salah atau tidak sesuai.';
+            $password        = $_POST['password'] ?? '';
+            $confirmPassword = $_POST['confirm_password'] ?? '';
+
+            // ================= VALIDASI =================
+
+            // CAPTCHA
+            if (($$_POST['captcha_input'] ?? '') !== ($_SESSION['captcha_code'] ?? '')) {
+                Session::set('flash_error', 'Captcha salah atau tidak sesuai.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
             }
 
-            if ($old['nim_nip'] === '' || $old['jurusan'] === '' || $old['program_studi'] === '' || 
-                $old['nama'] === '' || $old['no_hp'] === '' || $old['email'] === '' || $password === '' || 
-                $confirmPassword === '') {
-                $errors[] = 'Semua kolom wajib diisi.';
-            }
-
-            if ($old['email'] && !filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Format email tidak valid.';
-            }
-
-            if ($password !== $confirmPassword) {
-                $errors[] = 'Konfirmasi password tidak sesuai.';
-            }
-
-            if (strlen($password) < 8 ) {
-                $errors[] = 'password harus lebih dari 8 karakter.';
-            }
-
-            $userModel = new User();
-
-            if ($userModel->isNIMExists($old['nim_nip'])) {
-                $errors[] = 'NIM/NIP sudah terdaftar.';
-            }
-
-            if ($userModel->isEmailExists($old['email'])) {
-                $errors[] = 'Email sudah terdaftar.';
-            }
-
-            if (empty($errors)) {
-                $uploadName = uploadFile($_FILES['bukti_aktivasi'] ?? null, app_config()['upload_paths']['bukti_aktivasi']);
-
-                if (!$uploadName) {
-                    $errors[] = 'Upload bukti aktivasi gagal. Pastikan file gambar dipilih.';
-                } else {
-                    $userModel->registerMahasiswa([
-                        'nim_nip'         => $old['nim_nip'],
-                        'jurusan'         => $old['jurusan'],
-                        'program_studi'   => $old['program_studi'],
-                        'nama'            => $old['nama'],
-                        'no_hp'           => $old['no_hp'],
-                        'email'           => $old['email'],
-                        'password'        => $password,
-                        'role'            => 'Mahasiswa',
-                        'bukti_aktivasi'  => 'storage/uploads/bukti_aktivasi/' . $uploadName
-                    ]);
-
-                    Session::set('flash_success', 'Berhasil Membuat Akun!, Mohon Menunggu Validasi Admin.');
+            // REQUIRED FIELD
+            foreach ($old as $key => $value) {
+                if ($value === '') {
+                    Session::set('flash_error', 'Semua kolom wajib diisi.');
+                    Session::setOld($old);
                     header("Location: ?route=Auth/registerMahasiswa");
                     exit;
                 }
             }
+
+            if ($password === '' || $confirmPassword === '') {
+                Session::set('flash_error', 'Password wajib diisi.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // EMAIL FORMAT
+            if (!filter_var($old['email'], FILTER_VALIDATE_EMAIL)) {
+                Session::set('flash_error', 'Format email tidak valid.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // PASSWORD MATCH
+            if ($password !== $confirmPassword) {
+                Session::set('flash_error', 'Konfirmasi password tidak sesuai.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // PASSWORD LENGTH
+            if (strlen($password) < 8) {
+                Session::set('flash_error', 'Password minimal 8 karakter.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            $userModel = new User();
+
+            // NIM DUPLICATE
+            if ($userModel->isNIMExists($old['nim_nip'])) {
+                Session::set('flash_error', 'NIM/NIP sudah terdaftar.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // EMAIL DUPLICATE
+            if ($userModel->isEmailExists($old['email'])) {
+                Session::set('flash_error', 'Email sudah terdaftar.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // UPLOAD FILE
+            $uploadName = uploadFile($_FILES['bukti_aktivasi'] ?? null, app_config()['upload_paths']['bukti_aktivasi']);
+
+            if (!$uploadName) {
+                Session::set('flash_error', 'Upload bukti aktivasi gagal.');
+                Session::setOld($old);
+                header("Location: ?route=Auth/registerMahasiswa");
+                exit;
+            }
+
+            // ================= SUCCESS =================
+
+            $userModel->registerMahasiswa([
+                'nim_nip'         => $old['nim_nip'],
+                'jurusan'         => $old['jurusan'],
+                'program_studi'   => $old['program_studi'],
+                'nama'            => $old['nama'],
+                'no_hp'           => $old['no_hp'],
+                'email'           => $old['email'],
+                'password'        => $password,
+                'role'            => 'Mahasiswa',
+                'bukti_aktivasi'  => 'storage/uploads/bukti_aktivasi/' . $uploadName
+            ]);
+
+            Session::set('flash_success', 'Berhasil Membuat Akun! Mohon menunggu validasi admin.');
+            header("Location: ?route=Auth/registerMahasiswa");
+            exit;
         }
 
+        // ================= GET REQUEST =================
+
         $flash = $this->getFlashMessages();
+        $old   = Session::getOld() ?? [
+            'nim_nip'        => '',
+            'jurusan'        => '',
+            'program_studi'  => '',
+            'nama'           => '',
+            'no_hp'          => '',
+            'email'          => ''
+        ];
 
         require __DIR__ . '/../views/auth/register_usermahasiswa.php';
     }
