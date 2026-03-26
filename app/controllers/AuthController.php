@@ -19,7 +19,7 @@ class AuthController
         require __DIR__ . '/../views/auth/forgot_password.php';
     }
 
-    // handler button submit untuk kirim link reset ke email user
+    // handler button submit setelah isi email, untuk kirim link reset ke email user
     public function sendResetLink()
     {
         $email = trim($_POST['email'] ?? '');

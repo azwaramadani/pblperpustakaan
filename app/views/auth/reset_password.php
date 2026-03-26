@@ -2,130 +2,122 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-    <style>
-        body{
-            margin:0;
-            font-family: Arial, sans-serif;
-            background:#f5f5f5;
-        }
-
-        .container{
-            display:flex;
-            height:100vh;
-        }
-
-        /* LEFT */
-        .left{
-            width:50%;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-        }
-
-        .left img{
-            width:70%;
-            border-radius:16px;
-        }
-
-        /* RIGHT */
-        .right{
-            width:50%;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-        }
-
-        .card{
-            background:white;
-            padding:40px;
-            width:350px;
-            border-radius:12px;
-            box-shadow:0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .card h2{
-            text-align:center;
-            margin-bottom:20px;
-        }
-
-        .form-group{
-            margin-bottom:16px;
-        }
-
-        input{
-            width:100%;
-            padding:10px;
-            border-radius:8px;
-            border:1px solid #ddd;
-        }
-
-        button{
-            width:100%;
-            padding:12px;
-            background:#FFC107;
-            border:none;
-            border-radius:8px;
-            font-weight:bold;
-            cursor:pointer;
-        }
-
-        button:hover{
-            background:#ffb300;
-        }
-
-        .flash {
-            padding: 12px 14px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .flash.success {
-            background: #e6f7f3;
-            color: #0f8f8c;
-            border: 1px solid #bce6dc;
-        }
-
-        .flash.error {
-            background: #fff2f0;
-            color: #c0392b;
-            border: 1px solid #f3c6bf;
-        }
-
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleforgotpassword.css?v=1.2">
 </head>
 <body>
-<div class="container">
-    <div class="left">
-        <img src="public/assets/library.jpg">
-    </div>
-    <div class="right">
-        <div class="card">
-            <h2>Reset Password</h2>
 
-            <!-- flash message -->
-            <?php if (!empty($success = $flash['success'])): ?>
-            <div class="flash success"><?= htmlspecialchars($success) ?></div>
-            <?php endif; ?>
-            <?php if (!empty($error = $flash['error'])): ?>
-                <div class="flash error"><?= htmlspecialchars($error) ?></div>
-            <?php endif; ?>
+    <div class="card">
 
-            <form method="POST" action="?route=Auth/updatePassword">
-            <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password Baru" required>
-            </div>
-            <div class="form-group">
-                <input type="password" name="confirm_password" placeholder="Konfirmasi Password" required>
-            </div>
-            <button type="submit">
-                Update Password
-            </button>
-            </form>
+        <div class="logo-area">
+            <div class="logo-icon">L</div>
+            <span class="logo-text">LibRoomPNJ</span>
         </div>
+
+        <h2 class="heading">Reset Password</h2>
+        <p class="subtext">
+            Buat password baru untuk akun Anda. Pastikan password cukup kuat.
+        </p>
+
+        <!-- Flash Messages -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success">
+                <span class="flash-icon">✓</span>
+                <span><?= htmlspecialchars($success) ?></span>
+            </div>
+        <?php endif; ?>
+        <?php if (!empty($error = $flash['error'])): ?>
+            <div class="flash error">
+                <span class="flash-icon">!</span>
+                <span><?= htmlspecialchars($error) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="?route=Auth/updatePassword">
+            <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
+
+            <div class="form-group">
+                <label for="password">Password Baru</label>
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Masukkan password baru"
+                        required
+                    >
+                    <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </span>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)" tabindex="-1">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Konfirmasi Password</label>
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Ulangi password baru"
+                        required
+                    >
+                    <span class="input-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M9 12l2 2 4-4"/>
+                            <rect x="3" y="11" width="18" height="11" rx="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </span>
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirm_password', this)" tabindex="-1">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit-full">Update Password</button>
+
+        </form>
     </div>
-</div>
+
+    <footer class="page-footer">
+        <a href="#">Bantuan</a>
+        <a href="#">Privasi</a>
+        <a href="#">Ketentuan</a>
+    </footer>
+
+<script>
+    function togglePassword(fieldId, btn) {
+        const input = document.getElementById(fieldId);
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        // Swap icon: eye vs eye-off
+        btn.innerHTML = isHidden
+            ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>`
+            : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>`;
+    }
+</script>
+
 </body>
 </html>

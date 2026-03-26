@@ -46,27 +46,25 @@ function uploadFile($file, $targetDir)
     if (!isset($file) || $file['error'] !== 0) {
         return false;
     }
-
     $allowed = ['jpg','jpeg','png','pdf'];
-
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
     if (!in_array($ext, $allowed)) {
+        return false;
+    }
+
+    // Maksimal 5MB (5 * 1024 * 1024 = 5,242,880 bytes)
+    if ($file['size'] > 5 * 1024 * 1024) {
         return false;
     }
 
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0755, true);
     }
-
     $name = uniqid() . "." . $ext;
-
     $path = $targetDir . $name;
-
     if (move_uploaded_file($file['tmp_name'], $path)) {
         return $name;
     }
-
     return false;
 }
 
