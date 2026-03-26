@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Mahasiswa - Rudy Ruang Study</title>
-    <!-- Versi CSS -->
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css?v=2.3">
 </head>
 
@@ -99,6 +98,7 @@
     </section>
 </div>
 
+<!-- modal sukses -->
 <?php if ($success): ?>
 <div class="modal-backdrop show-modal" id="successModal">
     <div class="modal-card custom-success-card">

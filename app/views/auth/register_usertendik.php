@@ -1,25 +1,12 @@
-<?php
-// 1. LOGIKA FALLBACK: Agar data tidak hilang saat refresh/error validasi
-if (empty($old) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $old = $_POST;
-}
-
-// Default values agar tidak error undefined index
-$defaults = ['nim_nip' => '', 'unit' => '', 'nama' => '', 'no_hp' => '', 'email' => ''];
-$old = array_merge($defaults, $old ?? []);
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Tenaga Kependidikan - Rudy Ruang Study</title>
-    <!-- Menggunakan CSS yang sama dengan halaman Dosen -->
     <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/styleregister.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<!-- Tambahkan class 'register-page' agar fitur sticky panel berfungsi -->
 <body class="auth-body register-page">
 
 <div class="auth-wrapper">
@@ -32,35 +19,26 @@ $old = array_merge($defaults, $old ?? []);
 
     <!-- BAGIAN KANAN: FORM (Scrollable) -->
     <section class="form-panel">
-        <!-- Flash Messages -->
-        <?php if (!empty($success = $flash['success'])): ?>
-            <div class="flash success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
-        <?php if (!empty($error = $flash['error'])): ?>
-            <div class="flash error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
+
         <div class="form-content">
             <div class="form-header">
                 <h2>Daftar Tenaga Kependidikan</h2>
-                <!-- Subtext dihilangkan agar desain bersih seperti Dosen -->
             </div>
 
-            <?php if (!empty($errors)): ?>
-                <div class="auth-error">
-                    <ul style="margin:0; padding-left:18px;">
-                        <?php foreach ($errors as $err): ?>
-                            <li><?= htmlspecialchars($err) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
+            <!-- Flash Messages -->
+            <?php if (!empty($success = $flash['success'])): ?>
+                <div class="flash success"><?= htmlspecialchars($success) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($error = $flash['error'])): ?>
+                <div class="flash error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <form class="login-form" method="POST" action="?route=Auth/registerTendik">
+            <form id="registerForm" class="login-form" method="POST" action="?route=Auth/registerTendik">
                 
                 <!-- Field NIP -->
                 <div class="form-group">
                     <label for="nim_nip">NIP</label>
-                    <input id="nim_nip" type="text" name="nim_nip" class="form-control" placeholder="Masukkan NIP" value="<?= htmlspecialchars($old['nim_nip']) ?>" required>
+                    <input id="nim_nip" type="text" name="nim_nip" class="form-control" placeholder="Masukkan NIP" value="<?= htmlspecialchars($old['nim_nip'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Unit (Khusus Tendik) -->
@@ -70,7 +48,7 @@ $old = array_merge($defaults, $old ?? []);
                         <select id="unit" name="unit" class="form-control select-input" required>
                             <option value="">Pilih Unit</option>
                             <?php foreach ($unitList as $unit): ?>
-                                <option value="<?= htmlspecialchars($unit) ?>" <?= $old['unit'] === $unit ? 'selected' : '' ?>>
+                                <option value="<?= htmlspecialchars($unit) ?>" <?= $old['unit'] ?? '' === $unit ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($unit) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -81,19 +59,19 @@ $old = array_merge($defaults, $old ?? []);
                 <!-- Field Nama -->
                 <div class="form-group">
                     <label for="nama">Nama Lengkap</label>
-                    <input id="nama" type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="<?= htmlspecialchars($old['nama']) ?>" required>
+                    <input id="nama" type="text" name="nama" class="form-control" placeholder="Masukkan Nama" value="<?= htmlspecialchars($old['nama'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field No HP -->
                 <div class="form-group">
                     <label for="no_hp">No. Hp</label>
-                    <input id="no_hp" type="text" name="no_hp" class="form-control" placeholder="Masukkan Nomor HP" value="<?= htmlspecialchars($old['no_hp']) ?>" required>
+                    <input id="no_hp" type="text" name="no_hp" class="form-control" placeholder="Masukkan Nomor HP" value="<?= htmlspecialchars($old['no_hp'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Email -->
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input id="email" type="email" name="email" class="form-control" placeholder="Masukkan Email" autocomplete="off" value="<?= htmlspecialchars($old['email']) ?>" required>
+                    <input id="email" type="email" name="email" class="form-control" placeholder="Masukkan Email" autocomplete="off" value="<?= htmlspecialchars($old['email'] ?? '') ?>" required>
                 </div>
 
                 <!-- Field Password -->
@@ -146,12 +124,67 @@ $old = array_merge($defaults, $old ?? []);
 </div>
 <?php endif; ?>
 
+<!-- MODAL KONFIRMASI SEBELUM REGISTER -->
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </div>
+
+        <h2 class="modal-title">Apakah anda yakin ingin mendaftar? Pastikan kembali data yang diisi sudah benar.</h2>
+
+        <div class="modal-actions">
+            <button id="confirmYes" class="btn-modal-red">Ya</button>
+            <button id="confirmNo" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function refreshCaptcha() {
         const img = document.getElementById('captcha-image');
         let currentSrc = img.src.split('?')[0]; 
         img.src = currentSrc + '?t=' + new Date().getTime();
     }
+
+// modal confirmasi sebelum submit
+const form = document.getElementById('registerForm');
+const modal = document.getElementById('confirmModal');
+const btnYes = document.getElementById('confirmYes');
+const btnNo = document.getElementById('confirmNo');
+
+let isConfirmed = false;
+
+form.addEventListener('submit', function(e) {
+    // kalau belum dikonfirmasi → tahan submit
+    if (!isConfirmed) {
+        e.preventDefault(); // ⛔ STOP submit
+        
+        // pastikan validasi HTML jalan dulu
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        modal.style.display = 'flex';
+    }
+});
+
+btnYes.addEventListener('click', function() {
+    isConfirmed = true;
+
+    modal.style.display = 'none';
+
+    form.submit(); // 🚀 lanjut submit manual
+});
+
+btnNo.addEventListener('click', function() {
+    modal.style.display = 'none';
+});
 </script>
 
 </body>

@@ -73,6 +73,26 @@
         button:hover{
             background:#ffb300;
         }
+
+        .flash {
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .flash.success {
+            background: #e6f7f3;
+            color: #0f8f8c;
+            border: 1px solid #bce6dc;
+        }
+
+        .flash.error {
+            background: #fff2f0;
+            color: #c0392b;
+            border: 1px solid #f3c6bf;
+        }
+
     </style>
 </head>
 <body>
@@ -83,6 +103,15 @@
     <div class="right">
         <div class="card">
             <h2>Reset Password</h2>
+
+            <!-- flash message -->
+            <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+            <?php endif; ?>
+            <?php if (!empty($error = $flash['error'])): ?>
+                <div class="flash error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
             <form method="POST" action="?route=Auth/updatePassword">
             <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
             <div class="form-group">

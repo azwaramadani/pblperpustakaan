@@ -33,7 +33,7 @@
                 <div class="flash error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
-            <form class="login-form" method="POST" action="?route=Auth/registerDosen">
+            <form id="registerForm" class="login-form" method="POST" action="?route=Auth/registerDosen">
                 
                 <!-- Field NIP -->
                 <div class="form-group">
@@ -124,12 +124,67 @@
 </div>
 <?php endif; ?>
 
+<!-- MODAL KONFIRMASI SEBELUM REGISTER -->
+<div id="confirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="icon-box-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </div>
+
+        <h2 class="modal-title">Apakah anda yakin ingin mendaftar? Pastikan kembali data yang diisi sudah benar.</h2>
+
+        <div class="modal-actions">
+            <button id="confirmYes" class="btn-modal-red">Ya</button>
+            <button id="confirmNo" class="btn-modal-white">Tidak</button>
+        </div>
+    </div>
+</div>
+
 <script>
     function refreshCaptcha() {
         const img = document.getElementById('captcha-image');
         let currentSrc = img.src.split('?')[0]; 
         img.src = currentSrc + '?t=' + new Date().getTime();
     }
+
+// modal confirmasi sebelum submit
+const form = document.getElementById('registerForm');
+const modal = document.getElementById('confirmModal');
+const btnYes = document.getElementById('confirmYes');
+const btnNo = document.getElementById('confirmNo');
+
+let isConfirmed = false;
+
+form.addEventListener('submit', function(e) {
+    // kalau belum dikonfirmasi → tahan submit
+    if (!isConfirmed) {
+        e.preventDefault(); // ⛔ STOP submit
+        
+        // pastikan validasi HTML jalan dulu
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        modal.style.display = 'block';
+    }
+});
+
+btnYes.addEventListener('click', function() {
+    isConfirmed = true;
+
+    modal.style.display = 'none';
+
+    form.submit(); // 🚀 lanjut submit manual
+});
+
+btnNo.addEventListener('click', function() {
+    modal.style.display = 'none';
+});
 </script>
 
 </body>
