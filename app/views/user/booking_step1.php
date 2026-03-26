@@ -32,7 +32,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
     <header class="navbar">
         <div class="nav-left">
             <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" alt="Logo PNJ">
-            <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy">
+            <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png" alt="Logo Rudy">
         </div>
 
         <nav class="nav-menu">
@@ -191,7 +191,7 @@ $imgUrl = preg_match('#^https?://#i', $imgPath) ? $imgPath: app_config()['base_u
 
             <div class="footer-left">
                 <div class="footer-brand">
-                    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png"
+                    <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png"
                          alt="Logo Rudy Ruang Study"
                          class="footer-logo">
                 </div>

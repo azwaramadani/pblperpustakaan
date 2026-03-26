@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rudy Ruang Study</title>
+  <title>LibRoomPNJ</title>
   <link rel="stylesheet" href="<?= app_config()['base_url'] ?>/public/assets/css/stylehome.css?v=1.7">
 </head>
 
@@ -12,7 +12,7 @@
 <header class="navbar">
   <div class="logo">
     <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoPNJ.png" height="40" alt="Logo PNJ">
-    <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" height="40" alt="Logo Rudy">
+    <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png" height="40" alt="Logo Rudy">
   </div>
 
   <nav class="nav-menu">
@@ -40,8 +40,8 @@
 <main>
   <section class="hero">
     <div class="hero-text">
-      <p class="intro">Selamat Datang di <span>Rudy</span></p>
-      <h1>Ruang Study untuk Semua Mahasiswa!</h1>
+      <p class="intro">Selamat Datang di <span>LibRoomPNJ</span></p>
+      <h1>Ruang belajar untuk Semua Mahasiswa!</h1>
       <p class="description">
         Atur jadwal belajar dan diskusi dengan mudah melalui Rudy.
       </p>
@@ -52,7 +52,7 @@
     </div>
 
     <div class="hero-visual">
-      <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Visual Rudy">
+      <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png" alt="Visual Rudy">
     </div>
   </section>
 
@@ -128,7 +128,7 @@
     <div class="footer-content-wrapper">
         <div class="footer-left">
             <div class="footer-brand">
-                <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy Ruang Study" class="footer-logo">
+                <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png" alt="Logo Rudy Ruang Study" class="footer-logo">
             </div>
             <p class="footer-description">
                 Rudi Ruangan Studi adalah platform peminjaman ruangan perpustakaan yang membantu mahasiswa dan staf mengatur penggunaan ruang belajar dengan mudah dan efisien.

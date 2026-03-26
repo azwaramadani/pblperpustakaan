@@ -17,7 +17,7 @@
     <!-- BAGIAN KIRI: GAMBAR (Sama dengan Login) -->
     <section class="auth-card image-panel">
         <div class="image-overlay">
-            <img src="<?= app_config()['base_url'] ?>/public/assets/image/LogoRudy.png" alt="Logo Rudy" class="panel-logo">
+            <img src="<?= app_config()['base_url'] ?>/public/assets/image/libroompnj.png" alt="Logo Rudy" class="panel-logo">
         </div>
     </section>
 

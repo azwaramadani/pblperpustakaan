@@ -39,7 +39,7 @@ body.auth-body {
 .image-panel {
   width: 500px;  /* DIPERLEBAR: Agar dominan seperti desain referensi */
   height: 680px; /* DIPERTINGGI: Agar proporsi poster lebih elegan */
-  background: url("../image/contohrakbuku.png") center/cover no-repeat; 
+  background: url("../image/perpustakaanpnj.webp") center/cover no-repeat; 
   position: relative;
   overflow: hidden;
   display: flex;
@@ -54,7 +54,7 @@ body.auth-body {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.70); /* Overlay putih transparan */
+  background: rgba(255, 255, 255, 0.505); /* Overlay putih transparan */
 }
 
 .image-overlay {
