@@ -25,13 +25,11 @@
         <!-- Flash Messages -->
         <?php if (!empty($success = $flash['success'])): ?>
             <div class="flash success">
-                <span class="flash-icon">✓</span>
                 <span><?= htmlspecialchars($success) ?></span>
             </div>
         <?php endif; ?>
         <?php if (!empty($error = $flash['error'])): ?>
             <div class="flash error">
-                <span class="flash-icon">!</span>
                 <span><?= htmlspecialchars($error) ?></span>
             </div>
         <?php endif; ?>
@@ -74,5 +72,24 @@
         <a href="#">Ketentuan</a>
     </footer>
 
+    <script>
+
+    // supaya ketahuan kalau user udah berhasil upload bukti
+    document.querySelector('input[name="bukti"]').addEventListener('change', function () {
+        const file = this.files[0];
+        const labelTitle = document.querySelector('.file-label-text span:first-child');
+        const labelSub   = document.querySelector('.file-label-text span:last-child');
+        const icon       = document.querySelector('.file-icon');
+
+        if (file) {
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            labelTitle.textContent = file.name;
+            labelSub.textContent   = sizeMB + ' MB';
+            icon.style.color       = '#00a5a5';
+            document.querySelector('.file-wrapper').style.borderColor  = '#00a5a5';
+            document.querySelector('.file-wrapper').style.background   = 'rgba(0, 165, 165, 0.04)';
+        }
+    });
+</script>
 </body>
 </html>

@@ -24,13 +24,11 @@
         <!-- Flash Messages -->
         <?php if (!empty($success = $flash['success'])): ?>
             <div class="flash success">
-                <span class="flash-icon">✓</span>
                 <span><?= htmlspecialchars($success) ?></span>
             </div>
         <?php endif; ?>
         <?php if (!empty($error = $flash['error'])): ?>
             <div class="flash error">
-                <span class="flash-icon">!</span>
                 <span><?= htmlspecialchars($error) ?></span>
             </div>
         <?php endif; ?>
