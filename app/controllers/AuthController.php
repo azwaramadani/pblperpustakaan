@@ -222,6 +222,7 @@ class AuthController
         $user_id = Session::get('user_id');
 
         if(!$user_id){
+            Session::set('flash_error', 'username atau password salah.');
             header("Location: ?route=Auth/login");
             exit;
         }
@@ -250,6 +251,7 @@ class AuthController
         $user_id = Session::get('user_id');
 
         if (!$user_id) {
+            Session::set('flash_error', 'username atau password salah.');
             header("Location: ?route=Auth/login");
             exit;
         }
@@ -275,7 +277,7 @@ class AuthController
         $fileName = uploadFile($_FILES['bukti'], $uploadDir);
 
         if (!$fileName) {
-            Session::set("flash_error", "Upload gagal. Format harus jpg/png/pdf.");
+            Session::set("flash_error", "Upload gagal. Format harus jpg/jpeg/png/pdf dan < 5MB.");
             header("Location: ?route=Auth/fixRegistration");
             exit;
         }
@@ -304,8 +306,6 @@ class AuthController
     // handler buat redirect ke page register pilih role
     public function registerRole()
     {
-        $error = Session::get('flash_error');
-        Session::set('flash_error', null);
         require __DIR__ . '/../views/auth/register_pilihrole.php';
     }
 

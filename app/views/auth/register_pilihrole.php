@@ -1,10 +1,3 @@
-<?php
-// Pastikan session dimulai di file init/index utama, atau uncomment jika perlu:
-// session_start();
-$error = Session::get('flash_error');
-Session::set('flash_error', null);
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -36,12 +29,6 @@ Session::set('flash_error', null);
             <h2>Pilih Role</h2>
             <p>Pilih tipe akun sebelum melanjutkan registrasi.</p>
         </div>
-
-        <?php if ($error): ?>
-            <div class="auth-error">
-                <?= htmlspecialchars($error) ?>
-            </div>
-        <?php endif; ?>
 
         <form class="login-form" method="POST" action="?route=Auth/chooseRole">
             
