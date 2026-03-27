@@ -49,13 +49,25 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input id="password"
-                           type="password"
-                           name="password"
-                           class="form-control"
-                           placeholder="Masukkan Password"
-                           autocomplete="new-password"
-                           required>
+
+                    <div class="input-wrapper">
+                        <input id="password"
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Masukkan Password"
+                            autocomplete="new-password"
+                            required>
+
+                        <button type="button" id="togglePassword" class="toggle-password">
+                            <span id="eyeIcon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="#555" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke="#555" stroke-width="2"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" name="submit" class="btn-login">Masuk</button>
@@ -72,6 +84,22 @@
         </div>
     </section>
 </div>
+
+<script>
+const passwordInput = document.getElementById('password');
+const toggleBtn = document.getElementById('togglePassword');
+const eyeIcon = document.getElementById('eyeIcon');
+
+toggleBtn.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+    eyeIcon.innerHTML = isPassword 
+        ? '🙈'
+        : '👁️';
+});
+</script>
 
 </body>
 </html>

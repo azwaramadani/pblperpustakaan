@@ -357,11 +357,11 @@ class User extends Model
         ]);
     }
 
-    # Update status akun
-    public function updateStatus($id, $status)
+    # Update status akun user
+    public function updateStatus($id, $status, $rejectionReason)
     {
-        $sql = "UPDATE {$this->table} SET status_akun = ? WHERE user_id = ?";
-        return $this->query($sql, [$status, $id]);
+        $sql = "UPDATE {$this->table} SET status_akun = ?, rejection_reason = ? WHERE user_id = ?";
+        return $this->query($sql, [$status, $rejectionReason, $id]);
     }
 
     // block user 3 kali batal booking dalam 1 hari

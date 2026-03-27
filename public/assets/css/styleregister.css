@@ -144,6 +144,63 @@ body.auth-body {
   box-shadow: 0 0 0 4px rgba(25, 180, 175, 0.1);
 }
 
+/* toggle intip password */
+/* ===== PASSWORD TOGGLE (IMPROVED UI) ===== */
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding-right: 50px; /* ruang icon */
+}
+
+/* tombol icon */
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    
+    width: 36px;
+    height: 36px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* icon */
+.toggle-password span {
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+/* hover effect */
+.toggle-password:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+/* active (klik) */
+.toggle-password:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* focus (aksesibilitas) */
+.toggle-password:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(25, 180, 175, 0.2);
+}
+
 /* Fix Autofill Browser Background */
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -205,17 +262,6 @@ input:-webkit-autofill:active{
 }
 
 /* Fitur Lupa Password (Login) */
-.forgot-password-link {
-  display: block;
-  text-align: right;
-  margin-top: -10px;
-  margin-bottom: 30px; 
-  font-size: 14px;
-  color: var(--teal);
-  text-decoration: none;
-  font-weight: 600;
-}
-.forgot-password-link:hover { text-decoration: underline; }
 
 .flash {
     padding: 12px 14px;

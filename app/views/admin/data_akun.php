@@ -132,7 +132,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
       <section class="panel">
         <div class="section-head">
           <div>
-            <h3>Akun User Validasi</h3>
+            <h3>Akun User Pending</h3>
             <p class="subtitle">Data semua akun user yang harus divalidasi.</p>
           </div>
         </div>
@@ -461,20 +461,31 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 
 <!-- Modal Ubah Status (Tetap Sama) -->
 <div class="modal-backdrop" id="modalStatus">
+
   <div class="modal-card">
     <h4 style="margin-top:0;">Ubah Status Akun</h4>
     <form method="POST" action="?route=Admin/updateUserStatus" id="statusForm">
+
       <input type="hidden" name="user_id" id="userIdInput">
+
       <div class="radio-row" style="margin:20px 0;">
         <label><input type="radio" name="status_akun" value="Disetujui"> Disetujui</label>
         <label><input type="radio" name="status_akun" value="Ditolak"> Ditolak</label>
       </div>
+
+      <div id="rejectionField" style="display:none; margin-top:10px;">
+        <label>Alasan Penolakan</label>
+        <textarea name="rejection_reason" placeholder="Masukkan alasan..." rows="3"></textarea>
+      </div>
+
       <div class="modal-actions" style="text-align:right;">
         <button type="button" class="btn-pill btn-cancel js-close-modal" style="margin-right:10px;">Batal</button>
         <button type="submit" class="btn-pill btn-save">Simpan</button>
       </div>
+
     </form>
   </div>
+
 </div>
 
 <!-- MODAL HAPUS AKUN (DESAIN BARU) -->
@@ -508,28 +519,70 @@ $disableNext   = $noData || $currentPage >= $totalPages;
 </div>
 
 <script>
-  // Script Modal Ubah Status
+   // Script Modal Ubah Status
   const modal = document.getElementById('modalStatus');
   const idInput = document.getElementById('userIdInput');
   const radios = document.querySelectorAll('input[name="status_akun"]');
+  const rejectionField = document.getElementById('rejectionField');
+  const rejectionInput = document.querySelector('[name="rejection_reason"]');
 
+  // =========================
+  // 1. EVENT RADIO (JALAN SEKALI)
+  // =========================
+  radios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'Ditolak' && radio.checked) {
+        rejectionField.style.display = 'block';
+      } else if (radio.value === 'Disetujui' && radio.checked) {
+        rejectionField.style.display = 'none';
+        rejectionInput.value = ''; // reset isi kalau balik ke disetujui
+      }
+    });
+  });
+
+  // =========================
+  // 2. OPEN MODAL
+  // =========================
   document.querySelectorAll('.js-open-modal').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
       const status = btn.dataset.status || '';
+
       idInput.value = id;
-      radios.forEach(r => { r.checked = (r.value === status); });
+
+      // set radio sesuai status
+      radios.forEach(r => {
+        r.checked = (r.value === status);
+      });
+
+      // reset dulu
+      rejectionField.style.display = 'none';
+      rejectionInput.value = '';
+
+      // kalau status sebelumnya Ditolak → tampilkan field
+      if (status === 'Ditolak') {
+        rejectionField.style.display = 'block';
+      }
+
       modal.style.display = 'flex';
     });
   });
 
+  // =========================
+  // 3. CLOSE MODAL
+  // =========================
   document.querySelectorAll('.js-close-modal').forEach(btn => {
-    btn.addEventListener('click', () => modal.style.display = 'none');
+    btn.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
+    if (e.target === modal) {
+      modal.style.display = 'none';
+    }
   });
+
 
   // Script Modal Hapus Akun
   const modalDelete = document.getElementById('modalDelete');

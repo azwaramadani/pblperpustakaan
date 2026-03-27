@@ -815,34 +815,59 @@ table.data-table tbody tr:hover {
 }
 
 .modal-card {
-    background: #fff;
+    width: 360px;
+    padding: 24px;
     border-radius: 16px;
-    padding: 22px 24px;
-    max-width: 420px;
-    width: 90%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    background: #fff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    font-family: 'Segoe UI', sans-serif;
 }
 
 .modal-card h4 {
-    margin: 0 0 16px;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
     text-align: center;
 }
 
 .radio-row {
     display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
     justify-content: center;
+    gap: 24px;
     margin-bottom: 16px;
 }
 
 .radio-row label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    color: #111827;
-    text-transform: capitalize;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* rejection field */
+#rejectionField {
+  margin-top: 10px;
+}
+
+#rejectionField label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+#rejectionField textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  resize: none;
+  transition: all 0.2s ease;
+}
+
+#rejectionField textarea:focus {
+  border-color: #19b4af;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(25,180,175,0.2);
 }
 
 .modal-actions {
@@ -859,71 +884,83 @@ table.data-table tbody tr:hover {
       border-radius: 24px !important;
       padding: 32px 24px !important;
     }
-    .modal-delete-icon {
-      font-size: 48px;
-      color: #ff4d4f; /* Warna merah icon */
-      margin-bottom: 20px;
-      display: inline-block;
-      padding: 10px;
-      border: 2px solid #fff; /* Opsional: memberi kesan rapi */
-    }
-    .modal-delete-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      margin: 0 0 24px 0;
-      line-height: 1.4;
-    }
-    .btn-delete-confirm {
-      width: 100%;
-      background: #ff4d4f;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
-      box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
-    }
-    .btn-delete-confirm:hover {
-      background: #e04345;
-    }
-    .btn-delete-cancel {
-      width: 100%;
-      background: #ffffff;
-      color: #374151;
-      border: 1px solid #d1d5db;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-delete-cancel:hover {
-      background: #f9fafb;
-    }
+    
+.modal-delete-icon {
+  font-size: 48px;
+  color: #ff4d4f; /* Warna merah icon */
+  margin-bottom: 20px;
+  display: inline-block;
+  padding: 10px;
+  border: 2px solid #fff; /* Opsional: memberi kesan rapi */
+}
+
+.modal-delete-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+.btn-delete-confirm {
+  width: 100%;
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
+}
+.btn-delete-confirm:hover {
+  background: #e04345;
+}
+.btn-delete-cancel {
+  width: 100%;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-delete-cancel:hover {
+  background: #f9fafb;
+}
 
     
 .btn-pill {
-    border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-weight: 700;
+    padding: 10px;
+    border-radius: 999px;
+    font-size: 14px;
     cursor: pointer;
+    border: none;
+    transition: 0.2s;
 }
 
 .btn-save {
     background: #f7c825;
-    color: #111827;
+    color: #000;
+    font-weight: 600;
+}
+
+.btn-save:hover {
+  background: #e0a800;
 }
 
 .btn-cancel {
-    background: #e5e7eb;
-    color: #111827;
+    background: #f3f4f6;
+    color: #333;
+}
+
+.btn-cancel:hover {
+  background: #e5e7eb;
 }
 
   /* Container untuk semua card */

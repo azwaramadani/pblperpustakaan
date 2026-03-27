@@ -769,26 +769,39 @@ class AdminController {
         }
 
         // Ambil data yang dikirim form
-        $userId = (int)($_POST['user_id'] ?? 0);
-        $status = trim($_POST['status_akun'] ?? '');
+        $userId          = (int)($_POST['user_id'] ?? 0);
+        $status          = trim($_POST['status_akun'] ?? '');
+        $rejectionReason = $_POST['rejection_reason'] ?? null;
 
         $allowed = ['Disetujui','Ditolak'];
+
+        // validasi kalau user id ga ketemu dan status bukan disetujui atau bukan ditolak, maka data tidak valid
         if (!$userId || !in_array($status, $allowed, true)) {
             Session::set('flash_error', 'Data tidak valid.');
             header('Location: ?route=Admin/dataAkun');
             exit;
+        } 
+
+        // validasi kalau ditolak admin harus kasih alasan
+        if ($status === 'Ditolak' && empty(trim($rejectionReason))) {
+            Session::set('flash_error', 'Alasan penolakan wajib diisi.');
+            header('Location: ?route=Admin/dataAkun');
+            exit;
         }
+
+        $rejectionReason = ($status === 'Ditolak') ? trim($rejectionReason) : null;
 
         $userModel = new User();
         $user = $userModel->findById($userId);
 
+        // validasi kalau user tidak ditemukan
         if (!$user) {
             Session::set('flash_error', 'User tidak ditemukan.');
             header('Location: ?route=Admin/dataAkun');
             exit;
-        } 
+        }
 
-        // siapkan data user untuk cek kondisi kirim email
+        // ============ PERSIAPAN KIRIM EMAIL NOTIFIKASI KE USER ==============
         $oldStatus  = $user['status_akun'] ?? '';
         $role       = $user['role'] ?? '';
         $email      = trim($user['email'] ?? '');
@@ -811,20 +824,22 @@ class AdminController {
         );
 
         // baru panggil/akses method update status di database
-        $userModel->updateStatus($userId, $status);
+        $userModel->updateStatus($userId, $status, $rejectionReason);
 
         $successMsg = 'Status akun berhasil diperbarui!';
 
-        // buat kirim email-nya dari menunggu ke disetujui, ditolak ke disetujui
+        // buat kirim email-nya dari status menunggu ke disetujui atau dari status ditolak ke disetujui
         if ($shouldSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
             $subject = 'Akun LibRoomPNJ Anda Sudah Disetujui oleh Admin';
+
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
                         <p>Akun LibRoomPNJ kamu sudah <strong>siap digunakan.</strong> Silahkan Login!</p>
                         <p>Klik link berikut ini untuk login ke aplikasi: </p>
                         <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
-                        <p>LibRoomPNJ</p>";
+                        <p>LibRoomPNJ</p>
+                        ";
             
             // kirim email 
             $sent = sendmail($email, $subject, $body);         
@@ -840,16 +855,19 @@ class AdminController {
             }
         }
 
-        // buat kirim email dari menunggu ke ditolak, disetujui ke ditolak
+        // buat kirim email dari status menunggu ke ditolak atau dari status disetujui ke ditolak
         if ($ditolakSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
             $subject = 'Akun LibroomPNJ Anda Ditolak oleh Admin';
+
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
-                        <p>Akun anda ditolak karena tidak mencantumkan bukti aktivasi Kubaca dengan benar!</p>
+                        <p>Akun anda ditolak karena: </p>
+                        <p><strong> ". htmlspecialchars($rejectionReason) ." </strong></p>
                         <p>Klik link berikut untuk login dan merubah data registrasi:</p>
                         <p><a href=\"{$baseUrl}\" target=\"_blank\">{$baseUrl}</a></p>
-                        <p>LibRoomPNJ.</p>";
+                        <p>LibRoomPNJ.</p>
+                        ";
             
             $sent = sendmail($email, $subject, $body);         
             

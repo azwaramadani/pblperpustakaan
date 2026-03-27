@@ -37,12 +37,12 @@
         <!-- Alasan Ditolak -->
         <?php if (!empty($user['rejection_reason'])): ?>
             <div class="rejection-box">
-                <span class="rejection-icon">⚠</span>
-                <span>Ditolak karena: <?= htmlspecialchars($user['rejection_reason']) ?></span>
+                <span>Alasan ditolak: "<?= htmlspecialchars($user['rejection_reason']) ?>"</span>
             </div>
         <?php endif; ?>
 
         <form action="?route=Auth/submitFixRegistration" method="POST" enctype="multipart/form-data">
+
             <div class="form-group">
                 <label class="form-group label">Upload Bukti Aktivasi Kubaca</label>
                 <div class="file-wrapper">
@@ -62,6 +62,7 @@
             </div>
 
             <button type="submit" class="btn-submit-full">Submit Ulang</button>
+            
         </form>
 
     </div>

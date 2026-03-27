@@ -52,6 +52,10 @@
       
       <div class="details-grid">
         <div class="info-item">
+          <span class="label">NIM / NIP</span>
+          <span class="value"><?= htmlspecialchars($user['nim_nip'] ?? '-') ?></span>
+        </div>
+        <div class="info-item">
           <span class="label">UNIT</span>
           <span class="value"><?= htmlspecialchars($user['unit'] ?? '-') ?></span>
         </div>
@@ -62,10 +66,6 @@
         <div class="info-item">
           <span class="label">PROGRAM STUDI</span>
           <span class="value"><?= htmlspecialchars($user['program_studi'] ?? '-') ?></span>
-        </div>
-        <div class="info-item">
-          <span class="label">NIM / NIP</span>
-          <span class="value"><?= htmlspecialchars($user['nim_nip'] ?? '-') ?></span>
         </div>
         <div class="info-item">
           <span class="label">NO. HP</span>

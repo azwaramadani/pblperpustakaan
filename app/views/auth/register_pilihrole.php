@@ -30,6 +30,14 @@
             <p>Pilih tipe akun sebelum melanjutkan registrasi.</p>
         </div>
 
+        <!-- flash message -->
+        <?php if (!empty($success = $flash['success'])): ?>
+            <div class="flash success"><?= htmlspecialchars($success) ?></div>
+        <?php endif; ?>
+        <?php if (!empty($error = $flash['error'])): ?>
+            <div class="flash error"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
+
         <form class="login-form" method="POST" action="?route=Auth/chooseRole">
             
             <label for="role">Daftar sebagai</label>

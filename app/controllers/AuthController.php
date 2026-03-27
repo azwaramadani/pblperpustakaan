@@ -306,6 +306,8 @@ class AuthController
     // handler buat redirect ke page register pilih role
     public function registerRole()
     {
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/auth/register_pilihrole.php';
     }
 
@@ -334,9 +336,12 @@ class AuthController
             exit;
         }
 
-        Session::set('flash_error', 'Silakan pilih role terlebih dahulu.');
-        header("Location: ?route=Auth/registerRole");
-        exit;
+        if (empty($role)){
+            Session::set('flash_error', 'Silakan pilih role terlebih dahulu.');
+            header("Location: ?route=Auth/registerRole");
+            exit;
+        }
+
     }
 
     // handler page register mahasiswa
