@@ -211,6 +211,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                 <th>Bukti Aktivasi</th>
                 <th>Waktu Dibuat</th>
                 <th>Status Akun</th>
+                <th>Alasan ditolak</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -247,6 +248,9 @@ $disableNext   = $noData || $currentPage >= $totalPages;
                     <td><?= $ur['created_at'] ? date('d M Y H:i', strtotime($ur['created_at'])) : '-' ?></td>
                     <td>
                       <span class="status-chip status-<?= $statusKey ?>"><?= htmlspecialchars($ur['status_akun']) ?></span>
+                    </td>
+                    <td>
+                      "<?= htmlspecialchars($ur['rejection_reason'] ?? '-') ?>"
                     </td>
                     <td>
                       <!-- BUTTON UBAH STATUS -->
