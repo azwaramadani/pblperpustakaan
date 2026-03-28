@@ -156,7 +156,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="jurusanregist">
             <option value="">Semua</option>
             <?php foreach ($jurusanList as $jrl): ?>
-              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filtersregist['jurusanregist']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filtersregist['jurusanregist'] === $jrl ? 'selected' : '') ?>><?= htmlspecialchars($jrl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -164,7 +164,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="program_studiregist">
             <option value="">Semua</option>
             <?php foreach ($prodiList as $prl): ?>
-              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filtersregist['program_studiregist']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filtersregist['program_studiregist'] === $prl? 'selected' :'') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -172,7 +172,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="status_akunregist">
             <option value="">Semua</option>
             <?php foreach ($statusakunList as $stl): ?>
-              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filtersregist['status_akunregist']===$stl?'selected':'') ?>><?= htmlspecialchars($stl) ?></option>
+              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filtersregist['status_akunregist'] === $stl ? 'selected' : '') ?>><?= htmlspecialchars($stl) ?></option>
             <?php endforeach; ?>
           </select>
           
@@ -320,7 +320,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="role">
             <option value="">Semua</option>
             <?php foreach ($roleList as $rl): ?>
-              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role']===$rl?'selected':'') ?>><?= htmlspecialchars($rl) ?></option>
+              <option value="<?= htmlspecialchars($rl) ?>" <?= ($filters['role'] === $rl ? 'selected' : '') ?>><?= htmlspecialchars($rl) ?></option>
             <?php endforeach; ?>
           </select>
           
@@ -328,7 +328,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="unit">
             <option value="">Semua</option>
             <?php foreach ($unitList as $unl): ?>
-              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit']===$unl?'selected':'') ?>><?= htmlspecialchars($unl) ?></option>
+              <option value="<?= htmlspecialchars($unl) ?>" <?= ($filters['unit'] === $unl ? 'selected' : '') ?>><?= htmlspecialchars($unl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -336,7 +336,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="jurusan">
             <option value="">Semua</option>
             <?php foreach ($jurusanList as $jrl): ?>
-              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan']===$jrl?'selected':'') ?>><?= htmlspecialchars($jrl) ?></option>
+              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filters['jurusan'] === $jrl ? 'selected' : '') ?>><?= htmlspecialchars($jrl) ?></option>
             <?php endforeach; ?>
           </select>
 
@@ -344,7 +344,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <select name="program_studi">
             <option value="">Semua</option>
             <?php foreach ($prodiList as $prl): ?>
-              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi']===$prl?'selected':'') ?>><?= htmlspecialchars($prl) ?></option>
+              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filters['program_studi'] === $prl ? 'selected' : '') ?>><?= htmlspecialchars($prl) ?></option>
             <?php endforeach; ?>
           </select>
           <br>
