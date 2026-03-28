@@ -6,7 +6,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 Class bookingController{
 
-    //handler untuk menampilkan form 1 (tanggal & waktu) dari ruangan yang dipilih, makanya pakai parameter $roomId 
+    //handler untuk menampilkan form 1 (tanggal & waktu) dari ruangan yang dipilih oleh user, makanya pakai parameter $roomId 
     public function step1($roomId)
     {
         Session::checkUserLogin();
@@ -44,7 +44,7 @@ Class bookingController{
         require __DIR__ . '/../views/user/booking_step1.php';
     }
 
-    #step 2 baru method handler sebenarnya untuk semua data peminjaman mulai dari tanggal dan jam
+    // step 2 baru method handler sebenarnya untuk semua data peminjaman mulai dari tanggal dan jam
     public function step2()
     {
         Session::checkUserLogin();
@@ -253,15 +253,6 @@ Class bookingController{
             exit;
         }
 
-        //validasi waktu peminjaman bentrok sama peminjaman user lain
-        if ($bookingModel->hasOverlap($payload['room_id'], $payload['tanggal'], $payload['jam_mulai'], $payload['jam_selesai'])) {
-            jsonResponse([
-                'success' => false,
-                'message' => 'Waktu bentrok dengan peminjaman lain.'
-            ]);
-            exit;
-        }
-
         //validasi gaboleh meminjam ruangan 2 kali sehari
         $nimsToCheck   = $anggota;
         $nimsToCheck[] = $payload['nimnip_penanggung_jawab'];
@@ -275,6 +266,7 @@ Class bookingController{
             }
         }
 
+        // finalisasi data persiapan untuk insert ke database
         $payload['jumlah_peminjam'] = $totalPeople;
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         $payload['user_id']         = Session::get('user_id');
@@ -283,13 +275,19 @@ Class bookingController{
         $payload['kode_booking']    = generateBookingCode();
 
         //simpan ke database
-        $bookingModel->userCreateBooking($payload);
+        try {
+            $bookingModel->createBookingSafe($payload);
 
-        // flash success
-        jsonResponse([
-            'success' => true,
-            'message' => 'Booking berhasil dibuat'
-        ]);
+            jsonResponse([
+                'success' => true,
+                'message' => 'Booking berhasil dibuat.'
+            ]);
+        } catch (Exception $e){
+            jsonResponse([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         exit;
     }
@@ -438,6 +436,7 @@ Class bookingController{
 
         $roomModel    = new Room();
         $bookingModel = new Booking();
+        $userModel    = new User();
 
         $anggotaInput = $_POST['nim_anggota'] ?? [];
         $anggota      = array_values(array_filter(array_map('trim', $anggotaInput), fn($v) => $v !== ''));
@@ -465,7 +464,7 @@ Class bookingController{
             }
         }
 
-        //validasi minimal banget kalau ada dosen/tendik yang mau pinjam, NIPnya harus diinput 
+        //validasi minimal 1 anggota peminjaman misal untuk ruangan yang kapasitas min 2 orang
         if (count($anggota) === 0) {
             jsonResponse([
                 'success' => false,
@@ -557,6 +556,7 @@ Class bookingController{
             }
         }
 
+        // finalisasi data untuk persiapan insert ke database
         $payload['jumlah_peminjam'] = $totalPeople;
         $payload['nimnip_peminjam'] = implode(',', $anggota);
         $payload['admin_id']       = Session::get('admin_id');
@@ -565,13 +565,19 @@ Class bookingController{
         $payload['kode_booking']   = generateBookingCode();
 
         //simpan ke database
-        $bookingModel->adminCreateBooking($payload);
+        try {
+            $bookingModel->createBookingSafe($payload);
 
-        //flash success
-        jsonResponse([
-            'success' => true,
-            'message' => 'Booking berhasil dibuat'
-        ]);
+            jsonResponse([
+                'success' => true,
+                'message' => 'Booking berhasil dibuat.'
+            ]);
+        } catch (Exception $e){
+            jsonResponse([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
 
         exit;
     }
@@ -904,7 +910,7 @@ Class bookingController{
         if (count($anggota) === 0) {
             jsonResponse([
                 'success' => false,
-                'message' => 'Minimal 1 anggota.'
+                'message' => 'Lihat kapasitas minimum ruangan.'
                 ]);
             exit;
         }
@@ -1055,7 +1061,7 @@ Class bookingController{
         $roomId = (int)$booking['room_id']; 
         $room   = $roomModel->findById($roomId);
 
-        //payload data dari form tanggal dan jam pake hidden input di html\
+        //payload data dari form tanggal dan jam pake hidden input di html
         //disini nama, nimnip, emailpj juga dipayload supaya di edit form ke-2, data pj tetep ada dan ambil dari database
         $payload = [
             'booking_id' => $bookingId,

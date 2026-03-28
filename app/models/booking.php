@@ -1,13 +1,12 @@
 <?php
-# MODEL: BOOKING
+# MODEL BOOKING
 # class inheritance dari class core/Model
-#===============================================================
 
 class Booking extends Model
 {
     protected $table = 'booking';
 
-    # method data peminjaman admin, pake sorting trus pagination
+    # method data peminjaman admin, pake sorting, searching, trus pagination
     public function getAllSortedPaginated(
         string $sortOrder     = 'desc',
         ?string $fromDate     = null,
@@ -606,13 +605,76 @@ class Booking extends Model
         return array_values(array_filter($parts, fn($v) => $v !== ''));
     }
 
-    // method simpan booking baru untuk user 
+    // createbooking anti race condition method, ini proses write ke databasenya
+    public function insertBooking($data)
+    {
+        $sql = "INSERT INTO {$this->table}
+                (user_id, admin_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
+                nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
+                nimnip_peminjam, kode_booking, status_booking)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        return $this->query($sql, [
+            $data['user_id'] ?? null,
+            $data['admin_id'] ?? null,
+            $data['room_id'],
+            $data['tanggal'],
+            $data['jam_mulai'],
+            $data['jam_selesai'],
+            $data['jumlah_peminjam'],
+            $data['nama_penanggung_jawab'],
+            $data['nimnip_penanggung_jawab'],
+            $data['email_penanggung_jawab'],
+            $data['nimnip_peminjam'],
+            $data['kode_booking'],
+            $data['status_booking']
+        ]);
+
+    }
+
+    // dan ini proses lock transationnya
+    public function createBookingSafe($data)
+    {
+        try {
+            $this->begin();
+
+            // lock scope: room + tanggal
+            $this->query(
+                "SELECT booking_id 
+                FROM {$this->table}
+                WHERE room_id = ? AND tanggal = ?
+                FOR UPDATE",
+                [$data['room_id'], $data['tanggal']]
+            );
+
+            // cek bentrok
+            if ($this->hasOverlap(
+                $data['room_id'],
+                $data['tanggal'],
+                $data['jam_mulai'],
+                $data['jam_selesai']
+            )) {
+                throw new Exception("Waktu bentrok dengan peminjaman lain.");
+            }
+
+            // insert 
+            $this->insertBooking($data);
+
+            $this->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->rollback();
+            throw $e;
+        }
+    }
+
+    // method simpan booking baru untuk user, tapi ini backup method aja, karena udah ada createbBookingSafe() diatas
     public function userCreateBooking($data)
     {
         $sql = "INSERT INTO {$this->table}
                 (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
-                 nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
-                 nimnip_peminjam, kode_booking, status_booking)
+                nama_penanggung_jawab, nimnip_penanggung_jawab, email_penanggung_jawab,
+                nimnip_peminjam, kode_booking, status_booking)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return $this->query($sql, [
             $data['user_id'],
@@ -630,7 +692,7 @@ class Booking extends Model
         ]);
     }
 
-    // method simpan booking baru untuk admin
+    // method simpan booking baru untuk admin, tapi ini backup method aja, karena udah ada createbBookingSafe() diatas
     public function adminCreateBooking($data)
     {
         $sql = "INSERT INTO {$this->table}
@@ -691,25 +753,6 @@ class Booking extends Model
         $row = $this->query($sql, [$tanggal, $nimnip, $nimnip])->fetch();
 
         return ($row['cnt'] ?? 0) > 0;
-    }
-
-    # crete booking buat ruang rapat
-    public function createbookingrapat($data)
-    {
-        $sql = "INSERT INTO {$this->table} 
-                (user_id, room_id, tanggal, jam_mulai, jam_selesai, nama_penanggung_jawab, surat_peminjaman_ruang_rapat,
-                kode_booking, waktu_booking, status_booking)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Disetujui')";
-        return $this->query($sql, [
-            $data['user_id'],
-            $data['ruangan_id'],
-            $data['tanggal'],
-            $data['jam_mulai'],
-            $data['jam_selesai'],
-            $data['nama_penanggung_jawab'],
-            $data['surat_peminjaman_ruang_rapat'] ?? null,
-            $data['kode_booking']
-        ]);
     }
 
     #auto update status selesai
