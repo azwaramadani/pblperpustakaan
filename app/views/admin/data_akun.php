@@ -155,24 +155,24 @@ $disableNext   = $noData || $currentPage >= $totalPages;
           <label>Jurusan</label>
           <select name="jurusanregist">
             <option value="">Semua</option>
-            <?php foreach ($jurusanList as $jrl): ?>
-              <option value="<?= htmlspecialchars($jrl) ?>" <?= ($filtersregist['jurusanregist'] === $jrl ? 'selected' : '') ?>><?= htmlspecialchars($jrl) ?></option>
+            <?php foreach ($jurusanList as $jrlregist): ?>
+              <option value="<?= htmlspecialchars($jrlregist) ?>" <?= ($filtersregist['jurusanregist'] === $jrlregist ? 'selected' : '') ?>><?= htmlspecialchars($jrlregist) ?></option>
             <?php endforeach; ?>
           </select>
 
           <label>Program Studi</label>
           <select name="program_studiregist">
             <option value="">Semua</option>
-            <?php foreach ($prodiList as $prl): ?>
-              <option value="<?= htmlspecialchars($prl) ?>" <?= ($filtersregist['program_studiregist'] === $prl? 'selected' :'') ?>><?= htmlspecialchars($prl) ?></option>
+            <?php foreach ($prodiList as $prlregist): ?>
+              <option value="<?= htmlspecialchars($prlregist) ?>" <?= ($filtersregist['program_studiregist'] === $prlregist ? 'selected' :'') ?>><?= htmlspecialchars($prlregist) ?></option>
             <?php endforeach; ?>
           </select>
 
           <label>Status Akun</label>
           <select name="status_akunregist">
             <option value="">Semua</option>
-            <?php foreach ($statusakunList as $stl): ?>
-              <option value="<?= htmlspecialchars($stl) ?>" <?= ($filtersregist['status_akunregist'] === $stl ? 'selected' : '') ?>><?= htmlspecialchars($stl) ?></option>
+            <?php foreach ($statusakunList as $stlregist): ?>
+              <option value="<?= htmlspecialchars($stlregist) ?>" <?= ($filtersregist['status_akunregist'] === $stlregist ? 'selected' : '') ?>><?= htmlspecialchars($stlregist) ?></option>
             <?php endforeach; ?>
           </select>
           
@@ -184,7 +184,7 @@ $disableNext   = $noData || $currentPage >= $totalPages;
               value="<?= htmlspecialchars($filtersregist['keywordregist']) ?>">
             <button type="submit" aria-label="Cari">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round">
+                  stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="7"></circle>
                 <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
               </svg>
