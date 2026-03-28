@@ -586,6 +586,7 @@ Class bookingController{
     {
         Session::checkUserLogin();
         Session::preventCache();
+
         $userId = Session::get('user_id');
 
         $bookingModel = new Booking();
@@ -598,7 +599,7 @@ Class bookingController{
         }
 
         if ($booking['status_booking'] === 'Disetujui') {
-            // set status dibatalkan + catat berapa kali waktu_cancel
+            // cancel
             $bookingModel->cancelByUser($bookingId, $userId);
 
             // hitung total pembatalan hari ini berdasarkan waktu_cancel
@@ -606,17 +607,20 @@ Class bookingController{
 
             if ($cancelCount >= 3) {
                 $userModel->blockUser($userId);
+
                 Session::set('flash_error', 'Akun anda diblokir karena telah membatalkan booking 3x dalam 1 hari.');
+                header('Location: ?route=Auth/login');
+                exit;
             } else {
                 Session::set('flash_success', 'Booking berhasil dibatalkan.');
                 header('Location: ?route=User/riwayat');
+                exit;
             }
         } else {
             Session::set('flash_error', 'Booking tidak bisa dibatalkan untuk status ini.');
+            header('Location: ?route=User/riwayat');
+            exit;
         }
-
-        header('Location: ?route=User/riwayat');
-        exit;
     }
 
     // Step 1 edit: preload data lama, user hanya boleh ubah tanggal/jam

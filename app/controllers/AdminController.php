@@ -964,6 +964,7 @@ class AdminController {
         return [
             'Menunggu',
             'Ditolak',
+            'Diblokir',
         ];
     }
 
