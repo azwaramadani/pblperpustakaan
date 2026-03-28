@@ -606,8 +606,8 @@ class Booking extends Model
         return array_values(array_filter($parts, fn($v) => $v !== ''));
     }
 
-    # Tambah booking baru
-    public function createUserBooking($data)
+    // method simpan booking baru untuk user 
+    public function userCreateBooking($data)
     {
         $sql = "INSERT INTO {$this->table}
                 (user_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,
@@ -630,7 +630,8 @@ class Booking extends Model
         ]);
     }
 
-    public function createAdminBooking($data)
+    // method simpan booking baru untuk admin
+    public function adminCreateBooking($data)
     {
         $sql = "INSERT INTO {$this->table}
                 (admin_id, room_id, tanggal, jam_mulai, jam_selesai, jumlah_peminjam,

@@ -683,7 +683,6 @@ class AdminController {
             'unit'          => $unitSel,
             'jurusan'       => $jurusanSel,
             'program_studi' => $prodiSel,
-            'status_akun'   => $statusakunSel,
             'keyword'       => $keyword,
         ];
 

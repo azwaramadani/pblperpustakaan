@@ -283,7 +283,7 @@ Class bookingController{
         $payload['kode_booking']    = generateBookingCode();
 
         //simpan ke database
-        $bookingModel->createUserBooking($payload);
+        $bookingModel->userCreateBooking($payload);
 
         // flash success
         jsonResponse([
@@ -565,7 +565,7 @@ Class bookingController{
         $payload['kode_booking']   = generateBookingCode();
 
         //simpan ke database
-        $bookingModel->createAdminBooking($payload);
+        $bookingModel->adminCreateBooking($payload);
 
         //flash success
         jsonResponse([
