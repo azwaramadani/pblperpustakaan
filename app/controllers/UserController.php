@@ -38,6 +38,7 @@ class UserController
         $user = $userModel->findById($user_id);
 
         $flash = $this->getFlashMessages();
+        $user = $user ?? Session::getOld();
 
         require __DIR__ . '/../views/user/edit_profile.php';
     }
@@ -105,11 +106,6 @@ class UserController
         Session::set('flash_success', 'Data berhasil diubah.');
         header('Location: ?route=User/viewProfile');
         exit;   
-
-        $flash = $this->getFlashMessages();
-        $user = $user ?? Session::getOld();
-
-        require __DIR__ . '/../views/user/edit_profile.php';
     }
 
     public function home()
