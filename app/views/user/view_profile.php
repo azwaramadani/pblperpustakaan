@@ -49,7 +49,12 @@
 
     <div class="profile-details">
       <h3 class="details-title">Informasi Pribadi</h3>
-      
+
+      <!-- flash message -->
+      <?php if (!empty($success = $flash['success'])): ?>
+          <div class="flash success"><?= htmlspecialchars($success) ?></div>
+      <?php endif; ?>
+
       <div class="edit-btn-wrap">
         <a href="?route=User/editProfile" class="btn-edit">Edit Data</a>
       </div>

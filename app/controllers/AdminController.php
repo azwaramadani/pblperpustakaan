@@ -830,7 +830,7 @@ class AdminController {
         // buat kirim email-nya dari status menunggu ke disetujui atau dari status ditolak ke disetujui
         if ($shouldSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
-            $subject = 'Akun LibRoomPNJ Anda Sudah Disetujui oleh Admin';
+            $subject = 'Akun LibRoomPNJ Anda Sudah Disetujui';
 
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>
@@ -857,7 +857,7 @@ class AdminController {
         // buat kirim email dari status menunggu ke ditolak atau dari status disetujui ke ditolak
         if ($ditolakSendEmail) {
             $baseUrl = rtrim(app_config()['base_url'] ?? '', '/');
-            $subject = 'Akun LibroomPNJ Anda Ditolak oleh Admin';
+            $subject = 'Akun LibroomPNJ Anda Ditolak';
 
             $body    = "
                         <p>Halo, " . htmlspecialchars($nama) . "!</p>

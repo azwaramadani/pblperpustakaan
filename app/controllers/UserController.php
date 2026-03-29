@@ -18,24 +18,109 @@ class UserController{
         $userModel = new User();
         $user      = $userModel->findById($user_id);
 
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/user/view_profile.php';
     }
-    
-    public function editProfile ()
+
+    public function editProfile()
     {
         Session::CheckUserLogin();
         Session::preventCache();
 
         if (!Session::get('user_id')){
             header('Location: ?route=Auth/Login');
+        }
 
         $user_id = Session::get('user_id');
 
         $userModel = new User();
         $user = $userModel->findById($user_id);
 
+        $flash = $this->getFlashMessages();
+
         require __DIR__ . '/../views/user/edit_profile.php';
+    }
+    
+    public function updateProfile()
+    {
+        Session::CheckUserLogin();
+        Session::preventCache();
+
+        if (!Session::get('user_id')){
+            header('Location: ?route=Auth/Login');
         }
+
+        $user_id = Session::get('user_id');
+
+        $userModel = new User();
+        $user = $userModel->findById($user_id);
+
+        if ($_SERVER['REQUEST_METHOD' !== 'POST']) {
+            header('Location: ?route=User/viewProfile');
+            exit;
+        }
+
+        // ambil input 
+        $data = [
+            'nama'      => $_POST['nama'],
+            'nim/nip'   => $_POST['nim_nip'],
+            'no_hp'     => $_POST['no_hp'],
+            'email'     => $_POST['email'],
+        ];
+        
+        // validasi kalau role mahasiswa, cuman boleh edit jurusan dan prodi selain email, dll.
+        if ($user['role'] === 'Mahasiswa') {
+            $data['jurusan'] = $_POST['Jurusan'];
+            $data['program_studi'] = $_POST['program_studi'];
+        }
+
+        // validasi kalau role tenaga kependidikan, cuman boleh edit unit selain email, dll.
+        if ($user['role'] === 'tenaga_pendidikan') {
+            $data['unit'] = $_POST['unit'];
+        }
+
+        // validasi kalau role dosen, cuman boleh edit jurusan selain email, dll.
+        if ($user['role'] === 'dosen') {
+            $data['jurusan'] = $_POST['jurusan'];
+        }
+
+        // validasi nama, nim/nip, sama email tidak boleh kosong
+        if (empty($data['nama']) || empty($data['nim/nip']) || empty($data['email'])) {
+            Session::set('flash_error', 'Nama, NIM/NIP, dan Email tidak boleh kosong.');
+            Session::setOld($user);
+            header('Location: ?route=User/editProfile');
+            exit;
+        }
+
+        // validasi nim/nip udah ada
+        if ($userModel->isNIMExists($data['nim/nip'])) {
+            Session::set('flash_error', 'NIM/NIP sudah terdaftar.');
+            Session::setOld($user);
+            header('Location: ?route=User/editProfile');
+            exit;
+        }
+
+        // validasi email udah ada
+        if($userModel->isEmailExists($data['email'])) {
+            Session::set('flash_error', 'Email sudah terdaftar.');
+            Session::setOld($user);
+            header('Location: ?route=User/editProfile');
+            exit;                
+        }
+
+        // simpan ke database
+        $userModel->updateProfile($user_id, $data);
+
+        // flash success
+        Session::set('flash_success', 'Data berhasil diubah.');
+        header('Location: ?route=User/viewProfile');
+        exit;   
+
+        $flash = $this->getFlashMessages();
+        $user = $user ?? Session::getOld();
+
+        require __DIR__ . '/../views/user/edit_profile.php';
     }
 
     public function home()

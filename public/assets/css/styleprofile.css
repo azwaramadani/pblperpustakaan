@@ -120,6 +120,26 @@ img { display: block; max-width: 100%; }
   background: #ff6668;
 }
 
+/* flash meessage */
+.flash {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.flash.success {
+    background: #e6f7f3;
+    color: #0f8f8c;
+    border: 1px solid #bce6dc;
+}
+
+.flash.error {
+    background: #fff2f0;
+    color: #c0392b;
+    border: 1px solid #f3c6bf;
+}
+
 /* edit button */
 .edit-btn-wrap {
   display: flex;
@@ -138,6 +158,29 @@ img { display: block; max-width: 100%; }
 }
 
 .btn-edit:hover {
+  background: var(--teal-dark);
+}
+
+/* input buat edit profile */
+.info-item input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.btn-save {
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-save:hover {
   background: var(--teal-dark);
 }
 

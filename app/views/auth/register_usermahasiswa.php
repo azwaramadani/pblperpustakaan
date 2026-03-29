@@ -21,6 +21,7 @@
     <section class="auth-card form-panel">
 
         <h2>Daftar Mahasiswa</h2>
+        
         <!-- Flash Messages -->
         <?php if (!empty($success = $flash['success'])): ?>
             <div class="flash success"><?= htmlspecialchars($success) ?></div>

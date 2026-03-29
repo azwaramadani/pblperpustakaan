@@ -260,31 +260,52 @@ class User extends Model
         return $this->query($sql, [$id])->fetch();
     }
 
-    # Cari user by NIM/NIP buat login
+    // method simpan edit profile user
+    public function updateProfile($user_id, $data)
+    {   
+        $sql = "UPDATE {$this->table}
+                SET nama = ?, nim_nip = ?, jurusan = ?, program_studi = ?, unit = ?, no_hp = ?, email = ? 
+                WHERE user_id = ?";
+
+        return $this->query($sql, [
+            $data['nama'],
+            $data['nim_nip'],
+            $data['jurusan'] ?? '',
+            $data['program_studi'] ?? '',
+            $data['unit'] ?? '',
+            $data['no_hp'],
+            $data['email'], $user_id]);
+    }
+
+    // Cari user by NIM/NIP buat login
     public function findByNIMNIP($nim_nip)
     {
         $sql = "SELECT * FROM {$this->table} WHERE nim_nip = ? LIMIT 1";
         return $this->query($sql, [$nim_nip])->fetch();
     }
     
+    // method cari email user, dipakai buat kirim email saat user ingin ganti password
     public function findByEmail($email)
     {
         $sql = "SELECT * FROM {$this->table} WHERE email = ? LIMIT 1";
         return $this->query($sql, [$email])->fetch();
     }
 
+    // method ganti password user
     public function updatePassword($user_id, $password)
     {
         $sql = "UPDATE {$this->table} SET password = ? WHERE user_id = ?";
         return $this->query($sql, [$password, $user_id]);
     }
 
+    // method validasi apakah NIM/NIP udah terdaftar di database
     public function isNIMExists($nim_nip): bool
     {
         $sql = "SELECT user_id FROM {$this->table} WHERE nim_nip = ? LIMIT 1";
         return (bool)$this->query($sql, [$nim_nip])->fetch();
     }
 
+    // method validasi apakah email udah terdaftar di database
     public function isEmailExists($email): bool
     {
         $sql = "SELECT user_id FROM {$this->table} WHERE email = ? LIMIT 1";
