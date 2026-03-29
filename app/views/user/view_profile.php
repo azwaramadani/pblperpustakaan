@@ -50,6 +50,10 @@
     <div class="profile-details">
       <h3 class="details-title">Informasi Pribadi</h3>
       
+      <div class="edit-btn-wrap">
+        <a href="?route=User/editProfile" class="btn-edit">Edit Data</a>
+      </div>
+      
       <div class="details-grid">
         <div class="info-item">
           <span class="label">NIM / NIP</span>

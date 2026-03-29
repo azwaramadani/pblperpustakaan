@@ -120,6 +120,27 @@ img { display: block; max-width: 100%; }
   background: #ff6668;
 }
 
+/* edit button */
+.edit-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.btn-edit {
+  background: var(--teal);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.5s;
+}
+
+.btn-edit:hover {
+  background: var(--teal-dark);
+}
+
 /* --- PAGE LAYOUT --- */
 .page {
   /* Lebar dimaksimalkan agar muat layout split */
@@ -225,7 +246,7 @@ img { display: block; max-width: 100%; }
 .details-title {
   font-size: 20px;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   color: #000;
   border-bottom: 1px solid #eee;
   padding-bottom: 15px;

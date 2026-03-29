@@ -9,7 +9,7 @@ class UserController{
         Session::preventCache();
         
         if (!Session::get('user_id')) {
-            header("Location: ?route=Auth/Login");
+            header('Location: ?route=Auth/Login');
             exit;
         }
 
@@ -21,6 +21,23 @@ class UserController{
         require __DIR__ . '/../views/user/view_profile.php';
     }
     
+    public function editProfile ()
+    {
+        Session::CheckUserLogin();
+        Session::preventCache();
+
+        if (!Session::get('user_id')){
+            header('Location: ?route=Auth/Login');
+
+        $user_id = Session::get('user_id');
+
+        $userModel = new User();
+        $user = $userModel->findById($user_id);
+
+        require __DIR__ . '/../views/user/edit_profile.php';
+        }
+    }
+
     public function home()
     {
         Session::checkUserLogin();
