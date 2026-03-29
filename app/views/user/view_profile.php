@@ -42,7 +42,7 @@
         <img src="<?= app_config()['base_url'] ?>/public/assets/image/userlogo.png" alt="Foto Profil">
       </div>
       <h2 class="sidebar-name"><?= htmlspecialchars($user['nama'] ?? 'User') ?></h2>
-      <span class="role-badge"><?= htmlspecialchars($user['role'] ?? 'Mahasiswa') ?></span>
+      <span class="role-badge"><?= htmlspecialchars($user['role'] ?? 'user') ?></span>
       
       <a class="btn-logout-main" href="?route=Auth/logout">Keluar</a>
     </div>
