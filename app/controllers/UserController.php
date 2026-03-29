@@ -69,21 +69,6 @@ class UserController
             'email'     => $_POST['email'],
         ];
         
-        // validasi kalau role mahasiswa, cuman boleh edit jurusan dan prodi selain email, dll.
-        if ($user['role'] === 'Mahasiswa') {
-            $data['jurusan'] = $_POST['Jurusan'];
-            $data['program_studi'] = $_POST['program_studi'];
-        }
-
-        // validasi kalau role tenaga kependidikan, cuman boleh edit unit selain email, dll.
-        if ($user['role'] === 'tenaga_pendidikan') {
-            $data['unit'] = $_POST['unit'];
-        }
-
-        // validasi kalau role dosen, cuman boleh edit jurusan selain email, dll.
-        if ($user['role'] === 'dosen') {
-            $data['jurusan'] = $_POST['jurusan'];
-        }
 
         // validasi nama, nim/nip, sama email tidak boleh kosong
         if (empty($data['nama']) || empty($data['nim_nip']) || empty($data['email'])) {

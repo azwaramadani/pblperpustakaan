@@ -73,30 +73,6 @@ $role = $user['role'];
                         <input type="text" name="nim_nip" value="<?= htmlspecialchars($user['nim_nip']) ?>">
                     </div>
 
-                    <?php if ($role === 'Tenaga Kependidikan'): ?>
-                        <div class="info-item">
-                            <span class="label">UNIT</span>
-                            <input type="text" name="unit" value="<?= htmlspecialchars($user['unit']) ?>">
-                        </div>
-                    
-                    <?php elseif ($role === 'Mahasiswa'): ?>
-                        <div class="info-item">
-                            <span class="label">JURUSAN</span>
-                            <input type="text" name="jurusan" value="<?= htmlspecialchars($user['jurusan']) ?>">
-                        </div>
-
-                        <div class="info-item">
-                            <span class="label">PROGRAM STUDI</span>
-                            <input type="text" name="program_studi" value="<?= htmlspecialchars($user['program_studi']) ?>">
-                        </div>
-                    
-                    <?php elseif ($role === 'Dosen'): ?>
-                        <div class="info-item">
-                            <span class="label">JURUSAN</span>
-                            <input type="text" name="jurusan" value="<?= htmlspecialchars($user['jurusan']) ?>">
-                        </div>
-                    <?php endif; ?>    
-
                     <div class="info-item">
                         <span class="label">NO. HP</span>
                         <input type="text" name="no_hp" value="<?= htmlspecialchars($user['no_hp']) ?>">

@@ -264,15 +264,12 @@ class User extends Model
     public function updateProfile($user_id, $data)
     {   
         $sql = "UPDATE {$this->table}
-                SET nama = ?, nim_nip = ?, jurusan = ?, program_studi = ?, unit = ?, no_hp = ?, email = ? 
+                SET nama = ?, nim_nip = ?, no_hp = ?, email = ? 
                 WHERE user_id = ?";
 
         return $this->query($sql, [
             $data['nama'],
             $data['nim_nip'],
-            $data['jurusan'] ?? '',
-            $data['program_studi'] ?? '',
-            $data['unit'] ?? '',
             $data['no_hp'],
             $data['email'], $user_id]);
     }
