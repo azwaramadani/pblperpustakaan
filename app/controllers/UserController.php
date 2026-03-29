@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../../core/Session.php';
 
-class UserController{
-
+class UserController 
+{
     public function viewProfile() 
     {
         Session::CheckUserLogin();
@@ -64,7 +64,7 @@ class UserController{
         // ambil input 
         $data = [
             'nama'      => $_POST['nama'],
-            'nim/nip'   => $_POST['nim_nip'],
+            'nim_nip'   => $_POST['nim_nip'],
             'no_hp'     => $_POST['no_hp'],
             'email'     => $_POST['email'],
         ];
@@ -86,27 +86,31 @@ class UserController{
         }
 
         // validasi nama, nim/nip, sama email tidak boleh kosong
-        if (empty($data['nama']) || empty($data['nim/nip']) || empty($data['email'])) {
+        if (empty($data['nama']) || empty($data['nim_nip']) || empty($data['email'])) {
             Session::set('flash_error', 'Nama, NIM/NIP, dan Email tidak boleh kosong.');
             Session::setOld($user);
             header('Location: ?route=User/editProfile');
             exit;
         }
 
-        // validasi nim/nip udah ada
-        if ($userModel->isNIMExists($data['nim/nip'])) {
-            Session::set('flash_error', 'NIM/NIP sudah terdaftar.');
-            Session::setOld($user);
-            header('Location: ?route=User/editProfile');
-            exit;
+        // validasi nim/nip udah ada, validasi hanya dijalankan ketika user mengubah NIM/NIP, kalau tidak ya tidak perlu
+        if ($data['nim_nip'] !== $user['nim_nip']) {
+            if ($userModel->isNIMExistsException($data['nim_nip'], $user_id)) {
+                Session::set('flash_error', 'NIM/NIP sudah terdaftar.');
+                Session::setOld($user);
+                header('Location: ?route=User/editProfile');
+                exit;
+            }
         }
 
-        // validasi email udah ada
-        if($userModel->isEmailExists($data['email'])) {
-            Session::set('flash_error', 'Email sudah terdaftar.');
-            Session::setOld($user);
-            header('Location: ?route=User/editProfile');
-            exit;                
+        // validasi email udah ada, validasi hanya dilakukan ketika user mengubah email, kalau tidak ya tidak perlu validasi
+        if ($data['email'] !== $user['email']) {     
+            if($userModel->isEmailExistsException($data['email'], $user_id)) {
+                Session::set('flash_error', 'Email sudah terdaftar.');
+                Session::setOld($user);
+                header('Location: ?route=User/editProfile');
+                exit;                
+            }
         }
 
         // simpan ke database

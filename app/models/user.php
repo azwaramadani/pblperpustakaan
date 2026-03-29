@@ -305,6 +305,28 @@ class User extends Model
         return (bool)$this->query($sql, [$nim_nip])->fetch();
     }
 
+    // method validasi apakah NIM/NIP udah dipakai orang lain, method ini dipakai untuk validasi ketika edit profile
+    public function isNIMExistsException($nim_nip, $user_id): bool
+    {
+        $sql = "SELECT user_id 
+                FROM {$this->table} 
+                WHERE nim_nip = ? AND user_id != ? 
+                LIMIT 1";
+
+        return (bool)$this->query($sql, [$nim_nip, $user_id])->fetch();
+    }
+
+    // method validasi apakah email udah dipakai orang lain, method ini dipakai untuk validasi ketika edit profile
+    public function isEmailExistsException($email, $user_id): bool
+    {
+        $sql = "SELECT user_id 
+                FROM {$this->table} 
+                WHERE email = ? AND user_id != ? 
+                LIMIT 1";
+
+        return (bool)$this->query($sql, [$email, $user_id])->fetch();
+    }
+
     // method validasi apakah email udah terdaftar di database
     public function isEmailExists($email): bool
     {
