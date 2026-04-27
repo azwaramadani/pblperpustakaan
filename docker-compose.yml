@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Service untuk Aplikasi PHP
+  app:
+    build: .
+    container_name: pbl_perpustakaan_web
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - pbl_network
+
+  # Service untuk Database
+  db:
+    image: mysql:8.0
+    container_name: pbl_perpustakaan_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: db_perpustakaan
+      MYSQL_ROOT_PASSWORD: password123
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - pbl_network
+
+networks:
+  pbl_network:
+    driver: bridge
+
+volumes:
+  db_data:
